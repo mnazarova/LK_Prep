@@ -1,6 +1,6 @@
 <div ng-show="ur == 'SECRETARY'">
-    <div class="my-3 card col-md-10 bg-light mx-auto">
 
+    <div class="my-3 card col-md-10 bg-light mx-auto">
         <form class="simple-form" name="studentsForm">
             <div class="my-3 ml-5">
                 <div class="col-md-8 mx-auto text-right my-2">
@@ -56,8 +56,7 @@
                                 name="faculty"
                                 ng-change="getDepartments()"
                                 ng-model="faculty"
-                                ng-options="item.id as item.shortName+'. '+item.fullName
-                                            for item in faculties"
+                                ng-options="item.id as item.shortName+'. '+item.fullName for item in faculties"
                                 id="labelFaculty"
                                 required>
                         </select>
@@ -137,61 +136,70 @@
         </table>
         <div class="text-right my-3" ng-if="students.length">
             <hr>
-            <a class="btn btn-info text-white"
+            <button class="btn btn-info text-white"
                type="button"
                ng-click="selectTeacher()">
                 Выбрать преподавателя
-            </a>
+            </button>
         </div>
     </div>
 
-
-    <form class="simple-form" name="teacherForm" ng-if="students.length && viewTeacherForm">
-        <div class="col-md-8 mx-auto">
-            <label for="labelFaculty">Предмет</label>
-            <select class="custom-select form-control"
-                    name="subject"
-                    ng-model="subject"
-                    ng-options="item.id as item.name for item in subjects"
-                    id="labelSubject"
-                    required>
-            </select>
-        </div>
-        <div class="col-md-8 mx-auto">
-            <label for="labelFaculty">Факультет</label>
-            <select class="custom-select form-control"
-                    name="facultyTeacher"
-                    ng-change="getDepartments()"
-                    ng-model="faculty"
-                    ng-options="item.id as item.shortName+'. '+item.fullName for item in facultieTeachers"
-                    id="labelFacultyTeacher"
-                    required>
-            </select>
-        </div>
-        <div class="col-md-8 mx-auto mt-3">
-            <label for="labelDepartment">Кафедра</label>
-            <select class="custom-select form-control"
-                    ng-disabled="!studentsForm.faculty.$modelValue"
-                    name="department"
-                    ng-change="getGroups()"
-                    ng-model="department"
-                    ng-options="item.id as item.shortName+'. '+item.fullName for item in departments"
-                    id="labelDepartment"
-                    required>
-            </select>
-        </div>
-        <div class="col-md-8 mx-auto mt-3">
-            <label for="labelGroup">Группа</label>
-            <select class="custom-select form-control"
-                    ng-change="checkGroup()"
-                    ng-disabled="!studentsForm.department.$modelValue"
-                    name="group"
-                    ng-model="group"
-                    ng-options="item.id as item.number for item in groups"
-                    id="labelGroup"
-                    required>
-            </select>
-        </div>
-    </form>
+    <div class="my-3 card col-md-10 bg-light mx-auto" ng-if="viewTeacherForm">
+        <form class="my-5 simple-form" name="teacherForm">
+            <div class="col-md-8 mx-auto">
+                <label for="labelSubject">Предмет</label>
+                <select class="custom-select form-control"
+                        name="subject"
+                        ng-model="subject"
+                        ng-options="item.id as item.name for item in subjects"
+                        id="labelSubject"
+                        required>
+                </select>
+            </div>
+            <div class="col-md-8 mx-auto">
+                <label for="labelFacultyTeacher">Факультет преподавателя</label>
+                <select class="custom-select form-control"
+                        name="facultyTeacher"
+                        ng-change="getDepartments()"
+                        ng-model="facultyTeacher"
+                        ng-options="item.id as item.shortName+'. '+item.fullName for item in facultyTeachers"
+                        id="labelFacultyTeacher"
+                        required>
+                </select>
+            </div>
+            <div class="col-md-8 mx-auto mt-3">
+                <label for="labelDepartmentTeacher">Кафедра преподавателя</label>
+                <select class="custom-select form-control"
+                        ng-disabled="!teacherForm.facultyTeacher.$modelValue"
+                        name="departmentTeacher"
+                        ng-change="getGroups()"
+                        ng-model="departmentTeacher"
+                        ng-options="item.id as item.shortName+'. '+item.fullName for item in departmentTeachers"
+                        id="labelDepartmentTeacher"
+                        required>
+                </select>
+            </div>
+            <div class="col-md-8 mx-auto mt-3">
+                <label for="labelTeacher">Преподаватель</label>
+                <select class="custom-select form-control"
+                        ng-change="checkGroup()"
+                        ng-disabled="!teacherForm.departmentTeacher.$modelValue"
+                        name="Teacher"
+                        ng-model="Teacher"
+                        ng-options="item.id as item.number for item in teachers"
+                        id="labelTeacher"
+                        required>
+                </select>
+            </div>
+            <div class="col-md-8 mx-auto mt-4 text-right">
+                <button class="btn btn-info px-3 text-white"
+                        title="Связать {{isSubgroup? 'подгруппу': 'группу'}} с преподавателем"
+                        ng-click="watchStudents()">
+                    <i class="fa fa-list-alt pr-1"></i>
+                    Связать
+                </button>
+            </div>
+        </form>
+    </div>
 
 </div>

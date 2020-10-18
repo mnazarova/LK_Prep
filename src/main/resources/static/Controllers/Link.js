@@ -18,7 +18,6 @@ app.controller("LinkController", function($scope, $http) {
     }
 
     $scope.getDepartments = function () {
-        console.log($scope.faculty)
         $http({
             method: 'PATCH',
             url: '/getDepartments',
@@ -92,10 +91,9 @@ app.controller("LinkController", function($scope, $http) {
                 return null;
             }
             else {
-                console.log($scope.subgroupId)
                 $scope.subgroup = {
                     id: $scope.subgroupId
-                }
+                };
                 $http({
                     method: 'PATCH',
                     url: '/findNotExpelledStudentsFromSubgroup',
@@ -119,15 +117,13 @@ app.controller("LinkController", function($scope, $http) {
     };
 
     $scope.findByNameSubgroup = function() {
-        // console.log($scope.studentsForm.partNameSubgroup.$modelValue)
-        console.log($scope.partNameSubgroup)
         if (!$scope.partNameSubgroup) {
             $scope.toasterWarning('Необходимо ввести название (или часть названия) подгруппы');
             return null;
-        }
+        };
         $scope.subgroup = {  // из-за ""
             name: $scope.partNameSubgroup
-        }
+        };
         $http({
             method: 'PATCH',
             url: '/findByNameSubgroup',
@@ -149,18 +145,22 @@ app.controller("LinkController", function($scope, $http) {
 
     $scope.checkIsSubgroup = function() {
         $scope.students = null;
+        $scope.viewTeacherForm = false;
     };
 
     $scope.checkPartNameSubgroup = function() {
         $scope.subgroups = null;
+        $scope.viewTeacherForm = false;
     };
 
     $scope.checkSubgroupId = function() {
         $scope.students = null;
+        $scope.viewTeacherForm = false;
     };
 
     $scope.checkGroup = function() {
         $scope.students = null;
+        $scope.viewTeacherForm = false;
     };
 
     $scope.selectTeacher = function() {
