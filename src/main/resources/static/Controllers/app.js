@@ -192,16 +192,6 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
                 url: '/registration',
                 templateUrl: 'components/Templates/registration.html',
                 controller: 'RegistrationController'
-            })*/
-            /*.state('search', {
-                url: '/search',
-                templateUrl: 'components/Templates/search.html',
-                controller: 'SearchController'
-            })
-            .state('basket', {
-                url: '/basket',
-                templateUrl: 'components/Templates/basket.html',
-                controller: 'BasketController'
             })
             .state('help', {
                 url: '/help',

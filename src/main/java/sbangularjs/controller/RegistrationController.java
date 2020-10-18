@@ -6,10 +6,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import sbangularjs.model.Client;
 import sbangularjs.model.Role;
 import sbangularjs.model.User;
-import sbangularjs.repository.ClientRepository;
 import sbangularjs.repository.UserRepository;
 
 import java.util.Collections;
@@ -18,7 +16,6 @@ import java.util.Collections;
 public class RegistrationController {
     @Autowired
     private UserRepository userRepository;
-    private ClientRepository clientRepository;
 
     @RequestMapping("/registration")
     public String registration(@RequestParam(name = "message", required = false) String message, Model model) {

@@ -4,12 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import sbangularjs.model.Client;
-import sbangularjs.model.Employee;
 import sbangularjs.model.Role;
 import sbangularjs.model.User;
-import sbangularjs.repository.ClientRepository;
-import sbangularjs.repository.EmployeeRepository;
 import sbangularjs.repository.UserRepository;
 
 import java.util.Set;
@@ -18,10 +14,6 @@ import java.util.Set;
 public class PrivateAccountRESTController {
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private ClientRepository clientRepository;
-    @Autowired
-    private EmployeeRepository employeeRepository;
 
 /*//    @RequestMapping("/privateAccount")
     @RequestMapping(value = "/privateAccount", //
@@ -46,7 +38,7 @@ public class PrivateAccountRESTController {
         return userRepository.findByUsername(user.getUsername()).getRoles();
     }
 
-    @RequestMapping(value = "/getDataClient",method = RequestMethod.GET,produces = { MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE })
+    /*@RequestMapping(value = "/getDataClient",method = RequestMethod.GET,produces = { MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
     public Client getDataClient(@AuthenticationPrincipal User user) {
         Client client = clientRepository.findByUsername(user.getUsername());
@@ -83,11 +75,11 @@ public class PrivateAccountRESTController {
         client.setName(updateClient.getName());
         client.setEmail(updateClient.getEmail());
         client.setPhone(updateClient.getPhone());
-        /*if(!user.getUsername().equals(updateClient.getUsername())) {
+        *//*if(!user.getUsername().equals(updateClient.getUsername())) {
             client.setUsername(updateClient.getUsername());
             user.setUsername(updateClient.getUsername());
             userRepository.save(user);
-        }*/
+        }*//*
 
         clientRepository.save(client);
         // LOGIN
@@ -104,11 +96,11 @@ public class PrivateAccountRESTController {
         employee.setSurname(updateEmployee.getSurname());
         employee.setName(updateEmployee.getName());
         employee.setPhone(updateEmployee.getPhone());
-        /*if(!user.getUsername().equals(updateClient.getUsername())) {
+        *//*if(!user.getUsername().equals(updateClient.getUsername())) {
             client.setUsername(updateClient.getUsername());
             user.setUsername(updateClient.getUsername());
             userRepository.save(user);
-        }*/
+        }*//*
 
         employeeRepository.save(employee);
         return employee;
@@ -140,7 +132,7 @@ public class PrivateAccountRESTController {
         }
 
         return user;
-    }
+    }*/
 
     /*
     @RequestMapping(value = "/editClient",
