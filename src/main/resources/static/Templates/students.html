@@ -1,0 +1,103 @@
+<div ng-show="ur == 'DEANERY'">
+
+    <div class="my-3 col-md-10 card bg-light mx-auto">
+        <!--<div class="font-weight-bold h4 text-center my-2">
+            Заказы
+        </div>-->
+        <form class="simple-form" name="studentsForm">
+            <div class="my-3 ml-5">
+                <div class="col-md-8 mx-auto pl-1">
+                <!--<div class="form-group">-->
+                    <label for="labelFaculty">Факультет</label>
+                    <select class="custom-select form-control"
+                            name="faculty"
+                            ng-change="getDepartments()"
+                            ng-model="faculty"
+                            ng-options="item.id as item.shortName+'. '+item.fullName
+                                        for item in faculties"
+                            id="labelFaculty"
+                            required>
+                    </select>
+                </div>
+                <div class="col-md-8 mx-auto pl-1 mt-3">
+                    <label for="labelDepartment">Кафедра</label>
+                    <select class="custom-select form-control"
+                            ng-disabled="!studentsForm.faculty.$modelValue"
+                            name="department"
+                            ng-change="getGroups()"
+                            ng-model="department"
+                            ng-options="item.id as item.shortName+'. '+item.fullName
+                                        for item in departments"
+                            id="labelDepartment"
+                            required>
+                    </select>
+                </div>
+                <div class="input-group ml-4 pl-5 mt-3">
+                    <div class="col-md-7 ml-5 pl-5">
+                        <label for="labelGroup">Группа</label>
+                        <select class="custom-select form-control"
+                                ng-disabled="!studentsForm.department.$modelValue"
+                                name="group"
+                                ng-change="students = null"
+                                ng-model="group"
+                                ng-options="item.id as item.number for item in groups"
+                                id="labelGroup"
+                                required>
+                        </select>
+                    </div>
+                    <div class="col-md-2 mt-4 pt-2 ml-4">
+                        <a class="btn btn-info px-4 text-white"
+                           ng-disabled="!group"
+                           ng-click="findStudents()">
+                            Найти
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="my-3 card col-md-10 mx-auto">
+        <div class="font-weight-bold text-center m-2 p-2 alert-warning" ng-if="!studentsForm.group.$modelValue">
+            Выберите группу
+        </div>
+
+        <div class="font-weight-bold text-center m-2 p-2 alert-warning"
+             ng-if="studentsForm.group.$modelValue && !students.length">
+            Для отображения списка студентов нажмите на кнопку "Найти"
+        </div>
+
+        <div class="font-weight-bold h4 text-center mt-4" ng-if="studentsForm.group.$modelValue && students.length">
+            Список студентов группы
+        </div>
+        <table class="table table-hover my-3" ng-if="studentsForm.group.$modelValue && students.length">
+            <tr>
+                <th class="text-center py-3">Фамилия</th>
+                <th class="text-center">Имя</th>
+                <th class="text-center">Отчество</th>
+                <th class="text-center">Номер зачётной книжки</th>
+                <th class="text-center">Отчислен</th>
+            </tr>
+            <tr ng-repeat="st in students | orderBy:'surname' track by $index" class="border-top m-3 text-info text-bold"
+                ng-class="{'text-muted': st.expelled}">
+                <td class="text-center py-3">{{st.surname}}</td>
+                <td class="text-center">{{st.name}}</td>
+                <td class="text-center">{{st.patronymic}}</td>
+                <td class="text-center">{{st.numberRecordBook}}</td>
+                <td class="text-center">
+                    <input type="checkbox" ng-model="st.expelled">
+                </td>
+            </tr>
+        </table>
+        <div class="text-right my-3" ng-if="studentsForm.group.$modelValue && students.length">
+            <hr>
+            <a class="btn btn-info text-white"
+               type="button"
+               data-toggle="modal" data-target="#successModal"
+               ng-click="saveExpelledStudents()">
+                Сохранить изменения
+            </a>
+        </div>
+    </div>
+
+</div>

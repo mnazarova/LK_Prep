@@ -1,0 +1,154 @@
+<div ng-show="ur == 'SECRETARY'">
+
+    <div class="my-3 col-md-10 card bg-light mx-auto">
+        <!--<div class="font-weight-bold h4 text-center my-2">
+            Заказы
+        </div>-->
+        <form class="simple-form" name="studentsForm">
+            <div class="my-3 ml-5">
+                <div class="col-md-8 mx-auto">
+                    <!--<div class="form-group">-->
+                    <label for="labelFaculty">Факультет</label>
+                    <select class="custom-select form-control"
+                            name="faculty"
+                            ng-change="getDepartments()"
+                            ng-model="faculty"
+                            ng-options="item.id as item.shortName+'. '+item.fullName
+                                        for item in faculties"
+                            id="labelFaculty"
+                            required>
+                    </select>
+                </div>
+                <div class="col-md-8 mx-auto mt-3">
+                    <label for="labelDepartment">Кафедра</label>
+                    <select class="custom-select form-control"
+                            ng-disabled="!studentsForm.faculty.$modelValue"
+                            name="department"
+                            ng-change="getGroups()"
+                            ng-model="department"
+                            ng-options="item.id as item.shortName+'. '+item.fullName
+                                        for item in departments"
+                            id="labelDepartment"
+                            required>
+                    </select>
+                </div>
+                <div class="col-md-8 mx-auto mt-3">
+                    <label for="labelGroup">Группа</label>
+                    <select class="custom-select form-control"
+                            ng-disabled="!studentsForm.department.$modelValue"
+                            name="group"
+                            ng-model="group"
+                            ng-options="item.id as item.number for item in groups"
+                            id="labelGroup"
+                            required>
+                    </select>
+                </div>
+                <div class="col-md-8 mx-auto mt-4 text-right">
+                    <button class="btn btn-info px-3 text-white"
+                            title="Добавить в 'Общий список студентов'"
+                            ng-click="addStudents()">
+                        <i class="fa fa-plus-circle"></i>
+                        Добавить
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-10 mx-auto">
+
+        <div class="row">
+
+            <div class="col-sm-6">
+                <div class="m-2 mb-4 card">
+                    <div class="card-header">
+                        <div class="font-weight-bold h5 text-center my-2">
+                            Общий список студентов
+                        </div>
+                    </div>
+
+                    <div class="card-body heightList">
+                        <div class="font-weight-bold text-center alert-warning p-2" ng-if="!commonListStudents.length">
+                            Для добавления студентов в список нажмите на кнопку "Добавить"
+                        </div>
+                        <div class="custom-control border-top"
+                             ng-class="{'bg-light': st.add}"
+                             ng-repeat="st in commonListStudents track by $index">
+                            <input type="checkbox" ng-model="st.add"
+                                   class="m-2"
+                                   ng-change="checkExistenceAdded()"
+                                   id="{{$index}}">
+                            <label class="text-center m-0"
+                                   for="{{$index}}">
+                                {{st.numberRecordBook}}. {{st.surname}} {{st.name}} {{st.patronymic}}
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="card-footer text-right" ng-if="existenceAdded">
+                        <button class="btn btn-info text-white"
+                                type="button"
+                                title="Отправить в список студентов новой подгруппы"
+                                ng-click="sendStudents()">
+                            <i class="fa fa-lg fa-share-square"></i>
+                            Отправить
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="m-2 mb-4 card">
+                    <div class="card-header">
+                        <div class="font-weight-bold h5 text-center my-2">
+                            Список студентов новой подгруппы
+                        </div>
+                    </div>
+
+                    <div class="card-body heightList">
+                        <div class="font-weight-bold text-center alert-warning p-2" ng-if="!listSelectedStudents.length">
+                            В списке нет студентов
+                        </div>
+                        <ul ng-repeat="st in listSelectedStudents" class="list-group">
+                            <li class="list-group border-top">
+                                <div class="row">
+                                    <i class="btn text-info fa fa-minus-square py-0 col-lg-1"
+                                       title="Вернуть в общий список"
+                                       ng-click="revert($index)"></i>
+                                    <span class="col-lg-11">
+                                        {{st.numberRecordBook}}. {{st.surname}} {{st.name}} {{st.patronymic}}
+                                    </span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="card-footer" ng-if="listSelectedStudents.length">
+                        <form class="simple-form row mx-2" name="createForm">
+                            <input type="text"
+                                   class="form-control col-lg-8"
+                                   ng-class="{'is-invalid': !createForm.nameSubgroup.value && showCreateForm}"
+                                   name="nameSubgroup"
+                                   ng-model="nameSubgroup"
+                                   title="Название будет отображаться у преподавателей,
+поэтому рекомендуется следовать шаблону: 'И976_1' или 'И976(3)'"
+                                   placeholder="введите название подгруппы"
+                                   required>
+                            <button class="btn btn-info text-white col-lg-4"
+                                    type="button"
+                                    title="Создать подгруппу"
+                                    ng-click="createSubgroup()">
+                                <i class="fa fa-share-square"></i>
+                                Создать
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

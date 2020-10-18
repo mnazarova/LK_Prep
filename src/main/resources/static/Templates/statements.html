@@ -1,0 +1,100 @@
+<div ng-show="ur == 'DEANERY'">
+    <div class="my-3 col-md-10 card bg-light mx-auto">
+        <div class="font-weight-bold h4 text-center my-2 ng-hide" ng-show="ur == 'USER'"> Поиск </div>
+        <div class="font-weight-bold h4 text-center my-2 ng-hide" ng-show="ur == 'MANAGER'"> Товары </div>
+
+        <form class="simple-form" name="medicine">
+            <div class="row my-3 pl-5">
+                <div class="col-md-4 text-center ml-5 pl-3">
+                    <label for="MedicineName">Наименование</label>
+                    <input type="text"
+                           class="form-control"
+                           name="name"
+                           ng-model="name"
+                           id="MedicineName"
+                           placeholder="введите название лекарства"
+                           required>
+                </div>
+                <div class="col-md-4 text-center ml-3">
+                    <label for="MedicineGroup">Группа</label>
+                    <select class="custom-select form-control"
+                            name="group"
+                            ng-model="group"
+                            id="MedicineGroup">
+                        <option value="{{item.id}}" ng-repeat="item in groups">{{item.name}}</option>
+                    </select>
+                </div>
+                <div class="col-md-2 mx-auto mt-4 pt-2">
+                    <!--<a class="btn text-info" href="/home">
+                        В главное меню
+                    </a>-->
+                    <a class="btn btn-info px-4 text-white"
+                       ng-click="findMedicines()">
+                        Найти
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="my-3 card col-md-10 mx-auto">
+        <div class="font-weight-bold h4 text-center mt-4">
+            Найдено лекарств: {{medicines.length}}
+        </div>
+
+        <table class="my-3" ng-if="medicines.length">
+            <tr>
+                <th></th>
+                <th class="text-center">Название</th>
+                <th class="text-center">Количество</th>
+                <th class="text-center">Цена</th>
+                <th></th>
+            </tr>
+            <tr ng-repeat="medicine in medicines | orderBy:'id'" class="border-top">
+                <td width="200" class="text-center">
+                    <img src="Images/{{medicine.img}}" width="80" alt="Изображение лекарства появится в ближайшее время">
+                </td>
+                <td class="text-center">{{medicine.name}}</td>
+                <td class="text-center">{{medicine.quantity}} шт.</td>
+                <td class="text-center">{{medicine.price}} руб.</td>
+                <td class="text-center">
+                    <a class="btn btn-info text-white"
+                       ng-if="medicine.quantity"
+                       type="button"
+                       data-toggle="modal" data-target="#successModal"
+                       ng-click="addToBasket(medicine.id)"
+                       ng-show="ur == 'USER'">
+                        Добавить в корзину
+                    </a>
+                    <a class="btn btn-info text-white"
+                       ng-if="medicine.quantity"
+                       type="button"
+                       href="/{{medicine.id}}"
+                       ng-show="ur == 'MANAGER'">
+                        Редактировать
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Заголовок модального окна -->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="successModalLabel">Добавление товара в корзину</h4>
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                </div>
+                <div class="modal-body alert alert-success hidden m-0 text-center" id="success-alert">
+                    Выбранный товар успешно добавлен в корзину!
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-primary" href="/basket" ng-click="">Перейти в корзину</a>
+                    <button class="btn btn-primary" data-dismiss="modal" type="button">Продолжить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

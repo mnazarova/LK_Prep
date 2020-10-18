@@ -1,0 +1,197 @@
+<div ng-show="ur == 'SECRETARY'">
+    <div class="my-3 card col-md-10 bg-light mx-auto">
+
+        <form class="simple-form" name="studentsForm">
+            <div class="my-3 ml-5">
+                <div class="col-md-8 mx-auto text-right my-2">
+                    <div class="custom-control custom-checkbox my-3">
+                        <input type="checkbox"
+                               class="custom-control-input"
+                               ng-model="isSubgroup"
+                               name="isSubgroup"
+                               ng-change="checkIsSubgroup()"
+                               id="customControlValidation">
+                        <label class="custom-control-label" for="customControlValidation">Связать подгруппу</label>
+                    </div>
+                </div>
+
+                <div ng-show="isSubgroup">
+                    <div class="col-md-8 mx-auto mt-3">
+                        <label for="labelSubgroupName">Название подгруппы</label>
+                        <div class="input-group">
+                            <input class="form-control" type="search"
+                                   placeholder="введите название подгруппы"
+                                   name="partNameSubgroup"
+                                   ng-model="partNameSubgroup"
+                                   ng-change="checkPartNameSubgroup()"
+                                   id="labelSubgroupName" aria-label="Search">
+                            <button class="btn btn-info text-white"
+                                    title="Найти подгруппу по названию"
+                                    ng-disabled="subgroups.length"
+                                    type="button"
+                                    ng-click="findByNameSubgroup()">
+                                <i class="fa fa-search"></i>
+                                Найти
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-8 mx-auto mt-3">
+                        <label for="labelSubgroup">Подгруппа</label>
+                        <select class="custom-select form-control"
+                                ng-change="checkSubgroupId()"
+                                ng-disabled="!subgroups.length"
+                                name="subgroupId"
+                                ng-model="subgroupId"
+                                ng-options="item.id as item.name for item in subgroups"
+                                id="labelSubgroup"
+                                required>
+                        </select>
+                    </div>
+                </div>
+
+                <div ng-show="!isSubgroup">
+                    <div class="col-md-8 mx-auto">
+                        <label for="labelFaculty">Факультет</label>
+                        <select class="custom-select form-control"
+                                name="faculty"
+                                ng-change="getDepartments()"
+                                ng-model="faculty"
+                                ng-options="item.id as item.shortName+'. '+item.fullName
+                                            for item in faculties"
+                                id="labelFaculty"
+                                required>
+                        </select>
+                    </div>
+                    <div class="col-md-8 mx-auto mt-3">
+                        <label for="labelDepartment">Кафедра</label>
+                        <select class="custom-select form-control"
+                                ng-disabled="!studentsForm.faculty.$modelValue"
+                                name="department"
+                                ng-change="getGroups()"
+                                ng-model="department"
+                                ng-options="item.id as item.shortName+'. '+item.fullName for item in departments"
+                                id="labelDepartment"
+                                required>
+                        </select>
+                    </div>
+                    <div class="col-md-8 mx-auto mt-3">
+                        <label for="labelGroup">Группа</label>
+                        <select class="custom-select form-control"
+                                ng-change="checkGroup()"
+                                ng-disabled="!studentsForm.department.$modelValue"
+                                name="group"
+                                ng-model="group"
+                                ng-options="item.id as item.number for item in groups"
+                                id="labelGroup"
+                                required>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-8 mx-auto mt-4 text-right">
+                    <button class="btn btn-info px-3 text-white"
+                            title="Просмотр содержимого {{isSubgroup? 'подгруппы': 'группы'}}"
+                            ng-click="watchStudents()">
+                        <i class="fa fa-list-alt pr-1"></i>
+                        Просмотр
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <div class="my-3 card col-md-10 mx-auto">
+        <div class="font-weight-bold text-center m-2 p-2 alert-warning" ng-if="!studentsForm.group.$modelValue && !studentsForm.subgroupId.$modelValue">
+            Выберите группу или подгруппу
+        </div>
+
+        <div class="font-weight-bold text-center m-2 p-2 alert-warning"
+             ng-if="(studentsForm.group.$modelValue || studentsForm.subgroupId.$modelValue) && !students.length">
+            Для отображения списка студентов нажмите на кнопку "Просмотр"
+        </div>
+
+        <div class="font-weight-bold h4 text-center mt-4" ng-if="studentsForm.group.$modelValue && students.length">
+            Список студентов группы
+            <!-- в списке группы отсутствуют отчисленные студенты на момент просмотра страницы -->
+        </div>
+
+        <div class="font-weight-bold h4 text-center mt-4" ng-if="studentsForm.subgroupId.$modelValue && students.length">
+            Список студентов подгруппы
+            <!-- в списке подгруппы отсутствуют отчисленные студенты на момент просмотра страницы -->
+        </div>
+
+        <table class="table table-hover table-sm my-3" ng-if="students.length">
+            <tr>
+                <th class="text-center">Фамилия</th>
+                <th class="text-center">Имя</th>
+                <th class="text-center">Отчество</th>
+                <th class="text-center">Номер зачётной книжки</th>
+            </tr>
+            <tr ng-repeat="st in students | orderBy:'surname' track by $index" class="border-top m-3 text-info text-bold">
+                <td class="text-center w-25">{{st.surname}}</td>
+                <td class="text-center w-25">{{st.name}}</td>
+                <td class="text-center w-25">{{st.patronymic}}</td>
+                <td class="text-center w-25">{{st.numberRecordBook}}</td>
+            </tr>
+        </table>
+        <div class="text-right my-3" ng-if="students.length">
+            <hr>
+            <a class="btn btn-info text-white"
+               type="button"
+               ng-click="selectTeacher()">
+                Выбрать преподавателя
+            </a>
+        </div>
+    </div>
+
+
+    <form class="simple-form" name="teacherForm" ng-if="students.length && viewTeacherForm">
+        <div class="col-md-8 mx-auto">
+            <label for="labelFaculty">Предмет</label>
+            <select class="custom-select form-control"
+                    name="subject"
+                    ng-model="subject"
+                    ng-options="item.id as item.name for item in subjects"
+                    id="labelSubject"
+                    required>
+            </select>
+        </div>
+        <div class="col-md-8 mx-auto">
+            <label for="labelFaculty">Факультет</label>
+            <select class="custom-select form-control"
+                    name="facultyTeacher"
+                    ng-change="getDepartments()"
+                    ng-model="faculty"
+                    ng-options="item.id as item.shortName+'. '+item.fullName for item in facultieTeachers"
+                    id="labelFacultyTeacher"
+                    required>
+            </select>
+        </div>
+        <div class="col-md-8 mx-auto mt-3">
+            <label for="labelDepartment">Кафедра</label>
+            <select class="custom-select form-control"
+                    ng-disabled="!studentsForm.faculty.$modelValue"
+                    name="department"
+                    ng-change="getGroups()"
+                    ng-model="department"
+                    ng-options="item.id as item.shortName+'. '+item.fullName for item in departments"
+                    id="labelDepartment"
+                    required>
+            </select>
+        </div>
+        <div class="col-md-8 mx-auto mt-3">
+            <label for="labelGroup">Группа</label>
+            <select class="custom-select form-control"
+                    ng-change="checkGroup()"
+                    ng-disabled="!studentsForm.department.$modelValue"
+                    name="group"
+                    ng-model="group"
+                    ng-options="item.id as item.number for item in groups"
+                    id="labelGroup"
+                    required>
+            </select>
+        </div>
+    </form>
+
+</div>

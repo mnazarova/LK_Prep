@@ -1,0 +1,105 @@
+<div ng-show="ur == 'TEACHER'">
+
+    <!--<div class="my-3 col-md-10 card bg-light mx-auto">
+
+        <form class="simple-form" name="medicine">
+            <div class="row my-3 pl-5">
+                <div class="col-md-4 text-center ml-5 pl-3">
+                    <label for="MedicineName">Наименование</label>
+                    <input type="text"
+                           class="form-control"
+                           name="name"
+                           ng-model="name"
+                           id="MedicineName"
+                           placeholder="введите название лекарства"
+                           required>
+                </div>
+
+                <div class="col-md-4 text-center ml-3">
+                    <label for="MedicineGroup">Группа</label>
+                    <select class="custom-select form-control"
+                            name="group"
+                            ng-model="group"
+                            id="MedicineGroup">
+                        <option value="{{item.id}}" ng-repeat="item in groups">{{item.name}}</option>
+                    </select>
+                </div>
+                <div class="col-md-2 mx-auto mt-4 pt-2">
+                    &lt;!&ndash;<a class="btn text-info" href="/home">
+                        В главное меню
+                    </a>&ndash;&gt;
+                    <a class="btn btn-info px-4 text-white"
+                       ng-click="findMedicines()">
+                        Найти
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>-->
+
+    <div class="my-5 card bg-light col-md-10 mx-auto">
+        <div class="font-weight-bold h4 text-center mt-4">
+            <!--Внимание! Дедлайн до 03.00-->
+            Найдено действующих аттестаций: {{attestations.length}}
+        </div>
+
+        <table class="table table-hover my-5" ng-if="attestations.length">
+            <tr>
+                <th class="text-center w-50">Название</th>
+                <th class="text-center w-25">Крайний срок сдачи
+                    <br>(не включая)
+                    <!--<i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top"
+                       title="Внимание! Если дедлайн поставлен на 02.09.2020, то изменения можно внести до 03.00 мск 02.09.2020"></i>-->
+                    <i class="fa fa-info-circle text-info" title="Нажмите для вывода справки" ng-click="toasterInfo('Справка!',
+                    'Если дедлайн поставлен на 02.09.2020, то изменения можно внести до 03.00 мск 02.09.2020')"></i>
+                </th>
+                <th class="w-25"></th>
+            </tr>
+            <tr ng-repeat="attestation in attestations | orderBy:'id'" class="border-top">
+                <td class="text-center">{{attestation.name}}</td>
+                <td class="text-center">
+                    {{attestation.deadline | date: 'dd.MM.yyyy'}}
+                </td>
+                <td class="text-center py-3">
+                    <!--<a class="btn btn-info text-white"
+                       type="button"
+                       data-toggle="modal" data-target="#successModal"
+                       ng-click="addTo(medicine.id)"
+                       ng-show="ur == 'USER'">
+                        Добавить в
+                    </a>-->
+                    <a class="btn btn-info text-white"
+                       type="button"
+                       ng-click="transitionToSubject(attestation.id)"
+                       title="Перейти в карточку аттестации">
+                       Перейти
+                    </a>
+                </td>
+            </tr>
+        </table>
+
+        <div class="font-weight-bold text-center m-2 p-2 alert-warning" ng-if="!attestations.length">
+            На данный момент нет действующих аттестаций
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Заголовок модального окна -->
+                <div class="modal-header">
+                    <h4 class="modal-title" id="successModalLabel">Добавление товара в корзину</h4>
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                </div>
+                <div class="modal-body alert alert-success hidden m-0 text-center" id="success-alert">
+                    Выбранный товар успешно добавлен в корзину!
+                </div>
+                <div class="modal-footer">
+                    <a class="btn btn-primary" href="/basket" ng-click="">Перейти в корзину</a>
+                    <button class="btn btn-primary" data-dismiss="modal" type="button">Продолжить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

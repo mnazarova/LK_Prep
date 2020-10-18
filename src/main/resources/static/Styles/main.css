@@ -1,0 +1,350 @@
+/* 2 меню, следящий за курсором */
+
+/*body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: rgb(40, 45, 45);
+    font: normal 400 130%/1.5 -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}*/
+
+/** {
+    margin: 0;
+    padding: 0;
+}*/
+
+.view {
+    /*width: 100vw;*/
+    /*height: 100vh;*/
+    min-height: calc(100vh - 315px) !important; /*331*/
+    /*min-height:1000px!important;*/
+}
+
+.heightList {
+    max-height: 400px;
+    /*height: 600px;*/
+    overflow: auto;
+}
+
+#nav .active {
+    /*color: #17A2B8!important;*/
+    color: #1FDFFC!important;
+}
+
+#nav a:active, a:focus { outline: none; } /*убрать рамку вокруг кнопок после нажатия*/
+
+#nav a {
+    position: relative;
+    font-weight: 600;
+    text-decoration: none;
+    color: white;
+    opacity: .7;
+    transition: opacity .3s cubic-bezier(.51, .92, .24, 1);
+}
+
+#nav a::after {
+     --scale: 0;
+
+     content: '';
+     position: absolute;
+     left: 0;
+     right: 0;
+     top: 100%;
+     height: 3px;
+     background: linear-gradient(135deg, rgb(115, 250, 200), rgb(0, 190, 225));
+     transform: scaleX(var(--scale));
+     transition: transform .3s cubic-bezier(.51, .92, .24, 1);
+ }
+
+#nav a:hover {
+     opacity: 1;
+ }
+
+#nav a:hover::after {
+     --scale: 1;
+ }
+
+/* Работа */
+/*body {
+    min-height: 500px;
+}
+body {
+    background-color: aliceblue;
+    font-size: medium;
+}
+
+!*.button {
+    background-color: mediumaquamarine;
+}*!
+
+table  {
+    border-collapse: collapse;
+}
+
+table td, th  {
+    padding: 5px;
+}
+
+.create-button  {
+    color: blue;
+    cursor: pointer;
+    padding: 5px;
+}
+.edit-button  {
+    padding: 2px 5px;
+    background: #25A6E1;
+    cursor: pointer;
+}
+
+.delete-button  {
+    padding: 2px 5px;
+    background: #CD5C5C;
+    cursor: pointer;
+}
+
+.bold {
+    font-weight: bold;
+}
+.deletedrow{
+    color: #bbb;
+}
+.deletedrow a{
+    color: #bbb;
+}
+.voffset {
+    margin-top: 2px;
+}
+.voffset1 {
+    margin-top: 5px;
+}
+.voffset2 {
+    margin-top: 10px;
+}
+.voffset3 {
+    margin-top: 15px;
+}
+.voffset4 {
+    margin-top: 30px;
+}
+.voffset5 {
+    margin-top: 40px;
+}
+.voffset6 {
+    margin-top: 60px;
+}
+.voffset7 {
+    margin-top: 80px;
+}
+.voffset8 {
+    margin-top: 100px;
+}
+.voffset9 {
+    margin-top: 150px;
+}
+.nopadding {
+    padding: 0;
+}
+
+.nopadding-b {
+    padding-bottom: 0;
+}
+.nopadding-t {
+    padding-top: 0;
+}
+.nopadding-bt {
+    padding-bottom: 0;
+    padding-top: 0;
+}
+.nopadding-r {
+    padding-right: 0!important;
+}
+.nopadding-l {
+    padding-left: 0!important;
+}
+.nomargin{
+    margin: 0!important;
+}
+.nomargin-t{
+    margin-top: 0!important;
+}
+.nomargin-b{
+    margin-bottom: 0!important;
+}
+.nomargin-r{
+    margin-right: 0!important;
+}
+.nomargin-l{
+    margin-left: 0!important;
+}
+.fixRightBtn {
+    position: relative;
+    left: -25px;
+    top: 5px;
+}
+
+!* add vertical space between row elements in minimized mode *!
+@media (max-width: 767px) {
+    .row > [class*="col-"] {
+        margin-bottom: 3%;
+    }
+    form .row > [class*="col-"] {
+        margin-bottom: 2%;
+    }
+    .form-group {
+        margin-bottom: 1%!important;
+    }
+    .form-inline .form-control {
+        margin-bottom: 2%;
+    }
+}
+
+!*Dashboard Colors*!
+.bg-white {
+    background: none repeat scroll 0 0 #fff !important;
+}
+.bg-silver-lighter {
+    background: none repeat scroll 0 0 #f4f6f7 !important;
+}
+.bg-silver {
+    background: none repeat scroll 0 0 #f0f3f4 !important;
+}
+.bg-silver-darker {
+    background: none repeat scroll 0 0 #b4b6b7 !important;
+}
+.bg-black {
+    background: none repeat scroll 0 0 #2d353c !important;
+}
+.bg-black-darker {
+    background: none repeat scroll 0 0 #242a30 !important;
+}
+.bg-black-lighter {
+    background: none repeat scroll 0 0 #575d63 !important;
+}
+.bg-grey {
+    background: none repeat scroll 0 0 #b6c2c9 !important;
+}
+.bg-grey-darker {
+    background: none repeat scroll 0 0 #929ba1 !important;
+}
+.bg-grey-lighter {
+    background: none repeat scroll 0 0 #c5ced4 !important;
+}
+.bg-red {
+    background: none repeat scroll 0 0 #ff5b57 !important;
+}
+.bg-red-darker {
+    background: none repeat scroll 0 0 #cc4946 !important;
+}
+.bg-red-lighter {
+    background: none repeat scroll 0 0 #ff7c79 !important;
+}
+.bg-orange {
+    background: none repeat scroll 0 0 #f59c1a !important;
+}
+.bg-orange-darker {
+    background: none repeat scroll 0 0 #c47d15 !important;
+}
+.bg-orange-lighter {
+    background: none repeat scroll 0 0 #f7b048 !important;
+}
+.bg-yellow {
+    background: none repeat scroll 0 0 #e3fa3e !important;
+}
+.bg-yellow-darker {
+    background: none repeat scroll 0 0 #b6c832 !important;
+}
+.bg-yellow-lighter {
+    background: none repeat scroll 0 0 #e9fb65 !important;
+}
+.bg-green {
+    background: none repeat scroll 0 0 #00acac !important;
+}
+.bg-green-darker {
+    background: none repeat scroll 0 0 #008a8a !important;
+}
+.bg-green-lighter {
+    background: none repeat scroll 0 0 #33bdbd !important;
+}
+.bg-blue {
+    background: none repeat scroll 0 0 #348fe2 !important;
+}
+.bg-blue-darker {
+    background: none repeat scroll 0 0 #2a72b5 !important;
+}
+.bg-blue-lighter {
+    background: none repeat scroll 0 0 #5da5e8 !important;
+}
+.bg-aqua {
+    background: none repeat scroll 0 0 #49b6d6 !important;
+}
+.bg-aqua-darker {
+    background: none repeat scroll 0 0 #3a92ab !important;
+}
+.bg-aqua-lighter {
+    background: none repeat scroll 0 0 #6dc5de !important;
+}
+.bg-purple {
+    background: none repeat scroll 0 0 #727cb6 !important;
+}
+.bg-purple-darker {
+    background: none repeat scroll 0 0 #5b6392 !important;
+}
+.bg-purple-lighter {
+    background: none repeat scroll 0 0 #8e96c5 !important;
+}
+
+.text-indent {
+    padding-left: 20px;
+}
+.text-indent-10 {
+    padding-left: 10px;
+}
+.boffset {
+    margin-bottom: 2px;
+}
+.boffset1 {
+    margin-bottom: 5px;
+}
+.boffset2 {
+    margin-bottom: 10px;
+}
+.boffset3 {
+    margin-bottom: 15px;
+}
+.boffset4 {
+    margin-bottom: 30px;
+}
+.boffset5 {
+    margin-bottom: 40px;
+}
+.boffset6 {
+    margin-bottom: 60px;
+}
+.boffset7 {
+    margin-bottom: 80px;
+}
+.boffset8 {
+    margin-bottom: 100px;
+}
+.boffset9 {
+    margin-bottom: 150px;
+}
+
+.vertical-center {
+    vertical-align: middle !important;
+}
+.row-custom{
+    margin-left: 0px !important;
+    margin-right: 0px !important;
+}
+
+.fa-stack .fa-times{
+    margin-left: 15px;
+    margin-top: 11px;
+    width: 10px;
+    height: 12px;
+    line-height: normal;
+}*/

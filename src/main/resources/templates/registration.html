@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible"
+          content="IE-edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kursovik</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular.js"></script>
+    <!--<script th:src="@{Controllers/Registration.js}"></script>-->
+    <!--<script type="text/javascript" src="../static/dist/resources/app.js"></script>-->
+
+    <!--<link th:href="@{/main.css}" rel="stylesheet" />-->
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+</head>
+<body ng-app="Registration" ng-controller="RegistrationController">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container mr-0">
+            <a class="navbar-brand" href="#">
+                <br><br>
+            </a>
+
+            <!--<div class="navbar" id="navbarResponsive">
+                <ul class="navbar-nav mr-5">
+                    <li class="nav-item">
+                        <a class="nav-link" href="home">Главное меню</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="privateAccount">Личный кабинет</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="search">Поиск</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="basket">
+                            Корзина
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="help">Справка</a>
+                    </li>
+                </ul>
+                &lt;!&ndash;<form class="form-inline mx-3">
+                    <input class="form-control mr-sm-1" type="search" placeholder="введите название лекарства" aria-label="Search">
+                    <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Найти</button>
+                </form>&ndash;&gt;
+            </div>-->
+        </div>
+    </nav>
+
+    <div>
+        <div class="my-5 card bg-light col-md-5 mx-auto">
+            <div class="font-weight-bold h4 text-center my-3">
+                Регистрация
+            </div>
+
+            <p th:if="${error}" th:text="'Error: ' + ${error}" class="bg-danger text-white text-center pb-1" />
+            <p th:if="${success}" th:text="${success}" class="bg-success text-white text-center pb-1" />
+
+            <form th:action="@{/registration}" method="post">
+                <div class="form-group">
+                    <label for="labelName">Логин</label>
+                    <input type="text"
+                           class="form-control"
+                           ng-model="userForm.login"
+                           name="username"
+                           id="labelName"
+                           placeholder="введите логин"
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="labelPassword">Пароль</label>
+                    <input type="password"
+                           class="form-control"
+                           ng-model="userForm.password"
+                           name="password"
+                           id="labelPassword"
+                           placeholder="введите пароль"
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="labelPassword_2">Повторите пароль</label>
+                    <input type="password"
+                           class="form-control"
+                           name="password_2"
+                           ng-model="userForm.password_2"
+                           placeholder="повторите пароль"
+                           id="labelPassword_2"
+                           required>
+                </div>
+                <div class="form-group text-right">
+                    <a class="btn text-info" href="/login">
+                        Назад
+                    </a>
+                    <input class="btn btn-info px-4" type="submit" ng-if="userForm.password == userForm.password_2" value="Зарегистрироваться"/>
+                    <!--<button class="btn btn-info px-4"
+                            ng-click="addUser()"
+                            ng-disabled="password_1!=password_2">
+                        Зарегистрироваться
+                    </button>-->
+                </div>
+
+                <!--<div class="form-group">
+                    <label for="labelLogin">Логин</label>
+                    <input type="text"
+                           class="form-control"
+                           name="login"
+                           ng-model="userForm.login"
+                           placeholder="введите логин"
+                           id="labelLogin"
+                           required>
+                </div>
+                {{userForm.login}}
+                <div class="form-group">
+                    <label for="labelPassword_1">Пароль</label>
+                    <input type="password"
+                           class="form-control"
+                           name="password_1"
+                           ng-model="userForm.password_1"
+                           placeholder="введите пароль"
+                           id="labelPassword_1"
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="labelPassword_2">Повторите пароль</label>
+                    <input type="password"
+                           class="form-control"
+                           name="password_2"
+                           ng-model="userForm.password_2"
+                           placeholder="повторите пароль"
+                           id="labelPassword_2"
+                           required>
+                </div>
+                <div class="form-group text-right">
+                    <a class="btn text-info" href="/login">
+                        Назад
+                    </a>
+                    <button class="btn btn-info px-4"
+                        ng-click="addUser()"
+                        ng-disabled="password_1!=password_2">
+                        Зарегистрироваться
+                    </button>
+                </div>-->
+            </form>
+        </div>
+    </div>
+
+    <footer class="py-3 bg-dark">
+        <div class="my-2 pt-3 text-white text-center text-small">
+            <p class="mb-1">© ИП Назарова МА 2020</p>
+           <!-- <ul class="list-inline">
+                <li class="list-inline-item"><a href="login">Авторизоваться</a></li>
+                &lt;!&ndash;<li class="list-inline-item"><a href="home">Главное меню</a></li>
+                <li class="list-inline-item"><a href="logout">Выйти</a></li>
+                <li class="list-inline-item"><a href="privateAccount">Личный кабинет</a></li>
+                <li class="list-inline-item"><a href="search">Поиск</a></li>
+                <li class="list-inline-item"><a href="basket">Корзина</a></li>
+                <li class="list-inline-item"><a href="help">Справка</a></li>&ndash;&gt;
+            </ul>-->
+        </div>
+    </footer>
+
+
+    <script>
+        angular.module("Registration",[])
+            .controller("RegistrationController", function($scope, $http) {
+                $scope.userForm = {
+                    login: "",
+                    password: ""
+                };
+
+                $scope.addUser = function () {
+
+                    console.log($scope.userForm.login)
+
+                    if ($scope.userForm.password_1 != $scope.userForm.password_2) {
+                        alert("Пароли не совпадают!");
+                        return;
+                    }
+                    /*if ($scope.userForm.invalid) {
+                        alert("Форма заполнена некорректно!");
+                        return;
+                    }*/
+
+
+                    $scope.userForm.password = $scope.userForm.password_1;
+                    delete $scope.userForm.password_1;
+                    delete $scope.userForm.password_2;
+
+                    console.log($scope.userForm)
+
+
+                    $http({
+                        method: "POST",
+                        url: '/addUser',
+                        data: angular.toJson($scope.userForm),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }).then(_success);
+                };
+
+                function _success(res) {
+                    console.log("_success result=");
+                    console.log(res);
+                    clearForm();
+                }
+
+                function clearForm() {
+                    $scope.userForm.login = "";
+                    $scope.userForm.password_1 = "";
+                    $scope.userForm.password_2 = "";
+                }
+            })
+    </script>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+</body>
+</html>

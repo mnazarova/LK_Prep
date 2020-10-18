@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible"
+          content="IE-edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Личный кабинет преподавателей</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.7/angular.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container mr-0">
+            <a class="navbar-brand">
+                <br><br>
+            </a>
+        </div>
+    </nav>
+
+    <div style="min-height: calc(100vh - 238px) !important;">
+        <div class="my-5 card bg-light col-md-5 mx-auto">
+            <div class="my-4 text-center h4">
+                <b>Авторизация</b>
+            </div>
+
+            <div th:if="${param.error}" class="bg-danger text-white text-center pb-1 mb-3">
+                Вы ввели неверный логин и/или пароль. Попробуйте снова!
+            </div>
+
+            <form th:action="@{/login}" method="post">
+                <div class="form-group">
+                    <label for="labelName">Логин</label>
+                    <input type="text"
+                           class="form-control"
+                           ng-model="auth.login"
+                           name="username"
+                           id="labelName"
+                           placeholder="введите логин"
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="labelPassword">Пароль</label>
+                    <input type="password"
+                           class="form-control"
+                           ng-model="auth.password"
+                           name="password"
+                           id="labelPassword"
+                           placeholder="введите пароль"
+                           required>
+                </div>
+                <div class="form-group text-right">
+                    <input class="btn btn-info px-4" type="submit" ng-click="transition()" value="Войти"/>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="py-3 bg-dark">
+        <div class="pt-3 text-white text-center text-small">
+            <p class="mb-1">Личный кабинет преподавателя</p>
+            <p class="mb-1">© БГТУ «ВОЕНМЕХ» им. Д.Ф. Устинова 2020</p>
+        </div>
+    </footer>
+</body>
+</html>
