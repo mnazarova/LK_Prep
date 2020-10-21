@@ -17,6 +17,8 @@
 }*/
 
 .view {
+    /*background: url(/Images/LK.jpg) 0 0 repeat;*/
+    background: url(/Images/youtube.png) 0 0 repeat;
     /*width: 100vw;*/
     /*height: 100vh;*/
     min-height: calc(100vh - 315px) !important; /*331*/

@@ -6,52 +6,49 @@
         </div>-->
         <form class="simple-form" name="studentsForm">
             <div class="my-3 ml-5">
-                <div class="col-md-8 mx-auto pl-1">
-                <!--<div class="form-group">-->
+                <div class="col-md-8 mx-auto">
+                    <!--<div class="form-group">-->
                     <label for="labelFaculty">Факультет</label>
                     <select class="custom-select form-control"
                             name="faculty"
                             ng-change="getDepartments()"
                             ng-model="faculty"
-                            ng-options="item.id as item.shortName+'. '+item.fullName
-                                        for item in faculties"
+                            ng-options="item.id as item.shortName+'. '+item.fullName for item in faculties"
                             id="labelFaculty"
                             required>
                     </select>
                 </div>
-                <div class="col-md-8 mx-auto pl-1 mt-3">
+                <div class="col-md-8 mx-auto mt-3">
                     <label for="labelDepartment">Кафедра</label>
                     <select class="custom-select form-control"
                             ng-disabled="!studentsForm.faculty.$modelValue"
                             name="department"
                             ng-change="getGroups()"
                             ng-model="department"
-                            ng-options="item.id as item.shortName+'. '+item.fullName
-                                        for item in departments"
+                            ng-options="item.id as item.shortName+'. '+item.fullName for item in departments"
                             id="labelDepartment"
                             required>
                     </select>
                 </div>
-                <div class="input-group ml-4 pl-5 mt-3">
-                    <div class="col-md-7 ml-5 pl-5">
-                        <label for="labelGroup">Группа</label>
-                        <select class="custom-select form-control"
-                                ng-disabled="!studentsForm.department.$modelValue"
-                                name="group"
-                                ng-change="students = null"
-                                ng-model="group"
-                                ng-options="item.id as item.number for item in groups"
-                                id="labelGroup"
-                                required>
-                        </select>
-                    </div>
-                    <div class="col-md-2 mt-4 pt-2 ml-4">
-                        <a class="btn btn-info px-4 text-white"
-                           ng-disabled="!group"
-                           ng-click="findStudents()">
-                            Найти
-                        </a>
-                    </div>
+                <div class="col-md-8 mx-auto mt-3">
+                    <label for="labelGroup">Группа</label>
+                    <select class="custom-select form-control"
+                            ng-change="students = null"
+                            ng-disabled="!studentsForm.department.$modelValue"
+                            name="group"
+                            ng-model="group"
+                            ng-options="item.id as item.number for item in groups"
+                            id="labelGroup"
+                            required>
+                    </select>
+                </div>
+                <div class="col-md-8 mx-auto mt-4 text-right">
+                    <button class="btn btn-info px-3 text-white"
+                            ng-disabled="!group"
+                            ng-click="findStudents()"
+                            title="Вывести список группы">
+                        Найти
+                    </button>
                 </div>
             </div>
         </form>

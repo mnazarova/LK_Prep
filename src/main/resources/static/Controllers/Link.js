@@ -120,7 +120,7 @@ app.controller("LinkController", function($scope, $http) {
         if (!$scope.partNameSubgroup) {
             $scope.toasterWarning('Необходимо ввести название (или часть названия) подгруппы');
             return null;
-        };
+        }
         $scope.subgroup = {  // из-за ""
             name: $scope.partNameSubgroup
         };
