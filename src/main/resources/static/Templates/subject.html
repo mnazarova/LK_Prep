@@ -5,12 +5,7 @@
         <li class="breadcrumb-item active" aria-current="page">Список предметов</li>
     </ol>
 
-    <div class="my-3 col-md-10 card bg-light mx-auto">
-
-        <!--Группы       Последние изменения были сделаны (дата)-->
-
-        <!--Подгруппы    Внимание! Ведомость не заполнена.-->
-
+    <!--<div class="my-3 col-md-10 card bg-light mx-auto">
         <form class="simple-form" name="medicine">
             <div class="row my-3 pl-5">
                 <div class="col-md-4 text-center ml-5 pl-3">
@@ -34,9 +29,9 @@
                     </select>
                 </div>
                 <div class="col-md-2 mx-auto mt-4 pt-2">
-                    <!--<a class="btn text-info" href="/home">
+                    &lt;!&ndash;<a class="btn text-info" href="/home">
                         В главное меню
-                    </a>-->
+                    </a>&ndash;&gt;
                     <a class="btn btn-info px-4 text-white"
                        ng-click="findMedicines()">
                         Найти
@@ -44,52 +39,135 @@
                 </div>
             </div>
         </form>
-    </div>
+    </div>-->
 
-    <div class="my-5 card col-md-10 mx-auto">
-        <div class="font-weight-bold h4 text-center mt-4">
-            <!--Внимание! Дедлайн до 03.00-->
-            Найдено действующих аттестаций: {{attestations.length}}
+
+    <!--Группы       Последние изменения были сделаны (дата)-->
+    <!--Подгруппы    Внимание! Ведомость не заполнена.-->
+    <div class="my-5 py-5 card col-md-10 mx-auto">
+        <div class="font-weight-bold h4 text-center">
+            Группы
         </div>
 
-        <table class="table table-hover my-5" ng-if="attestations.length">
+       <div class="text-center" ng-if="groups.length">
+           <hr>
+           <!-- head -->
+           <div class="row my-3">
+               <div class="col-md">
+                   <b>Номер группы</b>
+               </div>
+               <div class="col-md-6">
+                   <b>Предмет</b>
+               </div>
+               <div class="col-md"></div>
+           </div>
+
+           <!-- body -->
+            <div ng-repeat="group in groups | orderBy:'id'">
+               <div class="row border border-dark m-2">
+                   <div class="col-md my-auto">
+                       {{group.groupNumber}}
+                    </div>
+                    <div class="col-md-6 my-auto">
+                        {{group.disciplineName}}
+                    </div>
+                    <div class="col-md my-2">
+                        <a class="btn btn-md btn-info text-white"
+                           type="button"
+                           ui-sref="contentAttestation({id:group.certificationAttestationId})"
+                           title="Редактировать ведомость группы">
+                            <i class="fa fa-share-square-o"></i>
+                            Ведомость
+                        </a>
+                    </div>
+                </div>
+            </div>
+       </div>
+
+
+        <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!groups.length">
+            На данный момент группы, в которых Вы преподаёте, отсутствуют
+        </div>
+
+
+        <!--<table class="table table-hover table-container my-5" ng-if="groups.length">
             <tr>
                 <th class="text-center w-50">Название</th>
                 <th class="text-center w-25">Крайний срок сдачи
                     <br>(не включая)
-                    <!--<i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top"
-                       title="Внимание! Если дедлайн поставлен на 02.09.2020, то изменения можно внести до 03.00 мск 02.09.2020"></i>-->
                     <i class="fa fa-info-circle text-info" title="Нажмите для вывода справки" ng-click="toasterInfo('Справка!',
                     'Если дедлайн поставлен на 02.09.2020, то изменения можно внести до 03.00 мск 02.09.2020')"></i>
                 </th>
                 <th class="w-25"></th>
             </tr>
-            <tr ng-repeat="attestation in attestations | orderBy:'id'" class="border-top">
-                <td class="text-center">{{attestation.name}}</td>
+            <tr ng-repeat="group in groups | orderBy:'id'" class="border-top">
+                <td class="text-center">{{group.groupNumber}}</td>
                 <td class="text-center">
-                    {{attestation.deadline | date: 'dd.MM.yyyy'}}
+                    {{group.disciplineName}}
                 </td>
                 <td class="text-center py-3">
-                    <!--<a class="btn btn-info text-white"
+                    &lt;!&ndash;<a class="btn btn-info text-white"
                        type="button"
                        data-toggle="modal" data-target="#successModal"
                        ng-click="addTo(medicine.id)"
                        ng-show="ur == 'USER'">
                         Добавить в
-                    </a>-->
+                    </a>&ndash;&gt;
                     <a class="btn btn-info text-white"
                        type="button"
                        ui-sref="fill.subject({id:attestation.id})"
-                       title="Перейти в карточку аттестации">
-                        Перейти
+                       title="Редактировать ведомость группы">
+                        Ведомость
                     </a>
                 </td>
             </tr>
-        </table>
+        </table>-->
 
-        <div class="font-weight-bold text-center m-2 p-2 alert-warning" ng-if="!attestations.length">
-            На данный момент нет действующих аттестаций
+        <div class="font-weight-bold h4 text-center mt-4">
+            Подгруппы
         </div>
+
+
+        <div class="text-center" ng-if="subgroups.length">
+            <hr>
+            <!-- head -->
+            <div class="row my-3">
+                <div class="col-md">
+                    <b>Название подгруппы</b>
+                </div>
+                <div class="col-md-6">
+                    <b>Предмет</b>
+                </div>
+                <div class="col-md"></div>
+            </div>
+
+            <!-- body -->
+            <div ng-repeat="subgroup in subgroups | orderBy:'id'">
+                <div class="row border border-dark m-2">
+                    <div class="col-md my-auto">
+                        {{subgroup.subgroupNumber}}
+                    </div>
+                    <div class="col-md-6 my-auto">
+                        {{subgroup.disciplineName}}
+                    </div>
+                    <div class="col-md my-2">
+                        <a class="btn btn-md btn-info text-white"
+                           type="button"
+                           ui-sref="contentAttestation({id:subgroup.certificationAttestationId})"
+                           title="Редактировать ведомость подгруппы">
+                            <i class="fa fa-share-square-o"></i>
+                            Ведомость
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!subgroups.length">
+            На данный момент подгруппы, в которых Вы преподаёте, отсутствуют
+        </div>
+
+
     </div>
 
 </div>

@@ -1,35 +1,48 @@
 /* 2 меню, следящий за курсором */
 
-/*body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background: rgb(40, 45, 45);
-    font: normal 400 130%/1.5 -apple-system, BlinkMacSystemFont, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-}*/
-
-/** {
-    margin: 0;
-    padding: 0;
-}*/
-
 .view {
-    /*background: url(/Images/LK.jpg) 0 0 repeat;*/
-    background: url(/Images/youtube.png) 0 0 repeat;
+    /*background: url(/Images/youtube.png) 0 0 repeat;*/
+    background: url(/Images/simple.jpg) no-repeat center / cover;
+    padding: 10px;
     /*width: 100vw;*/
-    /*height: 100vh;*/
     min-height: calc(100vh - 315px) !important; /*331*/
     /*min-height:1000px!important;*/
 }
 
 .heightList {
     max-height: 400px;
-    /*height: 600px;*/
     overflow: auto;
 }
+
+.table-container
+{
+    width: 100%;
+    overflow-y: auto;
+    _overflow: auto;
+    margin: 0 0 1em;
+}
+
+/* Хленые крошки breadcrumb */
+/*.breadcrumb li a:hover{
+    text-decoration: none;
+    transform: scale(2);
+}*/
+.breadcrumb{
+    background-color: inherit!important;
+    /*padding: 15px 15px 15px 50px;*/
+    /*overflow: hidden;*/
+}
+.breadcrumb-item{
+    font-weight: bold;
+}
+.breadcrumb-item a{
+    color: #31a4b5!important;
+}
+/*.breadcrumb-item.active{
+    color: white!important;
+}*/
+/* Хленые крошки breadcrumb */
+
 
 #nav .active {
     /*color: #17A2B8!important;*/
@@ -68,6 +81,91 @@
 #nav a:hover::after {
      --scale: 1;
  }
+
+/* Меню для мобильной версии*/
+@media (max-width: 1140px) {
+    nav {
+        position: relative;
+    }
+
+    .menu-trigger {
+        /*display: block;*/
+        width: 40px;
+        height: 40px;
+        background: url(/Images/open_menu.png) 0 0;
+        /*background: url(https://snipp.ru/demo/449/menu.png) 0 0 repeat;*/
+        /*position: absolute;*/
+        /*left: 15px;*/
+        /*top: 50px;*/
+    }
+
+    .menu-close {
+        /*color: #EDEDED;*/
+        /*display: block;*/
+        width: 40px;
+        height: 40px;
+        background: url(/Images/close_menu.png) 0 0;
+        /*background: url(https://snipp.ru/demo/449/close.png) 0 0 repeat;*/
+        position: absolute;
+        right: 20px;
+        top: 10px;
+        z-index: 1000;
+    }
+
+    .menu-popup {
+        display: none;
+        background: #2c2e3e;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        box-sizing: border-box;
+        padding: 30px;
+        z-index: 1000;
+        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+    }
+
+    .menu-popup ul {
+        margin: 0;
+        padding: 0;
+    }
+
+    .menu-popup li {
+        list-style: none;
+        margin: 10px 0;
+        padding: 0;
+    }
+
+    .menu-popup li a {
+        font-size: 18px;
+        color: rgb(255, 255, 255);
+        line-height: 1.4;
+        text-decoration: none;
+    }
+
+    .body_pointer * {
+        cursor: pointer;
+    }
+}
+@media (max-width: 468px) {
+    .navbar-brand img {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .menu-trigger {
+        margin: 15px auto!important;
+    }
+}
+@media (min-width: 1140px) {
+    .menu-popup {
+        display: block!important;
+    }
+}
+/* Меню для мобильной версии*/
+
+
+
 
 /* Работа */
 /*body {

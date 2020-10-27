@@ -35,5 +35,17 @@ public class CertificationAttestation { // Ведомость аттестаци
     @OneToMany(mappedBy = "certificationAttestation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AttestationContent> attestationContents;
 
+    private Boolean isSubgroup; // Подгруппа?
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="group_id")
+    private Group group;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="subgroup_id")
+    private Subgroup subgroup;
+
     public CertificationAttestation() {}
 }

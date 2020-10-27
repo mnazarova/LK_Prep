@@ -72,14 +72,15 @@
                        type="button"
                        ng-click="transitionToSubject(attestation.id)"
                        title="Перейти в карточку аттестации">
+                        <i class="fa fa-share-square"></i>
                        Перейти
                     </a>
                 </td>
             </tr>
         </table>
 
-        <div class="font-weight-bold text-center m-2 p-2 alert-warning" ng-if="!attestations.length">
-            На данный момент нет действующих аттестаций
+        <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!attestations.length">
+            На данный момент отсутствуют действующие аттестации
         </div>
     </div>
 

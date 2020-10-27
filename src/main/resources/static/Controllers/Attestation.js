@@ -24,6 +24,7 @@ app.controller("AttestationController", function($scope, $http, $state) {
             },
             function(res) { // error
                 console.log("Error: " + res.status + " : " + res.data);
+                $state.go("help");
             }
         );
     }
@@ -48,7 +49,7 @@ app.controller("AttestationController", function($scope, $http, $state) {
         console.log(m_date.day + '-' + m_date.month + '-' + m_date.year);
     }*/
 
-    $scope.transitionMedicineId = function(medicineId) {
+    /*$scope.transitionMedicineId = function(medicineId) {
         console.log(medicineId)
         $http({
             method: 'PUT',
@@ -67,6 +68,6 @@ app.controller("AttestationController", function($scope, $http, $state) {
                 console.log("Error: " + res.status + " : " + res.data);
             }
         );
-    }
+    }*/
 
 });

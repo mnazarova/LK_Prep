@@ -16,7 +16,7 @@ import java.util.List;
 @Controller
 @PreAuthorize("hasAuthority('TEACHER')")
 @AllArgsConstructor(onConstructor = @_(@Autowired))
-public class FillController {
+public class AttestationController {
     private AttestationRepository attestationRepository;
 
     @GetMapping("/getAttestation")

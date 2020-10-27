@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import sbangularjs.model.User;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.security.Principal;
+
 @Controller
 public class MainController {
 
@@ -21,10 +25,25 @@ public class MainController {
         return "home";
     }
 
+    /*server.servlet.session.timeout=60m*/
     @RequestMapping("/login")
-    public String login(@RequestParam(name = "message", required = false) String message, Model model) {
+    public String login(@AuthenticationPrincipal User user,
+                        @RequestParam(name = "message", required = false) String message, Model model,
+                        HttpServletRequest request, HttpServletResponse response) {
         model.addAttribute("message", null);
-        return "login";
+        System.out.println(request.getSession().getId());
+        Principal getUser = request.getUserPrincipal();
+        /*System.out.println(123);
+//        HttpServletResponse res = (HttpServletResponse) response;
+        try {
+            response.sendRedirect(request.getContextPath() + "/privateAccount");
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }*/
+//        return "redirect:/privateAccount";
+        return "/login";
+//        return "localhost:8082";
     }
 
     @RequestMapping("/logout")

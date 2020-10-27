@@ -15,6 +15,36 @@ var app = angular.module("app", [
 ])*/
 
     app.controller('AppController',function ($scope, $http, $window, toaster) {
+        /* Выпадающее меню */
+        $(function() {
+            /*var $menu_popup = $('.menu-popup');
+
+            $(".menu-trigger, .menu-close").click(function(){
+                $menu_popup.slideToggle(300, function(){
+                    // console.log(1)
+                    if ($menu_popup.is(':hidden')) {
+                        $('body').removeClass('body_pointer');
+                    } else {
+                        $('body').addClass('body_pointer');
+                    }
+                });
+                return false;
+            });
+
+            $(document).on('click', function(e){
+                // console.log("check")
+                if (!$(e.target).closest('.menu').length){
+                    // console.log(2)
+                    $('body').removeClass('body_pointer');
+                    $menu_popup.slideUp(300);
+                }
+            });
+
+            $(".nav-link").click(function(e){
+                // console.log("check2")
+                $menu_popup.slideUp(300);
+            });*/
+        });
 
         /*var request = require('request');
         request('http://www.google.com', function (error, response, body) {
@@ -157,6 +187,12 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
                 url: '/subject/:id',
                 templateUrl: 'Templates/subject.html',
                 controller: 'SubjectController'
+            })
+            .state('contentAttestation', {
+                url: '/contentAttestation/:id',
+                templateUrl: 'Templates/contentAttestation.html',
+                controller: 'ContentAttestationController'
+                // добавить переменную, определяющую группа или подгруппа
             })
             /*.state('fill', {
                 url: '/fill/subject/:id',

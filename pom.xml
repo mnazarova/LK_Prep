@@ -60,9 +60,8 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
-            <scope>test</scope>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-jdbc</artifactId>
         </dependency>
 
         <!-- lombok -->
@@ -71,20 +70,19 @@
             <artifactId>lombok</artifactId>
         </dependency>
 
-        <!-- angularjs-toaster -->
+        <!-- angularjs-toaster
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>angularjs-toaster</artifactId>
             <version>0.4.8</version>
         </dependency>
 
-        <!-- font-awesome -->
-        <!--<dependency>
+         font-awesome
+        <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>font-awesome</artifactId>
             <version>5.14.0</version>
         </dependency>-->
-
     </dependencies>
 
     <build>

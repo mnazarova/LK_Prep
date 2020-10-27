@@ -27,6 +27,10 @@ public class Subgroup {
     @OneToMany(mappedBy = "subgroup", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StudentSubgroup> studentsSubgroup;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "subgroup", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CertificationAttestation> certificationsAttestation;
+
     public Subgroup() {}
 
     public Subgroup(String name, Boolean active) {

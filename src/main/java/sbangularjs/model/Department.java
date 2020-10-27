@@ -33,5 +33,9 @@ public class Department { // Кафедра
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Discipline> disciplines;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PlaceWork> placesWork;
+
     public Department() {}
 }
