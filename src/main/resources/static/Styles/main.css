@@ -160,6 +160,7 @@
 @media (min-width: 1140px) {
     .menu-popup {
         display: block!important;
+        transition: all 0s ease 0s!important;
     }
 }
 /* Меню для мобильной версии*/

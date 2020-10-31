@@ -53,28 +53,28 @@
            <hr>
            <!-- head -->
            <div class="row my-3">
-               <div class="col-md">
+               <div class="col-lg">
                    <b>Номер группы</b>
                </div>
-               <div class="col-md-6">
+               <div class="col-lg-6">
                    <b>Предмет</b>
                </div>
-               <div class="col-md"></div>
+               <div class="col-lg"></div>
            </div>
 
            <!-- body -->
             <div ng-repeat="group in groups | orderBy:'id'">
                <div class="row border border-dark m-2">
-                   <div class="col-md my-auto">
+                   <div class="col-lg my-auto">
                        {{group.groupNumber}}
                     </div>
-                    <div class="col-md-6 my-auto">
+                    <div class="col-lg-6 my-auto">
                         {{group.disciplineName}}
                     </div>
                     <div class="col-md my-2">
                         <a class="btn btn-md btn-info text-white"
                            type="button"
-                           ui-sref="contentAttestation({id:group.certificationAttestationId})"
+                           ui-sref="contentAttestation({id: group.certificationAttestationId, attestationId: group.attestationId})"
                            title="Редактировать ведомость группы">
                             <i class="fa fa-share-square-o"></i>
                             Ведомость
@@ -132,28 +132,28 @@
             <hr>
             <!-- head -->
             <div class="row my-3">
-                <div class="col-md">
+                <div class="col-lg">
                     <b>Название подгруппы</b>
                 </div>
-                <div class="col-md-6">
+                <div class="col-lg-6">
                     <b>Предмет</b>
                 </div>
-                <div class="col-md"></div>
+                <div class="col-lg"></div>
             </div>
 
             <!-- body -->
             <div ng-repeat="subgroup in subgroups | orderBy:'id'">
                 <div class="row border border-dark m-2">
-                    <div class="col-md my-auto">
+                    <div class="col-lg my-auto">
                         {{subgroup.subgroupNumber}}
                     </div>
-                    <div class="col-md-6 my-auto">
+                    <div class="col-lg-6 my-auto">
                         {{subgroup.disciplineName}}
                     </div>
-                    <div class="col-md my-2">
+                    <div class="col-lg my-2">
                         <a class="btn btn-md btn-info text-white"
                            type="button"
-                           ui-sref="contentAttestation({id:subgroup.certificationAttestationId})"
+                           ui-sref="contentAttestation({id: subgroup.certificationAttestationId, attestationId: subgroup.attestationId})"
                            title="Редактировать ведомость подгруппы">
                             <i class="fa fa-share-square-o"></i>
                             Ведомость

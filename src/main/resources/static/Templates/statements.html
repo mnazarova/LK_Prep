@@ -1,42 +1,56 @@
 <div ng-show="ur == 'DEANERY'">
 
     <div class="my-5 card bg-light col-md-10 mx-auto">
+
+        <br>
         <div class="font-weight-bold h4 text-center mt-4">
             <!--Внимание! Дедлайн до 03.00-->
             Список всех аттестаций (действующие: {{attestations.length}})
         </div>
 
-        <table class="table table-hover my-5" ng-if="allAttestations.length">
-            <tr>
-                <th class="text-center w-50">Название</th>
-                <th class="text-center w-25">Крайний срок сдачи
-                    <br>(не включая)
-                    <!--<i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top"
-                       title="Внимание! Если дедлайн поставлен на 02.09.2020, то изменения можно внести до 03.00 мск 02.09.2020"></i>-->
-                    <i class="fa fa-info-circle text-info" title="Нажмите для вывода справки" ng-click="toasterInfo('Справка!',
-                'Если дедлайн поставлен на 02.09.2020, то изменения можно внести до 03.00 мск 02.09.2020')"></i>
-                </th>
-                <th class="w-25"></th>
-            </tr>
-            <tr ng-repeat="attestation in allAttestations | orderBy:'id'" class="border-top">
-                <td class="text-center">{{attestation.name}}</td>
-                <td class="text-center">
-                    {{attestation.deadline | date: 'dd.MM.yyyy'}}
-                </td>
-                <td class="text-center py-3">
-                    <a class="btn btn-info text-white"
-                       type="button"
-                       ng-click="transitionToSubject(attestation.id)"
-                       title="Перейти в карточку аттестации">
-                        Перейти
-                    </a>
-                </td>
-            </tr>
-        </table>
-
-        <div class="font-weight-bold text-center m-2 p-2 alert-warning" ng-if="!allAttestations.length">
-            На данный момент нет ни одной аттестации.
+        <div>
+            <table class="ng-hide table table-hover my-5" ng-show="allAttestations.length">
+                <thead>
+                    <tr>
+                        <th class="text-center w-50">Название</th>
+                        <th class="text-center w-25">Крайний срок сдачи
+                            <br>(не включая)
+                            <!--<i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top"
+                               title="Внимание! Если дедлайн поставлен на 02.09.2020, то изменения можно внести до 03.00 мск 02.09.2020"></i>-->
+                            <i class="fa fa-info-circle text-info" title="Нажмите для вывода справки" ng-click="toasterInfo('Справка!',
+                        'Если дедлайн поставлен на 02.09.2020, то изменения можно внести до 03.00 мск 02.09.2020')"></i>
+                        </th>
+                        <th class="w-25"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="attestation in allAttestations | orderBy:'id'" class="border-top">
+                        <td class="text-center">{{attestation.name}}</td>
+                        <td class="text-center">
+                            {{attestation.deadline | date: 'dd.MM.yyyy'}}
+                        </td>
+                        <td class="text-center py-3">
+                            <a class="btn btn-info text-white"
+                               type="button"
+                               ng-click="transitionToSubject(attestation.id)"
+                               title="Перейти в карточку аттестации">
+                                Перейти
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
+
+        <div class="ng-hide" ng-show="!allAttestations.length">
+            <br>
+            <div class="font-weight-bold text-center m-2 p-2 alert-warning">
+                На данный момент нет ни одной аттестации.
+            </div>
+            <br>
+        </div>
+
+
     </div>
 
 </div>

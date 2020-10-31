@@ -17,7 +17,8 @@ var app = angular.module("app", [
     app.controller('AppController',function ($scope, $http, $window, toaster) {
         /* Выпадающее меню */
         $(function() {
-            /*var $menu_popup = $('.menu-popup');
+            var $menu_popup = $('.menu-popup');
+            $menu_popup.slideUp(0);
 
             $(".menu-trigger, .menu-close").click(function(){
                 $menu_popup.slideToggle(300, function(){
@@ -41,9 +42,21 @@ var app = angular.module("app", [
             });
 
             $(".nav-link").click(function(e){
-                // console.log("check2")
                 $menu_popup.slideUp(300);
-            });*/
+                /*if ($menu_popup.is(':hidden')) {
+                    console.log(1)
+                    $menu_popup.slideUp(300);
+                } else {
+                    console.log(2)
+                    $menu_popup.slideUp(0);
+                }*/
+
+                /*if (!$(e.target).closest('.menu').length) {
+                    console.log(3)
+                }
+                else console.log(4)*/
+
+            });
         });
 
         /*var request = require('request');
@@ -128,7 +141,7 @@ var app = angular.module("app", [
 
     });
 
-app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
+    app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
 
         $locationProvider.hashPrefix('');
         $urlRouterProvider.otherwise('/');
@@ -189,7 +202,11 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
                 controller: 'SubjectController'
             })
             .state('contentAttestation', {
-                url: '/contentAttestation/:id',
+                url: '/contentAttestation',
+                params: {
+                    id: null,
+                    attestationId: null
+                } ,
                 templateUrl: 'Templates/contentAttestation.html',
                 controller: 'ContentAttestationController'
                 // добавить переменную, определяющую группа или подгруппа

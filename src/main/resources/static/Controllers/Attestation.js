@@ -23,7 +23,7 @@ app.controller("AttestationController", function($scope, $http, $state) {
                 console.log($scope.attestations);*/
             },
             function(res) { // error
-                console.log("Error: " + res.status + " : " + res.data);
+                // console.log("Error: " + res.status + " : " + res.data);
                 $state.go("help");
             }
         );

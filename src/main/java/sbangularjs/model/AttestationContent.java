@@ -16,6 +16,7 @@ public class AttestationContent { // Содержание аттестации
     @Column(name = "attestation_content_id")
     private Long id;
 
+    // По умолчанию ставить false
     private Boolean works; // Работает?
     private Boolean attest; // Аттестован?
 
@@ -25,14 +26,16 @@ public class AttestationContent { // Содержание аттестации
     private Date dateAttest;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) // или @JsonIgnoreProperties ({"hibernateLazyInitializer", "handler"})
     @JoinColumn(name="certification_attestation_id")
     private CertificationAttestation certificationAttestation; // ведомость аттестации
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER) // или @JsonIgnoreProperties ({"hibernateLazyInitializer", "handler"})
     @JoinColumn(name="student_id")
     private Student student;
 
-    public AttestationContent() {}
+    public AttestationContent() {
+        works = false;
+        attest = false;
+    }
 }
