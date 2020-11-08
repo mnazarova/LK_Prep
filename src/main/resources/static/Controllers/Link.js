@@ -163,24 +163,100 @@ app.controller("LinkController", function($scope, $http) {
         $scope.viewTeacherForm = false;
     };
 
-    $scope.selectTeacher = function() {
+    $scope.addDiscipline = function() {
         $scope.viewTeacherForm = true;
-        // getSubjects
-        /*$http({
+        getAttestation(); //
+        getGroupsOfSelectedStudents(); //
+        // getDisciplines
+    };
+
+
+    function getAttestation() {
+        $http({
+            method: 'GET',
+            url: '/getAttestation'
+        }).then(
+            function(res) {
+                $scope.attestations = res.data;
+                $scope.attestation = res.data[0].id;
+            },
+            function(res) {
+                // console.log("Error: " + res.status + " : " + res.data);
+            }
+        );
+    }
+
+    function getGroupsOfSelectedStudents() {
+        $http({
             method: 'PATCH',
-            url: '/selectTeacher',
+            url: '/getGroupsOfSelectedStudents',
             data: angular.toJson($scope.students),
             headers: {
                 'Content-Type': 'application/json'
             }
         }).then(
             function(res) {
-                $scope.toasterSuccess('', 'Данные успешно сохранены');
-                // $scope.initChanges();
+                $scope.groupsForDiscipline = res.data;
+                $scope.groupForDiscipline = res.data[0].id;
+                $scope.getSemesterNumbers($scope.groupForDiscipline);
             },
             function(res) {
-                console.log("Error: " + res.status + " : " + res.data);
+                // console.log("Error: " + res.status + " : " + res.data);
             }
-        );*/
+        );
+    }
+
+    // при смене GroupsOfSelectedStudents вызывать getSemesterNumber();
+
+    $scope.getSemesterNumbers = function(selectedGroupId) {
+        $http({
+            method: 'PATCH',
+            url: '/getSemesterNumbers',
+            data: angular.toJson(selectedGroupId),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(
+            function(res) {
+                $scope.semesterNumbers = res.data;
+                getCurSemNumb(selectedGroupId);
+            },
+            function(res) {
+                // console.log("Error: " + res.status + " : " + res.data);
+            }
+        );
     };
+
+    function getCurSemNumb(selectedGroupId) {
+        $http({
+            method: 'PATCH',
+            url: '/getCurSemNumb',
+            data: angular.toJson(selectedGroupId), // id
+            headers: { 'Content-Type': 'application/json' }
+        }).then(
+            function(res) {
+                $scope.curSemesterNumber = res.data;
+                $scope.semesterNumber = res.data;
+                console.log($scope.semesterNumber)
+            }
+        );
+    }
+
+    $scope.getDisciplines = function (selectedGroupId, selectedSemesterNumber) {
+        console.log($scope.semesterNumber)
+        $http({
+            method: 'PATCH',
+            url: '/getDisciplines',
+            params: {
+                groupId: selectedGroupId,
+                semesterNumber: selectedSemesterNumber
+            }
+        }).then(
+            function(res) {
+                $scope.disciplines = res.data;
+                console.log($scope.disciplines)
+            }
+        );
+    }
+
 });

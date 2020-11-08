@@ -33,6 +33,16 @@ public class Syllabus { // Учебный план
     @JoinColumn(name="profile_id")
     private Profile profile;
 
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="qualification_id")
+    private Qualification qualification;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="form_of_training_id")
+    private FormOfTraining form_of_training;
+
     @JsonIgnore // когда 500
     @OneToMany(mappedBy = "syllabus", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Group> groups;

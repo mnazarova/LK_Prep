@@ -42,7 +42,7 @@ public class MainController {
             e.printStackTrace();
         }*/
 //        return "redirect:/privateAccount";
-        return "/login";
+        return "login";
 //        return "localhost:8082";
     }
 

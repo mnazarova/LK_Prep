@@ -138,8 +138,8 @@
             <hr>
             <button class="btn btn-info text-white"
                type="button"
-               ng-click="selectTeacher()">
-                Выбрать преподавателя
+               ng-click="addDiscipline()">
+                Добавить предмет
             </button>
         </div>
     </div>
@@ -147,35 +147,56 @@
     <div class="my-3 card col-md-10 bg-light mx-auto" ng-if="viewTeacherForm">
         <form class="my-5 simple-form" name="teacherForm">
             <div class="col-md-8 mx-auto">
-                <label for="labelSubject">Предмет</label>
+                <label for="labelAttestation">Аттестация</label>
                 <select class="custom-select form-control"
-                        name="subject"
-                        ng-model="subject"
-                        ng-options="item.id as item.name for item in subjects"
-                        id="labelSubject"
+                        name="attestation"
+                        ng-model="attestation"
+                        ng-options="item.id as item.name + ' (до ' + (item.deadline | date:'dd.MM.yyyy') + ')'
+                                                            for item in attestations"
+                        id="labelAttestation"
                         required>
                 </select>
             </div>
+
+            <div class="row col-md-8 mx-auto p-0 my-3 text-center">
+                <div class="col-md-4 my-auto pr-0">
+                    <strong>Выбрать предметы учебного плана</strong>
+                </div>
+                <div class="col-md-4">
+                    <label for="labelGroupForDiscipline">группы</label>
+                    <select class="custom-select form-control"
+                            name="groupForDiscipline"
+                            ng-change="getSemesterNumbers(groupForDiscipline);
+                                       getDisciplines(groupForDiscipline, semesterNumber);"
+                            ng-model="groupForDiscipline"
+                            ng-options="item.id as item.number for item in groupsForDiscipline"
+                            id="labelGroupForDiscipline"
+                            required>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="labelSemesterNumber">семестра</label>
+                    <!--onfocus='this.size=2;'
+                            onblur='this.size=1;'
+                            onchange='this.size=1; this.blur();'-->
+                    <select class="custom-select form-control"
+                            name="semesterNumber"
+                            ng-model="semesterNumber"
+                            ng-options="item for item in semesterNumbers"
+                            ng-change="getDisciplines(groupForDiscipline, semesterNumber)"
+                            id="labelSemesterNumber"
+                            required>
+                    </select>
+                </div>
+            </div>
+
             <div class="col-md-8 mx-auto">
-                <label for="labelFacultyTeacher">Факультет преподавателя</label>
+                <label for="labelDiscipline">Предмет</label>
                 <select class="custom-select form-control"
-                        name="facultyTeacher"
-                        ng-change="getDepartments()"
-                        ng-model="facultyTeacher"
-                        ng-options="item.id as item.shortName+'. '+item.fullName for item in facultyTeachers"
-                        id="labelFacultyTeacher"
-                        required>
-                </select>
-            </div>
-            <div class="col-md-8 mx-auto mt-3">
-                <label for="labelDepartmentTeacher">Кафедра преподавателя</label>
-                <select class="custom-select form-control"
-                        ng-disabled="!teacherForm.facultyTeacher.$modelValue"
-                        name="departmentTeacher"
-                        ng-change="getGroups()"
-                        ng-model="departmentTeacher"
-                        ng-options="item.id as item.shortName+'. '+item.fullName for item in departmentTeachers"
-                        id="labelDepartmentTeacher"
+                        name="discipline"
+                        ng-model="discipline"
+                        ng-options="item.id as item.department.shortName+': '+item.name for item in disciplines"
+                        id="labelDiscipline"
                         required>
                 </select>
             </div>
@@ -183,7 +204,7 @@
                 <label for="labelTeacher">Преподаватель</label>
                 <select class="custom-select form-control"
                         ng-change="checkGroup()"
-                        ng-disabled="!teacherForm.departmentTeacher.$modelValue"
+                        ng-disabled="!discipline"
                         name="Teacher"
                         ng-model="Teacher"
                         ng-options="item.id as item.number for item in teachers"
@@ -194,9 +215,9 @@
             <div class="col-md-8 mx-auto mt-4 text-right">
                 <button class="btn btn-info px-3 text-white"
                         title="Связать {{isSubgroup? 'подгруппу': 'группу'}} с преподавателем"
-                        ng-click="watchStudents()">
+                        ng-click=";">
                     <i class="fa fa-list-alt pr-1"></i>
-                    Связать
+                    Добавить <!--При удалении: Внимание, преподаватель уже внёс изменения. Вы уверены, что хотите удалить?-->
                 </button>
             </div>
         </form>

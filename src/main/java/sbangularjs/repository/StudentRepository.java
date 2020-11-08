@@ -2,10 +2,11 @@ package sbangularjs.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import sbangularjs.model.Group;
 import sbangularjs.model.Student;
 
 import java.util.List;
+import java.util.Set;
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
     Student findByNumberRecordBook(String username);
@@ -13,7 +14,8 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     @Query("select s from Student s where s.id in :studentIds")
     List<Student> findByIds(List<Long> studentIds);
-    /*List<Student> findAllBySurnameContainingIgnoreCaseAndEmailContainingIgnoreCase(String surname, String email);
-    List<Student> findBySurnameContainingIgnoreCase(String surname);
-    List<Student> findByEmailContainingIgnoreCase(String email);*/
+
+    @Query("select distinct g from Group g " +
+            " join Student s on s.group.id = g.id and s in :students")
+    Set<Group> findGroupsByStudents(List<Student> students);
 }
