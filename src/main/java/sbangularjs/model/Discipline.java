@@ -18,7 +18,9 @@ public class Discipline { // Дисциплина
 
     private String name;
 
-//    @JsonIgnore
+// если сериализация происходит до того, как загрузится сущность, то либо
+// (@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})), либо закомментировать (fetch = FetchType.EAGER)
+//   @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="department_id")
     private Department department;

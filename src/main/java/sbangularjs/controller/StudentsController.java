@@ -3,11 +3,10 @@ package sbangularjs.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import sbangularjs.model.Department;
 import sbangularjs.model.Faculty;
 import sbangularjs.model.Group;
@@ -63,18 +62,22 @@ public class StudentsController {
         return new ResponseEntity<>(students, HttpStatus.OK);
     }
 
-    @PatchMapping("/findNotExpelledStudents")
-    public ResponseEntity<List<Student>> findNotExpelledStudents(@RequestBody Long groupId) {
+    @RequestMapping(value = "/findNotExpelledStudents",
+                            method = RequestMethod.PATCH,
+                            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    @ResponseBody
+//    @PatchMapping("/findNotExpelledStudents")
+    public /*ResponseEntity*/ List<Student> findNotExpelledStudents(@RequestBody Long groupId) {
         List<Student> students = studentRepository.findByGroupId(groupId);
         if (students.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return null;//new ResponseEntity<>(HttpStatus.NO_CONTENT);
         for(int i=students.size()-1;i>=0;i--) {
             if(students.get(i).getExpelled() != null && students.get(i).getExpelled()) // Expelled = TRUE, отчислены только тогда, когда true
                 students.remove(students.get(i));
         }
         if (students.isEmpty()) // все студенты отчислены (переведены)
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // You many decide to return HttpStatus.NOT_FOUND
-        return new ResponseEntity<>(students, HttpStatus.OK);
+            return null;//new ResponseEntity<>(HttpStatus.NO_CONTENT); // You many decide to return HttpStatus.NOT_FOUND
+        return students;//new ResponseEntity<>(students, HttpStatus.OK);
     }
 
     @PatchMapping("/saveExpelledStudents")

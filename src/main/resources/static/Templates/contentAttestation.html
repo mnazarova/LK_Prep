@@ -7,15 +7,39 @@
     </ol>
 
     <div class="my-3 card col-md-10 mx-auto">
+
         <div class="font-weight-bold h4 text-center mt-4">
             Список студентов
         </div>
 
+        <!--<div class="mt-4 row mx-2">
+            <div class="font-weight-bold h4 text-center col-md-9">
+                Список студентов
+            </div>
+
+            <div class="btn-group btn-group-justified mx-auto">
+                <button class="btn btn-warning text-white"
+                        type="button"
+                        title="Отменить изменения"
+                        ng-click="replyAll()">
+                    <i class=" fa fa-reply-all"></i>
+                    Отменить
+                </button>
+                <button class="btn btn-info text-white"
+                        type="button"
+                        title="Сохранить изменения"
+                        ng-click="saveContentAttestation()">
+                    <i class="fa fa-floppy-o"></i>
+                    Сохранить
+                </button>
+            </div>
+        </div>-->
+
         <div ng-if="contentAttestation.length">
-            <table class="table table-hover my-3 table-responsive-lg">
+            <table class="table table-hover table-striped table-sm table-responsive-lg my-3">
                 <thead>
                     <tr>
-                        <th class="text-center py-3">Фамилия</th>
+                        <th class="text-center">Фамилия</th>
                         <th class="text-center">Имя</th>
                         <th class="text-center">Отчество</th>
                         <th class="text-center">Номер зачётной книжки</th>
@@ -25,7 +49,7 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="ca in contentAttestation | orderBy:'student.surname' track by $index">
-                        <td class="text-center py-3">{{ca.student.surname}}</td>
+                        <td class="text-center">{{ca.student.surname}}</td>
                         <td class="text-center">{{ca.student.name}}</td>
                         <td class="text-center">{{ca.student.patronymic}}</td>
                         <td class="text-center">{{ca.student.numberRecordBook}}</td>
@@ -40,16 +64,18 @@
             </table>
             <div class="text-right mb-4">
                 <hr>
-                <button class="btn btn-info text-white"
-                   type="button"
-                   ng-click="replyAll()">
-                   <i class=" fa fa-reply-all"></i>
-                    Отменить изменения
+                <button class="btn btn-warning text-white"
+                        type="button"
+                        title="Отменить изменения"
+                        ng-click="replyAll()">
+                    <i class=" fa fa-reply-all"></i>
+                    Отменить
                 </button>
                 <button class="btn btn-info text-white"
-                   type="button"
-                   ng-click="saveContentAttestation()">
-                   <i class="fa fa-floppy-o"></i>
+                        type="button"
+                        title="Сохранить изменения"
+                        ng-click="saveContentAttestation()">
+                    <i class="fa fa-floppy-o"></i>
                     Сохранить
                 </button>
             </div>

@@ -1,5 +1,20 @@
 <div ng-show="ur == 'SECRETARY'">
 
+    <!--<button class="btn btn-default btn-xs" ng-click="enable()">Enable ui-select</button>
+    <button class="btn btn-default btn-xs" ng-click="disable()">Disable ui-select</button>
+    <button class="btn btn-default btn-xs" ng-click="clear()">Clear ng-model</button>
+    <h3>Select2 theme</h3>
+    <ui-select ng-model="person.selected" theme="select2" ng-disabled="disabled" style="min-width: 300px;">
+        <ui-select-match placeholder="Select a person in the list or search his name/age...">{{$select.selected.name}}</ui-select-match>
+        <ui-select-choices repeat="person in people | propsFilter: {name: $select.search, age: $select.search}">
+            <div ng-bind-html="person.name | highlight: $select.search"></div>
+            <small>
+                email: {{person.email}}
+                age: <span ng-bind-html="''+person.age | highlight: $select.search"></span>
+            </small>
+        </ui-select-choices>
+    </ui-select>-->
+
     <div class="my-3 card col-md-10 bg-light mx-auto">
         <form class="simple-form" name="studentsForm">
             <div class="my-3 ml-5">
@@ -63,7 +78,7 @@
                     </div>
                     <div class="col-md-8 mx-auto mt-3">
                         <label for="labelDepartment">Кафедра</label>
-                        <select class="custom-select form-control"
+                        <select class="js-example-basic-single custom-select form-control"
                                 ng-disabled="!studentsForm.faculty.$modelValue"
                                 name="department"
                                 ng-change="getGroups()"
@@ -75,7 +90,7 @@
                     </div>
                     <div class="col-md-8 mx-auto mt-3">
                         <label for="labelGroup">Группа</label>
-                        <select class="custom-select form-control"
+                        <select class="js-example-placeholder-single custom-select form-control"
                                 ng-change="checkGroup()"
                                 ng-disabled="!studentsForm.department.$modelValue"
                                 name="group"
@@ -89,10 +104,10 @@
 
                 <div class="col-md-8 mx-auto mt-4 text-right">
                     <button class="btn btn-info px-3 text-white"
-                            title="Просмотр содержимого {{isSubgroup? 'подгруппы': 'группы'}}"
+                            title="Настройка дисциплин {{isSubgroup? 'подгруппы': 'группы'}}"
                             ng-click="watchStudents()">
                         <i class="fa fa-list-alt pr-1"></i>
-                        Просмотр
+                        Настроить
                     </button>
                 </div>
 
@@ -101,51 +116,111 @@
     </div>
 
     <div class="my-3 card col-md-10 mx-auto">
-        <div class="font-weight-bold text-center m-2 p-2 alert-warning" ng-if="!studentsForm.group.$modelValue && !studentsForm.subgroupId.$modelValue">
-            Выберите группу или подгруппу
+        <div class="font-weight-bold text-center m-2 p-2 alert-warning" ng-if="!studentsForm.group.$modelValue && !isSubgroup">
+            Выберите группу
+        </div>
+
+        <div class="font-weight-bold text-center m-2 p-2 alert-warning" ng-if="!studentsForm.subgroupId.$modelValue && isSubgroup">
+            Выберите подгруппу
         </div>
 
         <div class="font-weight-bold text-center m-2 p-2 alert-warning"
-             ng-if="(studentsForm.group.$modelValue || studentsForm.subgroupId.$modelValue) && !students.length">
-            Для отображения списка студентов нажмите на кнопку "Просмотр"
+             ng-if="(studentsForm.group.$modelValue && !isSubgroup || studentsForm.subgroupId.$modelValue && isSubgroup) && !students.length">
+            Для отображения списка студентов и дальнейшей настройки нажмите на кнопку "Настроить"
         </div>
 
-        <div class="font-weight-bold h4 text-center mt-4" ng-if="studentsForm.group.$modelValue && students.length">
+        <div class="font-weight-bold h4 text-center mt-4" ng-if="studentsForm.group.$modelValue && students.length && !isSubgroup">
             Список студентов группы
             <!-- в списке группы отсутствуют отчисленные студенты на момент просмотра страницы -->
         </div>
 
-        <div class="font-weight-bold h4 text-center mt-4" ng-if="studentsForm.subgroupId.$modelValue && students.length">
+        <div class="font-weight-bold h4 text-center mt-4" ng-if="studentsForm.subgroupId.$modelValue && students.length && isSubgroup">
             Список студентов подгруппы
             <!-- в списке подгруппы отсутствуют отчисленные студенты на момент просмотра страницы -->
         </div>
 
-        <table class="table table-hover table-striped my-3" ng-if="students.length">
+        <table class="table table-striped table-hover my-3 table-responsive-lg" ng-if="students.length">
+            <thead>
             <tr>
                 <th class="text-center">Фамилия</th>
                 <th class="text-center">Имя</th>
                 <th class="text-center">Отчество</th>
                 <th class="text-center">Номер зачётной книжки</th>
             </tr>
-            <tr ng-repeat="st in students | orderBy:'surname' track by $index" class="border-top m-3 text-info text-bold">
+            </thead>
+            <tbody>
+            <tr ng-repeat="st in students | orderBy:'surname' track by $index">
                 <td class="text-center w-25">{{st.surname}}</td>
                 <td class="text-center w-25">{{st.name}}</td>
                 <td class="text-center w-25">{{st.patronymic}}</td>
                 <td class="text-center w-25">{{st.numberRecordBook}}</td>
             </tr>
+            </tbody>
         </table>
-        <div class="text-right my-3" ng-if="students.length">
+    </div>
+
+    <div class="my-3 card col-md-10 mx-auto" ng-if="students.length">
+        <div class="font-weight-bold h4 text-center mt-4">
+            Список предметов
+        </div>
+
+        <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!subjectsAndTeachers.length">
+            Список предметов пуст
+        </div>
+        <table class="table table-striped table-hover table-sm my-3 table-responsive-lg" ng-if="subjectsAndTeachers.length">
+            <thead>
+            <tr>
+                <th class="text-center">Кафедра</th>
+                <th class="text-center">Дисциплина</th>
+                <th class="text-center">Номер семестра</th>
+                <th class="text-center">Форма работы</th>
+                <th class="text-center">Преподаватель</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="sAt in subjectsAndTeachers | orderBy:'surname' track by $index">
+                <td class="text-center w-5" title="{{sAt.syllabusContent.discipline.department.fullName}}">
+                    {{sAt.syllabusContent.discipline.department.shortName}}
+                </td>
+                <td class="text-center w-30">{{sAt.syllabusContent.discipline.name}}</td>
+                <td class="text-center w-5">{{sAt.syllabusContent.semesterNumber}}</td>
+                <td class="text-center w-5">{{sAt.form_of_work.name}}</td>
+                <td class="text-center w-30">{{sAt.teacher.surname+' '+sAt.teacher.name+' '+sAt.teacher.patronymic}}</td>
+                <td>
+                    <button class="btn btn-sm btn-danger text-white"
+                            type="button"
+                            ng-click="checkBeforeDeleteDiscipline(sAt)"
+                            title="Удалить предмет">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="text-right my-3">
             <hr>
             <button class="btn btn-info text-white"
-               type="button"
-               ng-click="addDiscipline()">
+                    type="button"
+                    ng-click="addDiscipline()">
+                <i class="fa fa-plus-square-o"></i>
                 Добавить предмет
             </button>
         </div>
     </div>
 
-    <div class="my-3 card col-md-10 bg-light mx-auto" ng-if="viewTeacherForm">
-        <form class="my-5 simple-form" name="teacherForm">
+    <div class="my-3 card col-md-10 bg-light mx-auto" ng-if="viewLinkForm">
+        <div class="font-weight-bold h4 text-center mt-4">
+            Добавление предмета
+            <button class="btn btn-sm btn-ligth text-danger pull-right"
+                    type="button"
+                    ng-click="closeLinkForm()"
+                    title="Закрыть форму">
+                    <i class="fa fa-2x fa-minus-square-o"></i>
+            </button>
+        </div>
+        <form class="my-5 simple-form" name="form.linkForm">
             <div class="col-md-8 mx-auto">
                 <label for="labelAttestation">Аттестация</label>
                 <select class="custom-select form-control"
@@ -160,7 +235,7 @@
 
             <div class="row col-md-8 mx-auto p-0 my-3 text-center">
                 <div class="col-md-4 my-auto pr-0">
-                    <strong>Выбрать предметы учебного плана</strong>
+                    <strong>Выбрать предмет учебного плана</strong>
                 </div>
                 <div class="col-md-4">
                     <label for="labelGroupForDiscipline">группы</label>
@@ -175,48 +250,96 @@
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <label for="labelSemesterNumber">семестра</label>
-                    <!--onfocus='this.size=2;'
-                            onblur='this.size=1;'
-                            onchange='this.size=1; this.blur();'-->
+                    <label for="labelSemesterNumber">
+                        семестра
+                    </label>
                     <select class="custom-select form-control"
                             name="semesterNumber"
                             ng-model="semesterNumber"
-                            ng-options="item for item in semesterNumbers"
+                            ng-class="{'border-success': curSemesterNumber == semesterNumber}"
+                            ng-options="item as item + ((item == curSemesterNumber) ? ' (текущий)' : '') for item in semesterNumbers"
                             ng-change="getDisciplines(groupForDiscipline, semesterNumber)"
                             id="labelSemesterNumber"
                             required>
                     </select>
                 </div>
             </div>
-
-            <div class="col-md-8 mx-auto">
+            <div class="col-md-8 mx-auto mt-3">
+                <label for="labelFormOfWork">Форма работы</label>
+                <select class="custom-select form-control"
+                        name="form_of_work"
+                        ng-model="form_of_work"
+                        ng-options="item.id as item.name for item in forms_of_work"
+                        id="labelFormOfWork"
+                        required>
+                </select>
+            </div>
+            <!--<div class="col-md-8 mx-auto">
                 <label for="labelDiscipline">Предмет</label>
                 <select class="custom-select form-control"
                         name="discipline"
+                        ng-change="getTeachers(discipline)"
                         ng-model="discipline"
                         ng-options="item.id as item.department.shortName+': '+item.name for item in disciplines"
                         id="labelDiscipline"
                         required>
                 </select>
-            </div>
+            </div>-->
             <div class="col-md-8 mx-auto mt-3">
+                <ui-select ng-model="discipline.selected"
+                           name="discipline"
+                           on-select="getTeachers(discipline.selected)"
+                           class="col-md-12 p-0"
+                           theme="select2" title="Выберите предмет"
+                           required>
+                    <ui-select-match placeholder="Выберите предмет...">
+                        {{$select.selected.department.shortName + ': ' + $select.selected.name}}
+                    </ui-select-match>
+                    <ui-select-choices repeat="discipline in disciplines | propsFilter: {name: $select.search}">
+                        <div ng-bind-html="discipline.name | highlight: $select.search"></div>
+                        <small>
+                            Кафедра: {{discipline.department.shortName}}
+                            Название: <span ng-bind-html="discipline.name | highlight: $select.search"></span>
+                        </small>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+            <!--<div class="col-md-8 mx-auto mt-3">
                 <label for="labelTeacher">Преподаватель</label>
                 <select class="custom-select form-control"
-                        ng-change="checkGroup()"
                         ng-disabled="!discipline"
-                        name="Teacher"
-                        ng-model="Teacher"
-                        ng-options="item.id as item.number for item in teachers"
+                        name="teacher"
+                        ng-model="teacher"
+                        ng-options="item.id as item.surname+' '+item.name+' '+item.patronymic for item in teachers"
                         id="labelTeacher"
                         required>
                 </select>
+            </div>-->
+            <div class="col-md-8 mx-auto mt-3">
+                <ui-select ng-model="teacher.selected"
+                           ng-disabled="!discipline.selected"
+                           name="teacher"
+                           class="col-md-12 p-0"
+                           theme="select2" title="Выберите преподавателя"
+                           required>
+                    <ui-select-match placeholder="Выберите преподавателя...">
+                        {{$select.selected.surname + ' ' + $select.selected.name + ' ' + $select.selected.patronymic}}
+                    </ui-select-match>
+                    <ui-select-choices repeat="teacher in teachers | propsFilter: {surname: $select.search, name: $select.search}">
+                        <div ng-bind-html="teacher.surname | highlight: $select.search"></div>
+                        <small>
+                            Имя: {{teacher.name}}
+                            Отчество: <span ng-bind-html="teacher.patronymic | highlight: $select.search"></span>
+                        </small>
+                    </ui-select-choices>
+                </ui-select>
             </div>
+
             <div class="col-md-8 mx-auto mt-4 text-right">
                 <button class="btn btn-info px-3 text-white"
                         title="Связать {{isSubgroup? 'подгруппу': 'группу'}} с преподавателем"
-                        ng-click=";">
-                    <i class="fa fa-list-alt pr-1"></i>
+                        ng-click="addCertificationAttestation()">
+                    <i class="fa fa-plus-square-o pr-1"></i>
                     Добавить <!--При удалении: Внимание, преподаватель уже внёс изменения. Вы уверены, что хотите удалить?-->
                 </button>
             </div>

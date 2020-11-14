@@ -1,12 +1,6 @@
 app.controller("AttestationController", function($scope, $http, $state) {
 
-    /*initTooltip();
-    function initTooltip() {
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        });
-        console.log(1)
-    }*/
+    // if(login)
 
     getAttestation();
     function getAttestation() {

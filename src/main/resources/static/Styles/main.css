@@ -1,5 +1,3 @@
-/* 2 меню, следящий за курсором */
-
 .view {
     /*background: url(/Images/youtube.png) 0 0 repeat;*/
     background: url(/Images/simple.jpg) no-repeat center / cover;
@@ -14,22 +12,16 @@
     overflow: auto;
 }
 
-.table-container
-{
+.table-container {
     width: 100%;
     overflow-y: auto;
     _overflow: auto;
     margin: 0 0 1em;
 }
 
-/* Хленые крошки breadcrumb */
-/*.breadcrumb li a:hover{
-    text-decoration: none;
-    transform: scale(2);
-}*/
+/* Хлебные крошки breadcrumb */
 .breadcrumb{
     background-color: inherit!important;
-    /*padding: 15px 15px 15px 50px;*/
     /*overflow: hidden;*/
 }
 .breadcrumb-item{
@@ -38,14 +30,34 @@
 .breadcrumb-item a{
     color: #31a4b5!important;
 }
-/*.breadcrumb-item.active{
-    color: white!important;
+/* Хлебные крошки breadcrumb */
+
+
+/* ui-Select*/
+/*.select2 > .select2-choice.ui-select-match {
+    !* Because of the inclusion of Bootstrap *!
+    height: 29px;
+}
+
+.selectize-control > .selectize-dropdown {
+    top: 36px;
+}
+!* Some additional styling to demonstrate that append-to-body helps achieve the proper z-index layering. *!
+.select-box {
+    background: #fff;
+    position: relative;
+    z-index: 1;
+}
+.alert-info.positioned {
+    margin-top: 1em;
+    position: relative;
+    z-index: 10000; !* The select2 dropdown has a z-index of 9999 *!
 }*/
-/* Хленые крошки breadcrumb */
+/* ui-Select*/
 
 
+/* 2 меню, следящий за курсором */
 #nav .active {
-    /*color: #17A2B8!important;*/
     color: #1FDFFC!important;
 }
 

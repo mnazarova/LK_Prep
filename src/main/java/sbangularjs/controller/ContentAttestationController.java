@@ -38,14 +38,14 @@ public class ContentAttestationController {
         if(attestationContents == null)
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         for (AttestationContent attestationContent: attestationContents) {
-            AttestationContent curOld = attestationContentRepository.getOne(attestationContent.getId());
-            System.out.println(attestationContent.getAttest());
-            System.out.println(curOld.getAttest());
+            AttestationContent curOld = attestationContentRepository.findAttestationContentById(attestationContent.getId());
+//            System.out.println(attestationContent.getAttest());
+//            System.out.println(curOld.getAttest());
             if (attestationContent.getAttest() != curOld.getAttest()) {
                 attestationContent.setDateAttest(new Date());
             }
-            System.out.println(attestationContent.getWorks());
-            System.out.println(curOld.getWorks());
+//            System.out.println(attestationContent.getWorks());
+//            System.out.println(curOld.getWorks());
             if (attestationContent.getWorks() != curOld.getWorks()) {
                 attestationContent.setDateWorks(new Date());
             }

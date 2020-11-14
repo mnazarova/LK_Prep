@@ -38,4 +38,11 @@ public class AttestationContent { // Содержание аттестации
         works = false;
         attest = false;
     }
+
+    public AttestationContent(CertificationAttestation ca, Student stud) {
+        certificationAttestation = ca;
+        student = stud;
+        works = false;
+        attest = false;
+    }
 }

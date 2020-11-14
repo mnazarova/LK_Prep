@@ -7,10 +7,17 @@ import sbangularjs.model.CertificationAttestation;
 
 import java.util.List;
 public interface CertificationAttestationRepository extends JpaRepository<CertificationAttestation, Long> {
+
+    List<CertificationAttestation> findAll();
+    CertificationAttestation findCertificationAttestationById(Long certificationAttestationId);
+
+
     @Query("select ca.id from CertificationAttestation ca where ca.attestation.id = :attestationId and " +
             " ca.teacher.id = :teacherId and ca.isSubgroup = :isSubgroup")
     List<Long> findAllByAttestationIdAndTeacherIdAndIsSubgroup(Long attestationId, Long teacherId, boolean isSubgroup);
 
+    List<CertificationAttestation> findByAttestationIdAndSubgroupId(Long attestationId, Long subgroupId);
+    List<CertificationAttestation> findByAttestationIdAndGroupId(Long attestationId, Long groupId);
 
 //    List<CertificationAttestation> findAllByAttestationIdAndTeacherIdAndIsSubgroup(Long attestationId,
 //                                                                                Long teacherId, boolean isSubgroup);
@@ -29,6 +36,4 @@ public interface CertificationAttestationRepository extends JpaRepository<Certif
             " join Subgroup sg on sg.id = ca.subgroup.id " +
             " where ca.id in :certificationAttestationIds ")
     List<SubjectDTO> findAllSubjectSubgroupDTO(List<Long> certificationAttestationIds);
-
-//    List<Subgroup> findByNameContainingIgnoreCase(String surname);
 }

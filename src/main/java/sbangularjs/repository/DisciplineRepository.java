@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface DisciplineRepository extends JpaRepository<Discipline, Long> {
     List<Discipline> findAll();
+    Discipline findDisciplineById(Long disciplineId);
 
     @Query(value = "select d from Discipline d" +
             " join SyllabusContent sc on sc.discipline.id = d.id and sc.syllabus.id = :syllabusId and sc.semesterNumber = :semesterNumber")

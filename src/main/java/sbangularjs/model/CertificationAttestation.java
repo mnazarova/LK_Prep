@@ -16,18 +16,18 @@ public class CertificationAttestation { // Ведомость аттестаци
     @Column(name = "certification_attestation_id")
     private Long id;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+//    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="syllabus_content_id")
     private SyllabusContent syllabusContent;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+//    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="teacher_id")
     private Teacher teacher;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+//    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="attestation_id")
     private Attestation attestation;
 
@@ -37,15 +37,20 @@ public class CertificationAttestation { // Ведомость аттестаци
 
     private Boolean isSubgroup; // Подгруппа?
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+//    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="group_id")
     private Group group;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+//    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="subgroup_id")
     private Subgroup subgroup;
+
+//  @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="form_of_work_id")
+    private FormOfWork form_of_work;
 
     public CertificationAttestation() {}
 }

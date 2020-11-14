@@ -9,7 +9,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class FormOfTraining { // Квалификация
+public class FormOfTraining { // Форма обучения
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name = "form_of_training_id")

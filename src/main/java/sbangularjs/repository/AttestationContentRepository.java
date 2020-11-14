@@ -13,4 +13,5 @@ public interface AttestationContentRepository extends JpaRepository<AttestationC
     List<AttestationContent> findAllByCertificationAttestationId(Long id);
 
     List<AttestationContent> findAll();
+    AttestationContent findAttestationContentById(Long attestationContentId);
 }

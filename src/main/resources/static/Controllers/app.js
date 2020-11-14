@@ -2,11 +2,10 @@ var app = angular.module("app", [
     'ui.router',
     'toaster',
     'ngAnimate',
-    // 'ui.bootstrap',
-    // 'request',
-    // 'app.help'
+    'ngSanitize',
+    'ui.select',
+    'ui.bootstrap'
 ]);
-
 /*var app = angular.module("app", [
     'ui.router',
     'app.home'
@@ -15,6 +14,27 @@ var app = angular.module("app", [
 ])*/
 
     app.controller('AppController',function ($scope, $http, $window, toaster) {
+
+
+        /* Подключение select2 */
+        $(function() {
+            $('select').select2();
+        });
+
+        $(document).ready(function(placeholder) {
+            $('js-example-placeholder-single').select2({
+                placeholder: placeholder,
+                allowClear: true
+            });
+        });
+
+        $(document).ready(function(placeholder) {
+            $('js-example-basic-single').select2({
+                placeholder: placeholder,
+                allowClear: true
+            });
+        });
+
         /* Выпадающее меню */
         $(function() {
             var $menu_popup = $('.menu-popup');
@@ -140,6 +160,118 @@ var app = angular.module("app", [
         });*/
 
     });
+    
+    app.controller('ModalController', function($scope, $uibModal, $sce) {
+
+        $scope.open = function(config, options) {
+            options = options || {};
+            config.body = $sce.trustAsHtml(config.body);
+
+            $uibModal.open({
+                templateUrl: 'modalTemplate.html',
+                backdrop: 'static',
+                keyboard: false,
+                windowClass: options.windowClass || '',
+                controller: function ($scope, $uibModalInstance, config) {
+                    $scope.config = config;
+                    $scope.close = function () {
+                        $uibModalInstance.dismiss('close');
+                    };
+                    if (!config.noFooter && config.buttons && config.buttons.length) {
+                        for (var i = 0; i < config.buttons.length; i++) {
+                            var btn = angular.copy(config.buttons[i]);
+                            if (!btn.noClose) {
+                                config.buttons[i].click = function () {
+                                    if (typeof this.action == 'function') {
+                                        this.action();
+                                    }
+                                    $scope.close();
+                                }
+                            }
+                        }
+                    }
+                },
+                resolve: {
+                    config: function () {
+                        return config;
+                    }
+                }
+            });
+        };
+
+        /*$scope.error = function(message, details) {
+            var b = [
+                {text: 'OK', cls: 'btn-primary'}
+            ];
+            if(details) {
+                b.unshift({text: 'Подробнее', cls: 'btn-default', action: details});
+            }
+            $scope.open({
+                noHeader: 'true',
+                body: '<i class="fa fa-times-circle fa-2x text-danger pull-left"></i><div class="modalText">' + message + '</div>',
+                buttons:b
+            });
+        };
+
+        $scope.confirm = function(message, yes) {
+            $scope.open({
+                noHeader: 'true',
+                body: '<i class="fa fa-question-circle fa-2x text-info pull-left"></i><div class="modalText">' + message + '</div>',
+                buttons: [
+                    {text: 'Да', action: yes, cls: 'btn-primary'},
+                    {text: 'Нет'}
+                ]
+            });
+        };
+
+        $scope.confirmYesAndNo = function(message, yes, no) {
+            $scope.open({
+                noHeader: 'true',
+                body: '<i class="fa fa-question-circle fa-2x text-info pull-left"></i><div class="modalText">' + message + '</div>',
+                buttons: [
+                    {text: 'Да', action: yes, cls: 'btn-primary'},
+                    {text: 'Нет', action: no, cls: 'btn-primary'}
+                ]
+            });
+        };*/
+
+        $scope.areYouSure = function(yes) {
+            $scope.open({
+                noHeader: 'true',
+                body: '<i class="fa fa-question-circle fa-2x text-danger pull-left"></i><div class="modalText">Вы уверены?</div>',
+                buttons: [
+                    {text: 'Да', action: yes, cls: 'btn-danger'},
+                    {text: 'Нет'}
+                ]
+            });
+        };
+
+        /*$scope.errorPanel = function(header, message) {
+            $scope.open({
+                noHeader: 'true',
+                body:
+                    '<div class="panel panel-danger">' +
+                    '<div class="panel-heading">' + header + '</div>' +
+                    '<div class="panel-body">' + message + '</div>' +
+                    '</div>',
+                buttons: [
+                    {text: 'ОК'}
+                ]
+            });
+        };
+
+        $scope.alert = function(message) {
+            $scope.open({
+                noHeader: 'true',
+                body: '<i class="fa fa-info-circle fa-2x text-info pull-left"></i><div class="modalText">'+message+'</div>',
+                buttons: [
+                    {text: 'ОК'}
+                ]
+            });
+        };*/
+
+        $scope.$root['ModalController'] = $scope;
+    });
 
     app.config(function ($stateProvider, $urlRouterProvider, $locationProvider) {
 
@@ -211,46 +343,6 @@ var app = angular.module("app", [
                 controller: 'ContentAttestationController'
                 // добавить переменную, определяющую группа или подгруппа
             })
-            /*.state('fill', {
-                url: '/fill/subject/:id',
-                templateUrl: 'Templates/subject.html',
-                controller: 'SubjectController'
-            })*/
-            /*.state('privateAccount', {
-                url: '/privateAccount',
-                templateUrl: 'Templates/privateAccount.html',
-                controller: 'PrivateAccountController'
-            })*/
-            /*.state('statements', {
-                url: '/statements',
-                templateUrl: 'Templates/statements.html',
-                controller: 'StatementsController'
-            })*/
-            /*.state('/', {
-                url: '/',
-                templateUrl: 'index.html',
-                controller: 'APPController'
-            })
-           .state('home', {
-                url: '/home',
-                templateUrl: 'components/Templates/index.html',
-                controller: 'HomeController'
-            })
-            .state('login', {
-                url: '/login',
-                templateUrl: 'components/Templates/login.html',
-                controller: 'LoginController'
-            })
-            .state('registration', {
-                url: '/registration',
-                templateUrl: 'components/Templates/registration.html',
-                controller: 'RegistrationController'
-            })
-            .state('help', {
-                url: '/help',
-                templateUrl: 'Templates/help.html',
-                controller: 'Controllers/HelpController'
-            })*/
 
         /*$locationProvider.html5Mode({
             enabled: true,
@@ -258,5 +350,42 @@ var app = angular.module("app", [
         });*/
 
         // $locationProvider.html5Mode(true);
-    }
-);
+    });
+
+/**
+ * AngularJS default filter with the following expression:
+ * "person in people | filter: {name: $select.search, age: $select.search}"
+ * performs an AND between 'name: $select.search' and 'age: $select.search'.
+ * We want to perform an OR.
+ */
+app.filter('propsFilter', function() {
+    return function(items, props) {
+        var out = [];
+
+        if (angular.isArray(items)) {
+            var keys = Object.keys(props);
+
+            items.forEach(function(item) {
+                var itemMatches = false;
+
+                for (var i = 0; i < keys.length; i++) {
+                    var prop = keys[i];
+                    var text = props[prop].toLowerCase();
+                    if (item[prop].toString().toLowerCase().indexOf(text) !== -1) {
+                        itemMatches = true;
+                        break;
+                    }
+                }
+
+                if (itemMatches) {
+                    out.push(item);
+                }
+            });
+        } else {
+            // Let the output be the input untouched
+            out = items;
+        }
+
+        return out;
+    };
+});

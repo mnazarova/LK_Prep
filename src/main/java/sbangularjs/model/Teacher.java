@@ -18,13 +18,17 @@ public class Teacher {
 
     private String surname;
     private String name;
+    private String initials;
     private String patronymic;
 
-    private String email;
-
-    private String username;
-    private String password;
     private boolean active;
+
+    @JsonIgnore // сокрытие данных
+    private String email;
+    @JsonIgnore // сокрытие данных
+    private String username;
+    @JsonIgnore // сокрытие данных
+    private String password;
 
     @JsonIgnore
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -12,6 +12,7 @@
             }).then(
                 function(res) { // success
                     $scope.contentAttestation = res.data;
+                    $scope.contentAttestationCopy = angular.copy($scope.contentAttestation);
                     // console.log($scope.contentAttestation);
                 },
                 function(res) { // error
@@ -22,7 +23,11 @@
         }
 
         $scope.replyAll = function() {
-            getContentAttestation();
+            if(angular.equals($scope.contentAttestationCopy, $scope.contentAttestation))
+                $scope.toasterWarning('Изменения отсутствуют');
+            else
+                $scope.contentAttestation = angular.copy($scope.contentAttestationCopy);
+                // getContentAttestation();
         };
 
         $scope.saveContentAttestation = function() {

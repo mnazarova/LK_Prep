@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface SubgroupRepository extends JpaRepository<Subgroup, Long> {
     List<Subgroup> findByActive(boolean active);
-    Subgroup findById(long id);
+    Subgroup findSubgroupById(Long subgroupId);
     List<Subgroup> findByNameContainingIgnoreCase(String surname);
 }

@@ -23,8 +23,8 @@ public class SyllabusContent { // Содержание учебного план
     @JoinColumn(name="syllabus_id")
     private Syllabus syllabus;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+//    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="discipline_id")
     private Discipline discipline;
 

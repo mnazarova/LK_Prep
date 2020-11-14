@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface AttestationRepository extends JpaRepository<Attestation, Long> {
     List<Attestation> findByActiveTrue();
+    Attestation findAttestationById(Long attestationId);
 //    List<Attestation> findByDeadline_Month(Long groupId);
 //    List<Attestation> findByDeadlineIsBefore();
 
