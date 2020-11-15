@@ -321,7 +321,7 @@ function $ViewDirectiveFill($compile, $controller, $transitions, $view, $q, $tim
                         scope[controllerAs] = controllerInstance;
                         scope[controllerAs][resolveAs] = locals;
                     }
-                    // TODO: Use $view service as a central point for registering component-level hooks
+                    //  : Use $view service as a central point for registering component-level hooks
                     // Then, when a component is created, tell the $view service, so it can invoke hooks
                     // $view.componentLoaded(controllerInstance, { $scope: scope, $element: $element });
                     // scope.$on('$destroy', () => $view.componentUnloaded(controllerInstance, { $scope: scope, $element: $element }));
@@ -355,7 +355,7 @@ function $ViewDirectiveFill($compile, $controller, $transitions, $view, $q, $tim
 var hasComponentImpl = typeof angular.module('ui.router')['component'] === 'function';
 /** @hidden incrementing id */
 var _uiCanExitId = 0;
-/** @hidden TODO: move these callbacks to $view and/or `/hooks/components.ts` or something */
+/** @hidden  : move these callbacks to $view and/or `/hooks/components.ts` or something */
 function registerControllerCallbacks($q, $transitions, controllerInstance, $scope, cfg) {
     // Call $onInit() ASAP
     if (isFunction(controllerInstance.$onInit) && !((cfg.viewDecl.component || cfg.viewDecl.componentProvider) && hasComponentImpl)) {

@@ -854,7 +854,7 @@
     mod_state.run(['$state', function ($state) { }]);
     mod_rtr.run(['$urlRouter', function ($urlRouter) { }]);
     mod_init.run(runBlock);
-    /** @hidden TODO: find a place to move this */
+    /** @hidden  : find a place to move this */
     var getLocals = function (ctx) {
         var tokens = ctx.getTokens().filter(core.isString);
         var tuples = tokens.map(function (key) {
@@ -1853,7 +1853,7 @@
                             scope[controllerAs] = controllerInstance;
                             scope[controllerAs][resolveAs] = locals;
                         }
-                        // TODO: Use $view service as a central point for registering component-level hooks
+                        //  : Use $view service as a central point for registering component-level hooks
                         // Then, when a component is created, tell the $view service, so it can invoke hooks
                         // $view.componentLoaded(controllerInstance, { $scope: scope, $element: $element });
                         // scope.$on('$destroy', () => $view.componentUnloaded(controllerInstance, { $scope: scope, $element: $element }));
@@ -1887,7 +1887,7 @@
     var hasComponentImpl = typeof ng.module('ui.router')['component'] === 'function';
     /** @hidden incrementing id */
     var _uiCanExitId = 0;
-    /** @hidden TODO: move these callbacks to $view and/or `/hooks/components.ts` or something */
+    /** @hidden  : move these callbacks to $view and/or `/hooks/components.ts` or something */
     function registerControllerCallbacks($q, $transitions, controllerInstance, $scope, cfg) {
         // Call $onInit() ASAP
         if (core.isFunction(controllerInstance.$onInit) && !((cfg.viewDecl.component || cfg.viewDecl.componentProvider) && hasComponentImpl)) {

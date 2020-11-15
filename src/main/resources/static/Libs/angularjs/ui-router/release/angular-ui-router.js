@@ -2384,7 +2384,7 @@
     };
 
     /** @packageDocumentation @publicapi @module resolve */
-    // TODO: explicitly make this user configurable
+    //  : explicitly make this user configurable
     var defaultResolvePolicy = {
         when: 'LAZY',
         async: 'WAIT',
@@ -3984,7 +3984,7 @@
          */
         Transition.prototype.is = function (compare) {
             if (compare instanceof Transition) {
-                // TODO: Also compare parameters
+                //  : Also compare parameters
                 return this.is({ to: compare.$to().name, from: compare.$from().name });
             }
             return !((compare.to && !matchState(this.$to(), compare.to, this)) ||
@@ -5046,7 +5046,7 @@
      * @internalapi
      */
     var UrlMatcherFactory = /** @class */ (function () {
-        // TODO: move implementations to UrlConfig (urlService.config)
+        //  : move implementations to UrlConfig (urlService.config)
         function UrlMatcherFactory(/** @hidden */ router) {
             var _this = this;
             this.router = router;
@@ -5087,7 +5087,7 @@
          *          implementing all the same methods.
          */
         UrlMatcherFactory.prototype.isMatcher = function (object) {
-            // TODO: typeof?
+            //  : typeof?
             if (!isObject(object))
                 return false;
             var result = true;
@@ -5485,7 +5485,7 @@
          */
         ViewService.normalizeUIViewTarget = function (context, rawViewName) {
             if (rawViewName === void 0) { rawViewName = ''; }
-            // TODO: Validate incoming view name with a regexp to allow:
+            //  : Validate incoming view name with a regexp to allow:
             // ex: "view.name@foo.bar" , "^.^.view.name" , "view.name@^.^" , "" ,
             // "@" , "$default@^" , "!$default.$default" , "!foo.bar"
             var viewAtContext = rawViewName.split('@');
@@ -9361,7 +9361,7 @@
     mod_state.run(['$state', function ($state) { }]);
     mod_rtr.run(['$urlRouter', function ($urlRouter) { }]);
     mod_init.run(runBlock);
-    /** @hidden TODO: find a place to move this */
+    /** @hidden  : find a place to move this */
     var getLocals = function (ctx) {
         var tokens = ctx.getTokens().filter(isString);
         var tuples = tokens.map(function (key) {
@@ -10360,7 +10360,7 @@
                             scope[controllerAs] = controllerInstance;
                             scope[controllerAs][resolveAs] = locals;
                         }
-                        // TODO: Use $view service as a central point for registering component-level hooks
+                        //  : Use $view service as a central point for registering component-level hooks
                         // Then, when a component is created, tell the $view service, so it can invoke hooks
                         // $view.componentLoaded(controllerInstance, { $scope: scope, $element: $element });
                         // scope.$on('$destroy', () => $view.componentUnloaded(controllerInstance, { $scope: scope, $element: $element }));
@@ -10394,7 +10394,7 @@
     var hasComponentImpl = typeof ng.module('ui.router')['component'] === 'function';
     /** @hidden incrementing id */
     var _uiCanExitId = 0;
-    /** @hidden TODO: move these callbacks to $view and/or `/hooks/components.ts` or something */
+    /** @hidden  : move these callbacks to $view and/or `/hooks/components.ts` or something */
     function registerControllerCallbacks($q, $transitions, controllerInstance, $scope, cfg) {
         // Call $onInit() ASAP
         if (isFunction(controllerInstance.$onInit) && !((cfg.viewDecl.component || cfg.viewDecl.componentProvider) && hasComponentImpl)) {

@@ -112,7 +112,7 @@ mod_util.run(['$urlMatcherFactory', function ($urlMatcherFactory) { }]);
 mod_state.run(['$state', function ($state) { }]);
 mod_rtr.run(['$urlRouter', function ($urlRouter) { }]);
 mod_init.run(runBlock);
-/** @hidden TODO: find a place to move this */
+/** @hidden find a place to move this */
 exports.getLocals = function (ctx) {
     var tokens = ctx.getTokens().filter(core_1.isString);
     var tuples = tokens.map(function (key) {
