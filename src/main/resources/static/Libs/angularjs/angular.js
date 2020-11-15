@@ -2147,7 +2147,7 @@ function assertNotHasOwnProperty(name, context) {
  * @param {boolean} [bindFnToScope=true]
  * @returns {Object} value as accessible by path
  */
-//TODO(misko): this function needs to be removed
+// (misko): this function needs to be removed
 function getter(obj, path, bindFnToScope) {
   if (!path) return obj;
   var keys = path.split('.');
@@ -2173,7 +2173,7 @@ function getter(obj, path, bindFnToScope) {
  * @returns {Array} the inputted object or a jqLite collection containing the nodes
  */
 function getBlockNodes(nodes) {
-  // TODO(perf): update `nodes` instead of creating a new object?
+  //  (perf): update `nodes` instead of creating a new object?
   var node = nodes[0];
   var endNode = nodes[nodes.length - 1];
   var blockNodes;
@@ -3814,7 +3814,7 @@ forEach({
         return this;
       } else {
         // we are a read, so read the first child.
-        // TODO: do we still need this?
+        //  : do we still need this?
         var value = fn.$dv;
         // Only if we have $dv do we iterate over all, otherwise it is just the first element.
         var jj = (isUndefined(value)) ? Math.min(nodeCount, 1) : nodeCount;
@@ -3881,7 +3881,7 @@ function createEventHandler(element, events) {
     }
   };
 
-  // TODO: this is a hack for angularMocks/clearDataCache that makes it possible to deregister all
+  //  : this is a hack for angularMocks/clearDataCache that makes it possible to deregister all
   //       events on `element`
   eventHandler.elem = element;
   return eventHandler;
@@ -6615,11 +6615,11 @@ function Browser(window, document, $log, $sniffer, $$taskTrackerFactory) {
   // Task-tracking API
   //////////////////////////////////////////////////////////////
 
-  // TODO(vojta): remove this temporary api
+  //  (vojta): remove this temporary api
   self.$$completeOutstandingRequest = taskTracker.completeTask;
   self.$$incOutstandingRequestCount = taskTracker.incTaskCount;
 
-  // TODO(vojta): prefix this method with $$ ?
+  //  (vojta): prefix this method with $$ ?
   self.notifyWhenNoOutstandingRequests = taskTracker.notifyWhenNoPendingTasks;
 
   //////////////////////////////////////////////////////////////
@@ -6799,7 +6799,7 @@ function Browser(window, document, $log, $sniffer, $$taskTrackerFactory) {
    * @return {function(string)} Returns the registered listener fn - handy if the fn is anonymous.
    */
   self.onUrlChange = function(callback) {
-    // TODO(vojta): refactor to use node's syntax for events
+    //  (vojta): refactor to use node's syntax for events
     if (!urlChangeInit) {
       // We listen on both (hashchange/popstate) when available, as some browsers don't
       // fire popstate when user changes the address bar and don't fire hashchange when url
@@ -8997,7 +8997,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
       return ddo;
     }
 
-    // TODO(pete) remove the following `forEach` before we release 1.6.0
+    //  (pete) remove the following `forEach` before we release 1.6.0
     // The component-router@0.2.0 looks for the annotations on the controller constructor
     // Nothing in AngularJS looks for annotations on the factory function but we can't remove
     // it from 1.5.x yet.
@@ -9512,7 +9512,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
        * @param {string=} attrName Optional none normalized name. Defaults to key.
        */
       $set: function(key, value, writeAttr, attrName) {
-        // TODO: decide whether or not to throw an error if "class"
+        //  : decide whether or not to throw an error if "class"
         // is set through this function since it may cause $updateClass to
         // become unstable.
 
@@ -9772,7 +9772,7 @@ function $CompileProvider($provide, $$sanitizeUriProvider) {
     }
 
     function detectNamespaceForChildElements(parentElement) {
-      // TODO: Make this detect MathML as well...
+      //  : Make this detect MathML as well...
       var node = parentElement && parentElement[0];
       if (!node) {
         return 'html';
@@ -13529,7 +13529,7 @@ function $HttpBackendProvider() {
 }
 
 function createHttpBackend($browser, createXhr, $browserDefer, callbacks, rawDocument) {
-  // TODO(vojta): fix the signature
+  //  (vojta): fix the signature
   return function(method, url, post, callback, headers, timeout, withCredentials, responseType, eventHandlers, uploadEventHandlers) {
     url = url || $browser.url();
 
@@ -13817,7 +13817,7 @@ function $InterpolateProvider() {
         replace(escapedEndRegexp, endSymbol);
     }
 
-    // TODO: this is the same as the constantWatchDelegate in parse.js
+    //  : this is the same as the constantWatchDelegate in parse.js
     function constantWatchDelegate(scope, listener, objectEquality, constantInterp) {
       var unwatch = scope.$watch(function constantInterpolateWatch(scope) {
         unwatch();
@@ -15329,7 +15329,7 @@ function $LocationProvider() {
 
     $rootElement.on('click', function(event) {
       var rewriteLinks = html5Mode.rewriteLinks;
-      // TODO(vojta): rewrite link when opening in new tab/window (in legacy browser)
+      //  (vojta): rewrite link when opening in new tab/window (in legacy browser)
       // currently we open nice url link and redirect then
 
       if (!rewriteLinks || event.ctrlKey || event.metaKey || event.shiftKey || event.which === 2 || event.button === 2) return;
@@ -16128,7 +16128,7 @@ AST.prototype = {
   },
 
   constant: function() {
-    // TODO check that it is a constant
+    //   check that it is a constant
     return { type: AST.Literal, value: this.consume().value };
   },
 
@@ -17469,7 +17469,7 @@ function $ParseProvider() {
       if (typeof newValue === 'object') {
 
         // attempt to convert the value to a primitive type
-        // TODO(docs): add a note to docs that by implementing valueOf even objects and arrays can
+        //  (docs): add a note to docs that by implementing valueOf even objects and arrays can
         //             be cheaply dirty-checked
         newValue = getValueOf(newValue);
 
@@ -26981,7 +26981,7 @@ function numberInputType(scope, element, attr, ctrl, $sniffer, $browser, $filter
       if (val !== minVal) {
         parsedMinVal = parseNumberAttrVal(val);
         minVal = val;
-        // TODO(matsko): implement validateLater to reduce number of validations
+        //  (matsko): implement validateLater to reduce number of validations
         ctrl.$validate();
       }
     });
@@ -26999,7 +26999,7 @@ function numberInputType(scope, element, attr, ctrl, $sniffer, $browser, $filter
       if (val !== maxVal) {
         parsedMaxVal = parseNumberAttrVal(val);
         maxVal = val;
-        // TODO(matsko): implement validateLater to reduce number of validations
+        //  (matsko): implement validateLater to reduce number of validations
         ctrl.$validate();
       }
     });
@@ -27015,7 +27015,7 @@ function numberInputType(scope, element, attr, ctrl, $sniffer, $browser, $filter
     };
 
     attr.$observe('step', function(val) {
-      // TODO(matsko): implement validateLater to reduce number of validations
+      //  (matsko): implement validateLater to reduce number of validations
       if (val !== stepVal) {
         parsedStepVal = parseNumberAttrVal(val);
         stepVal = val;
@@ -27129,7 +27129,7 @@ function rangeInputType(scope, element, attr, ctrl, $sniffer, $browser) {
       }
       ctrl.$setViewValue(elVal);
     } else {
-      // TODO(matsko): implement validateLater to reduce number of validations
+      //  (matsko): implement validateLater to reduce number of validations
       ctrl.$validate();
     }
   }
@@ -27151,7 +27151,7 @@ function rangeInputType(scope, element, attr, ctrl, $sniffer, $browser) {
       }
       ctrl.$setViewValue(elVal);
     } else {
-      // TODO(matsko): implement validateLater to reduce number of validations
+      //  (matsko): implement validateLater to reduce number of validations
       ctrl.$validate();
     }
   }
@@ -27165,7 +27165,7 @@ function rangeInputType(scope, element, attr, ctrl, $sniffer, $browser) {
 
     // Some browsers don't adjust the input value correctly, but set the stepMismatch error
     if (!supportsRange) {
-      // TODO(matsko): implement validateLater to reduce number of validations
+      //  (matsko): implement validateLater to reduce number of validations
       ctrl.$validate();
     } else if (ctrl.$viewValue !== element.val()) {
       ctrl.$setViewValue(element.val());
@@ -33774,7 +33774,7 @@ var ngRepeatDirective = ['$parse', '$animate', '$compile', function($parse, $ani
   var ngRepeatMinErr = minErr('ngRepeat');
 
   var updateScope = function(scope, index, valueIdentifier, value, keyIdentifier, key, arrayLength) {
-    // TODO(perf): generate setters to shave off ~40ms or 1-1.5%
+    //  (perf): generate setters to shave off ~40ms or 1-1.5%
     scope[valueIdentifier] = value;
     if (keyIdentifier) scope[keyIdentifier] = key;
     scope.$index = index;

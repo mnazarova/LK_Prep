@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import sbangularjs.model.*;
@@ -34,6 +35,7 @@ public class LinkController {
     private StudentSubgroupRepository studentSubgroupRepository;
     private StudentRepository studentRepository;
     private TeacherRepository teacherRepository;
+    private SecretaryRepository secretaryRepository;
 
 
     @PatchMapping("/findByNameSubgroup")
@@ -61,16 +63,24 @@ public class LinkController {
     }
 
     @PatchMapping("/getSubjectsWithTeachersByDep")
-    public ResponseEntity getSubjectsWithTeachersByDep(@RequestParam(value = "groupOrSubgroup") Long groupIdOrSubgroupId,
+    public ResponseEntity getSubjectsWithTeachersByDep(@AuthenticationPrincipal User user,
+                                                       @RequestParam(value = "groupOrSubgroup") Long groupIdOrSubgroupId,
                                                        @RequestParam(value = "attestation") Long attestationId,
                                                        @RequestParam(value = "isSubgroup") Boolean isSubgroup) {
+        Secretary curSecretary = secretaryRepository.findByUsername(user.getUsername());
+        if (curSecretary == null || curSecretary.getDepartment() == null)
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+
         List<CertificationAttestation> certificationsAttestationList;
         if (isSubgroup)
-            certificationsAttestationList = certificationAttestationRepository.findByAttestationIdAndSubgroupId(attestationId, groupIdOrSubgroupId);
+            certificationsAttestationList = certificationAttestationRepository.findCAsByAttestationIdAndSubgroupIdAndDepId(attestationId,
+                                                                                        groupIdOrSubgroupId, curSecretary.getDepartment().getId());
         else
-            certificationsAttestationList = certificationAttestationRepository.findByAttestationIdAndGroupId(attestationId, groupIdOrSubgroupId);
+            certificationsAttestationList = certificationAttestationRepository.findCAsByAttestationIdAndGroupIdAndDepId(attestationId,
+                                                                                        groupIdOrSubgroupId, curSecretary.getDepartment().getId());
         if (certificationsAttestationList.isEmpty())
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+
         return new ResponseEntity<>(certificationsAttestationList, HttpStatus.OK);
     }
 
@@ -152,14 +162,22 @@ public class LinkController {
         return new ResponseEntity<>(curSemNumb, HttpStatus.OK);
     }
 
-    @PatchMapping("/getDisciplines")
-    public ResponseEntity getDisciplines(@RequestParam(value = "groupId") Long groupId, @RequestParam(value = "semesterNumber") Integer semesterNumber) {
+    @PatchMapping("/getDisciplinesByDep")
+    public ResponseEntity getDisciplinesByDep(@AuthenticationPrincipal User user,
+                                              @RequestParam(value = "groupId") Long groupId,
+                                              @RequestParam(value = "semesterNumber") Integer semesterNumber) {
+        Secretary curSecretary = secretaryRepository.findByUsername(user.getUsername());
         Group group = groupRepository.findGroupById(groupId);
-        if (group == null || group.getSyllabus() == null)
+        if (curSecretary == null || group == null || group.getSyllabus() == null)
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+
+
+        List<Discipline> disciplines = disciplineRepository
+                        .findDisciplinesBySyllabusIdAndSemNumbAndDepId(group.getSyllabus().getId(),
+                                             semesterNumber, curSecretary.getDepartment().getId());
+        if (disciplines.isEmpty())
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
 
-
-        List<Discipline> disciplines = disciplineRepository.findDisciplinesBySyllabusIdAndSemNumb(group.getSyllabus().getId(), semesterNumber);
         return new ResponseEntity<>(disciplines, HttpStatus.OK);
     }
 
@@ -173,7 +191,8 @@ public class LinkController {
     }
 
     @PatchMapping("/addCertificationAttestation") // LINK
-    public ResponseEntity addCertificationAttestation(@RequestParam(value = "groupId") Long groupForSyllabusId,
+    public ResponseEntity addCertificationAttestation(@AuthenticationPrincipal User user,
+                                                      @RequestParam(value = "groupId") Long groupForSyllabusId,
                                                       @RequestBody CertificationAttestation certificationAttestation) {
         if (certificationAttestation == null || groupForSyllabusId == null)
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
@@ -223,7 +242,7 @@ public class LinkController {
             groupIdOrSubgroupId = certificationAttestation.getSubgroup().getId();
         else
             groupIdOrSubgroupId = certificationAttestation.getGroup().getId();
-        return getSubjectsWithTeachersByDep(groupIdOrSubgroupId, certificationAttestation.getAttestation().getId(), certificationAttestation.getIsSubgroup());
+        return getSubjectsWithTeachersByDep(user, groupIdOrSubgroupId, certificationAttestation.getAttestation().getId(), certificationAttestation.getIsSubgroup());
     }
 
     @PatchMapping("/checkBeforeDeleteDiscipline")
@@ -231,13 +250,14 @@ public class LinkController {
         List<AttestationContent> attestationContents = attestationContentRepository.findAllByCertificationAttestationId(certificationAttestationId);
         for (AttestationContent attestationContent : attestationContents)
             if (attestationContent.getDateAttest() != null || attestationContent.getDateWorks() != null)
-                return new ResponseEntity<>("Нельзя удалять, так как преподавателем уже были внесены изменения!", HttpStatus.CONFLICT); // status=409
+                return new ResponseEntity<>("Нельзя удалять, так как преподавателем уже были внесены изменения!", HttpStatus.CONFLICT); // status = 409
 
-        return new ResponseEntity<>("Можно удалять", HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @PatchMapping("/deleteDiscipline")
-    public ResponseEntity deleteDiscipline(@RequestParam Long certificationAttestationId) {
+    public ResponseEntity deleteDiscipline(@AuthenticationPrincipal User user,
+                                           @RequestParam Long certificationAttestationId) {
         CertificationAttestation certificationAttestation = certificationAttestationRepository.findCertificationAttestationById(certificationAttestationId);
         if (certificationAttestation == null)
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
@@ -254,6 +274,6 @@ public class LinkController {
             groupIdOrSubgroupId = certificationAttestation.getSubgroup().getId();
         else
             groupIdOrSubgroupId = certificationAttestation.getGroup().getId();
-        return getSubjectsWithTeachersByDep(groupIdOrSubgroupId, certificationAttestation.getAttestation().getId(), certificationAttestation.getIsSubgroup());
+        return getSubjectsWithTeachersByDep(user, groupIdOrSubgroupId, certificationAttestation.getAttestation().getId(), certificationAttestation.getIsSubgroup());
     }
 }

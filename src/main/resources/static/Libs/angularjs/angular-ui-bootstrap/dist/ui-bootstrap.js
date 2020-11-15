@@ -4403,7 +4403,7 @@ angular.module('ui.bootstrap.tooltip', ['ui.bootstrap.position', 'ui.bootstrap.s
 
   /**
    * Returns the actual instance of the $tooltip service.
-   * TODO support multiple triggers
+   * support multiple triggers
    */
   this.$get = ['$window', '$compile', '$timeout', '$document', '$uibPosition', '$interpolate', '$rootScope', '$parse', '$$stackedMap', function($window, $compile, $timeout, $document, $position, $interpolate, $rootScope, $parse, $$stackedMap) {
     var openedTooltips = $$stackedMap.createNew();
@@ -4537,7 +4537,7 @@ angular.module('ui.bootstrap.tooltip', ['ui.bootstrap.position', 'ui.bootstrap.s
             ttScope.origScope = scope;
 
             // By default, the tooltip is not open.
-            // TODO add ability to start tooltip opened
+            // add ability to start tooltip opened
             ttScope.isOpen = false;
             openedTooltips.add(ttScope, {
               close: hide

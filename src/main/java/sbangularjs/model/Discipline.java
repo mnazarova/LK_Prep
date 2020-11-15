@@ -1,6 +1,7 @@
 package sbangularjs.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,7 +22,8 @@ public class Discipline { // Дисциплина
 // если сериализация происходит до того, как загрузится сущность, то либо
 // (@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})), либо закомментировать (fetch = FetchType.EAGER)
 //   @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @ManyToOne//(fetch = FetchType.EAGER)
     @JoinColumn(name="department_id")
     private Department department;
 

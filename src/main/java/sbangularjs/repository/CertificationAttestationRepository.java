@@ -16,12 +16,6 @@ public interface CertificationAttestationRepository extends JpaRepository<Certif
             " ca.teacher.id = :teacherId and ca.isSubgroup = :isSubgroup")
     List<Long> findAllByAttestationIdAndTeacherIdAndIsSubgroup(Long attestationId, Long teacherId, boolean isSubgroup);
 
-    List<CertificationAttestation> findByAttestationIdAndSubgroupId(Long attestationId, Long subgroupId);
-    List<CertificationAttestation> findByAttestationIdAndGroupId(Long attestationId, Long groupId);
-
-//    List<CertificationAttestation> findAllByAttestationIdAndTeacherIdAndIsSubgroup(Long attestationId,
-//                                                                                Long teacherId, boolean isSubgroup);
-
     @Query(value = "select new sbangularjs.DTO.SubjectDTO(ca.id, ca.teacher.id, ca.attestation.id," +
             "d.id, d.name, g.id, g.number) " +
             " from CertificationAttestation ca " +
@@ -36,4 +30,17 @@ public interface CertificationAttestationRepository extends JpaRepository<Certif
             " join Subgroup sg on sg.id = ca.subgroup.id " +
             " where ca.id in :certificationAttestationIds ")
     List<SubjectDTO> findAllSubjectSubgroupDTO(List<Long> certificationAttestationIds);
+
+//    List<CertificationAttestation> findByAttestationIdAndSubgroupId(Long attestationId, Long subgroupId);
+//    List<CertificationAttestation> findByAttestationIdAndGroupId(Long attestationId, Long groupId);
+
+    @Query("select ca from CertificationAttestation ca " +
+            "where ca.attestation.id = :attestationId and ca.subgroup.id = :subgroupId and ca.syllabusContent.discipline.department.id = :departmentId")
+    List<CertificationAttestation> findCAsByAttestationIdAndSubgroupIdAndDepId(Long attestationId, Long subgroupId, Long departmentId);
+
+    @Query("select ca from CertificationAttestation ca " +
+            "where ca.attestation.id = :attestationId and ca.group.id = :groupId and ca.syllabusContent.discipline.department.id = :departmentId")
+    List<CertificationAttestation> findCAsByAttestationIdAndGroupIdAndDepId(Long attestationId, Long groupId, Long departmentId);
+
+
 }

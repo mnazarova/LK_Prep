@@ -37,5 +37,9 @@ public class Department { // Кафедра
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PlaceWork> placesWork;
 
+    @JsonIgnore
+    @OneToOne(mappedBy = "department", cascade = CascadeType.ALL)
+    private Secretary secretary;
+
     public Department() {}
 }

@@ -15,6 +15,14 @@
         </ui-select-choices>
     </ui-select>-->
 
+    <!--<button type="button" class="btn btn-primary" data-click="getDepartments()" data-toggle="modal"
+            data-target="#exampleModal" data-content="@mdo">Open modal for @mdo</button>
+    <button href="http://www.google.com" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-content="@fat">Open modal for @fat</button>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-content="@getbootstrap">Open modal for @getbootstrap</button>-->
+
+    <!--<div class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Tooltip on top">tooltip</div>-->
+
+
     <div class="my-3 card col-md-10 bg-light mx-auto">
         <form class="simple-form" name="studentsForm">
             <div class="my-3 ml-5">
@@ -164,7 +172,19 @@
             Список предметов
         </div>
 
-        <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!subjectsAndTeachers.length">
+        <div class="row col-md-8 mx-auto mt-2">
+            <label class="col-md-2 p-0 text-center my-auto" for="labelAttestationForTableId">Аттестация</label>
+            <select class="col-md-9 custom-select form-control"
+                    ng-change="getSubjectsWithTeachersByDep(isSubgroup? subgroupId : group)"
+                    ng-model="attestationForTable.id"
+                    ng-options="item.id as item.name + ' (до ' + (item.deadline | date:'dd.MM.yyyy') + ')'
+                                                            for item in attestationsForTable"
+                    id="labelAttestationForTableId"
+                    required>
+            </select>
+        </div>
+
+        <div class="ng-hide font-weight-bold text-center mt-4 p-2 alert-warning" ng-show="!subjectsAndTeachers.length">
             Список предметов пуст
         </div>
         <table class="table table-striped table-hover table-sm my-3 table-responsive-lg" ng-if="subjectsAndTeachers.length">
@@ -179,7 +199,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="sAt in subjectsAndTeachers | orderBy:'surname' track by $index">
+            <tr ng-repeat="sAt in subjectsAndTeachers | orderBy:'teacher.surname' track by $index">
                 <td class="text-center w-5" title="{{sAt.syllabusContent.discipline.department.fullName}}">
                     {{sAt.syllabusContent.discipline.department.shortName}}
                 </td>
@@ -199,7 +219,7 @@
             </tbody>
         </table>
 
-        <div class="text-right my-3">
+        <div class="text-right mb-3">
             <hr>
             <button class="btn btn-info text-white"
                     type="button"
@@ -210,15 +230,15 @@
         </div>
     </div>
 
-    <div class="my-3 card col-md-10 bg-light mx-auto" ng-if="viewLinkForm">
+    <div class="my-3 card col-md-10 bg-light mx-auto p-0" ng-if="viewLinkForm">
+        <button class="btn btn-sm text-danger"
+                type="button"
+                ng-click="closeLinkForm()"
+                title="Закрыть форму">
+            <i class="fa fa-2x fa-times pull-right"></i>
+        </button>
         <div class="font-weight-bold h4 text-center mt-4">
             Добавление предмета
-            <button class="btn btn-sm btn-ligth text-danger pull-right"
-                    type="button"
-                    ng-click="closeLinkForm()"
-                    title="Закрыть форму">
-                    <i class="fa fa-2x fa-minus-square-o"></i>
-            </button>
         </div>
         <form class="my-5 simple-form" name="form.linkForm">
             <div class="col-md-8 mx-auto">
@@ -242,7 +262,7 @@
                     <select class="custom-select form-control"
                             name="groupForDiscipline"
                             ng-change="getSemesterNumbers(groupForDiscipline);
-                                       getDisciplines(groupForDiscipline, semesterNumber);"
+                                       getDisciplinesByDep(groupForDiscipline, semesterNumber);"
                             ng-model="groupForDiscipline"
                             ng-options="item.id as item.number for item in groupsForDiscipline"
                             id="labelGroupForDiscipline"
@@ -258,7 +278,7 @@
                             ng-model="semesterNumber"
                             ng-class="{'border-success': curSemesterNumber == semesterNumber}"
                             ng-options="item as item + ((item == curSemesterNumber) ? ' (текущий)' : '') for item in semesterNumbers"
-                            ng-change="getDisciplines(groupForDiscipline, semesterNumber)"
+                            ng-change="getDisciplinesByDep(groupForDiscipline, semesterNumber)"
                             id="labelSemesterNumber"
                             required>
                     </select>
@@ -287,6 +307,7 @@
             </div>-->
             <div class="col-md-8 mx-auto mt-3">
                 <ui-select ng-model="discipline.selected"
+                           ng-disabled="disciplines == null"
                            name="discipline"
                            on-select="getTeachers(discipline.selected)"
                            class="col-md-12 p-0"
@@ -317,7 +338,7 @@
             </div>-->
             <div class="col-md-8 mx-auto mt-3">
                 <ui-select ng-model="teacher.selected"
-                           ng-disabled="!discipline.selected"
+                           ng-disabled="!discipline.selected || !teachers"
                            name="teacher"
                            class="col-md-12 p-0"
                            theme="select2" title="Выберите преподавателя"

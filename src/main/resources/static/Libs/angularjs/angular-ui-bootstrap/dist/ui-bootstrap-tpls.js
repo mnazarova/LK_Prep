@@ -4404,7 +4404,7 @@ angular.module('ui.bootstrap.tooltip', ['ui.bootstrap.position', 'ui.bootstrap.s
 
   /**
    * Returns the actual instance of the $tooltip service.
-   * TODO support multiple triggers
+   * support multiple triggers
    */
   this.$get = ['$window', '$compile', '$timeout', '$document', '$uibPosition', '$interpolate', '$rootScope', '$parse', '$$stackedMap', function($window, $compile, $timeout, $document, $position, $interpolate, $rootScope, $parse, $$stackedMap) {
     var openedTooltips = $$stackedMap.createNew();
@@ -4538,7 +4538,7 @@ angular.module('ui.bootstrap.tooltip', ['ui.bootstrap.position', 'ui.bootstrap.s
             ttScope.origScope = scope;
 
             // By default, the tooltip is not open.
-            // TODO add ability to start tooltip opened
+            // add ability to start tooltip opened
             ttScope.isOpen = false;
             openedTooltips.add(ttScope, {
               close: hide
@@ -6839,7 +6839,7 @@ angular.module("uib/template/modal/backdrop.html", []).run(["$templateCache", fu
   $templateCache.put("uib/template/modal/backdrop.html",
     "<div class=\"modal-backdrop\"\n" +
     "     uib-modal-animation-class=\"fade\"\n" +
-    "     modal-in-class=\"in\"\n" +
+    "     modal-in-class=\"show\"\n" +
     "     ng-style=\"{'z-index': 1040 + (index && 1 || 0) + index*10}\"\n" +
     "></div>\n" +
     "");
@@ -6849,7 +6849,7 @@ angular.module("uib/template/modal/window.html", []).run(["$templateCache", func
   $templateCache.put("uib/template/modal/window.html",
     "<div modal-render=\"{{$isRendered}}\" tabindex=\"-1\" role=\"dialog\" class=\"modal\"\n" +
     "    uib-modal-animation-class=\"fade\"\n" +
-    "    modal-in-class=\"in\"\n" +
+    "    modal-in-class=\"show\"\n" +
     "    ng-style=\"{'z-index': 1050 + index*10, display: 'block'}\">\n" +
     "    <div class=\"modal-dialog {{size ? 'modal-' + size : ''}}\"><div class=\"modal-content\" uib-modal-transclude></div></div>\n" +
     "</div>\n" +

@@ -1,13 +1,42 @@
 app.controller("LinkController", function($scope, $http, $state/*, $timeout, $interval*/) {
 
-    $scope.$root['ModalController'].areYouSure(function () {
-        $scope.toasterSuccess("Запись удалена");
-        $state.reload();
-    });
-
     $scope.form = {};
+    $scope.attestationForTable = {};
     getAttestation();
     getAllFormOfWork();
+
+    function getAttestation () {
+        $http({
+            method: 'GET',
+            url: '/getAttestation'
+        }).then(
+            function(res) {
+                $scope.attestations = res.data;
+                $scope.attestation = res.data[0].id;
+
+                $scope.attestationsForTable = res.data;
+                $scope.attestationForTable.id = res.data[0].id;
+            },
+            function(res) {
+                // console.log("Error: " + res.status + " : " + res.data);
+            }
+        );
+    }
+
+    function getAllFormOfWork () {
+        $http({
+            method: 'GET',
+            url: '/getAllFormOfWork'
+        }).then(
+            function(res) {
+                $scope.forms_of_work = res.data;
+                $scope.form_of_work = res.data[0].id;
+            },
+            function(res) {
+                // console.log("Error: " + res.status + " : " + res.data);
+            }
+        );
+    }
 
     getAllFaculties();
     function getAllFaculties() {
@@ -138,7 +167,7 @@ app.controller("LinkController", function($scope, $http, $state/*, $timeout, $in
             params: {
                 isSubgroup: !!$scope.isSubgroup, // если undefined
                 groupOrSubgroup: groupOrSubgroup,
-                attestation: $scope.attestation // id
+                attestation: $scope.attestationForTable.id
             },
             headers: {
                 'Content-Type': 'application/json'
@@ -202,37 +231,6 @@ app.controller("LinkController", function($scope, $http, $state/*, $timeout, $in
         getGroupsOfSelectedStudents();
     };
 
-
-    function getAttestation () {
-        $http({
-            method: 'GET',
-            url: '/getAttestation'
-        }).then(
-            function(res) {
-                $scope.attestations = res.data;
-                $scope.attestation = res.data[0].id;
-            },
-            function(res) {
-                // console.log("Error: " + res.status + " : " + res.data);
-            }
-        );
-    }
-
-    function getAllFormOfWork () {
-        $http({
-            method: 'GET',
-            url: '/getAllFormOfWork'
-        }).then(
-            function(res) {
-                $scope.forms_of_work = res.data;
-                $scope.form_of_work = res.data[0].id;
-            },
-            function(res) {
-                // console.log("Error: " + res.status + " : " + res.data);
-            }
-        );
-    }
-
     function getGroupsOfSelectedStudents () {
         $http({
             method: 'PATCH',
@@ -254,7 +252,6 @@ app.controller("LinkController", function($scope, $http, $state/*, $timeout, $in
     }
 
     // при смене GroupsOfSelectedStudents вызывать getSemesterNumber();
-
     $scope.getSemesterNumbers = function(selectedGroupId) {
         $http({
             method: 'PATCH',
@@ -266,6 +263,7 @@ app.controller("LinkController", function($scope, $http, $state/*, $timeout, $in
         }).then(
             function(res) {
                 $scope.semesterNumbers = res.data;
+                $scope.clearTeacherAndDiscipline();
                 getCurSemNumb(selectedGroupId);
             },
             function(res) {
@@ -283,24 +281,31 @@ app.controller("LinkController", function($scope, $http, $state/*, $timeout, $in
         }).then(
             function(res) {
                 $scope.curSemesterNumber = res.data;
-                $scope.semesterNumber = res.data;
-                $scope.getDisciplines(selectedGroupId, $scope.semesterNumber);
+                // $scope.semesterNumber = res.data;
+                // $scope.getDisciplinesByDep(selectedGroupId, $scope.curSemesterNumber);
             }
         );
     }
 
-    $scope.getDisciplines = function (selectedGroupId, selectedSemesterNumber) {
+    $scope.getDisciplinesByDep = function (selectedGroupId, selectedSemesterNumber) {
+        if (selectedSemesterNumber == null) // == undefined (р. и с null)
+            return;
         $http({
             method: 'PATCH',
-            url: '/getDisciplines',
+            url: '/getDisciplinesByDep',
             params: {
                 groupId: selectedGroupId,
                 semesterNumber: selectedSemesterNumber
             }
         }).then(
             function(res) {
-                $scope.disciplines = res.data;
-                $scope.discipline = {};
+                $scope.clearTeacherAndDiscipline(); // важно в первом случае (status === 204)
+
+                if (+res.status === 204) // не закрывать форму, так как может выбрать другой семестр
+                    $scope.toasterWarning('У выбранной группы в данном семестре на Вашей кафедре нет предметов!');
+                else // status == 200
+                    $scope.disciplines = res.data;
+                    // $scope.discipline = {}; // для этого clearTeacherAndDiscipline()
             }
         );
     };
@@ -354,6 +359,7 @@ app.controller("LinkController", function($scope, $http, $state/*, $timeout, $in
         }).then(
             function(res) {
                 $scope.subjectsAndTeachers = res.data;
+                $scope.attestationForTable.id = $scope.form.linkForm.attestation.$modelValue;
                 $scope.closeLinkForm();
                 $scope.toasterSuccess('Предмет успешно добавлен!');
             },
@@ -366,8 +372,14 @@ app.controller("LinkController", function($scope, $http, $state/*, $timeout, $in
 
     $scope.closeLinkForm = function () {
         $scope.viewLinkForm = false;
+        $scope.clearTeacherAndDiscipline();
+    };
+
+    $scope.clearTeacherAndDiscipline = function () {
         $scope.teachers = null;
-        $scope.teacher = null;
+        $scope.teacher = {};
+        $scope.disciplines = null;
+        $scope.discipline = {};
     };
 
     $scope.checkBeforeDeleteDiscipline = function (subjectAndTeacher) {
@@ -379,17 +391,19 @@ app.controller("LinkController", function($scope, $http, $state/*, $timeout, $in
             }
         }).then(
             function(res) {
-                console.log(res.data);
-                deleteDiscipline(subjectAndTeacher)
+                // console.log(res.data);
+                deleteDiscipline(subjectAndTeacher);
             },
             function(res) {
-                // модальное окно
-                $scope.$root['ModalController'].areYouSure(function () {
+                $scope.$root['ModalController'].confirmYesAndNo("Преподаватель уже внёс изменения в ведомость по данному предмету! " +
+                    "Вы уверены, что хотие удалить?", "Да", "Нет", 'btn-outline-danger', 'btn-outline-info',
+                    function () {
+                        deleteDiscipline(subjectAndTeacher);
                         $scope.toasterSuccess("Запись удалена");
-                        $state.reload();
-                });
-                console.log(res.status);
-                $scope.toasterWarning('Преподаватель уже внёс изменения в ведомость по данному предмету');
+                    }
+                );
+                // console.log(res.data);
+                // console.log(res.status);
             }
         );
     };
@@ -411,6 +425,14 @@ app.controller("LinkController", function($scope, $http, $state/*, $timeout, $in
             }
         );
     }
+
+    /*$scope.openModal = function () {
+        $scope.$root['ModalController'].openModal("rtyu", function () {
+            console.log("yes")
+        }, function () {
+            console.log("no")
+        });
+    }*/
 
     /*$scope.clearTeacher = function () {
         $scope.teachers.selected = undefined;

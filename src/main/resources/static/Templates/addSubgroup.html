@@ -71,11 +71,11 @@
                         <div class="font-weight-bold text-center alert-warning p-2" ng-if="!commonListStudents.length">
                             Для добавления студентов в список нажмите на кнопку "Добавить"
                         </div>
-                        <div class="custom-control border-top"
+                        <div class="custom-control border-top row"
                              ng-class="{'bg-light': st.add}"
                              ng-repeat="st in commonListStudents track by $index">
                             <input type="checkbox" ng-model="st.add"
-                                   class="m-2"
+                                   class="col-md-1"
                                    ng-change="checkExistenceAdded()"
                                    id="{{$index}}">
                             <label class="text-center m-0"
@@ -107,16 +107,16 @@
                     </div>
 
                     <div class="card-body heightList">
-                        <div class="font-weight-bold text-center alert-warning p-2" ng-if="!listSelectedStudents.length">
+                        <div class="font-weight-bold text-center alert-warning p-3" ng-if="!listSelectedStudents.length">
                             В списке нет студентов
                         </div>
                         <ul ng-repeat="st in listSelectedStudents" class="list-group">
                             <li class="list-group border-top">
                                 <div class="row">
-                                    <i class="btn text-info fa fa-minus-square py-0 col-lg-1"
+                                    <i class="btn text-info fa fa-minus-square py-0 col-md-1 my-auto"
                                        title="Вернуть в общий список"
                                        ng-click="revert($index)"></i>
-                                    <span class="col-lg-11">
+                                    <span class="m-0 text-center">
                                         {{st.numberRecordBook}}. {{st.surname}} {{st.name}} {{st.patronymic}}
                                     </span>
                                 </div>

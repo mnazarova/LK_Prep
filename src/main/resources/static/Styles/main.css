@@ -9,6 +9,7 @@
 
 .heightList {
     max-height: 400px;
+    min-height: 105px;
     overflow: auto;
 }
 
@@ -33,27 +34,26 @@
 /* Хлебные крошки breadcrumb */
 
 
-/* ui-Select*/
-/*.select2 > .select2-choice.ui-select-match {
-    !* Because of the inclusion of Bootstrap *!
-    height: 29px;
+
+/* Чтобы работали модалки в Bootstrap 4  либо добавить стили, либо замена в исходниках*/
+/* изменено modal-in-class in на show */
+/*.fade.in {
+    opacity: 1 !important;
 }
 
-.selectize-control > .selectize-dropdown {
-    top: 36px;
+.modal.in .modal-dialog {
+    -webkit-transform: translate(0, 0) !important;
+    -o-transform: translate(0, 0) !important;
+    transform: translate(0, 0) !important;
 }
-!* Some additional styling to demonstrate that append-to-body helps achieve the proper z-index layering. *!
-.select-box {
-    background: #fff;
-    position: relative;
-    z-index: 1;
-}
-.alert-info.positioned {
-    margin-top: 1em;
-    position: relative;
-    z-index: 10000; !* The select2 dropdown has a z-index of 9999 *!
+
+.modal-backdrop.in {
+    filter: alpha(opacity=50) !important;
+    opacity: .5 !important;
 }*/
-/* ui-Select*/
+/* чтобы работали модалки в Bootstrap 4 */
+
+
 
 
 /* 2 меню, следящий за курсором */
