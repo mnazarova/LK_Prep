@@ -196,7 +196,7 @@ app.controller('ModalController',function ($scope, $uibModal, /*$uibModalInstanc
 
 });
 
-app.controller('AppController',function ($scope, $http, $window, toaster) {
+app.controller('AppController',function ($scope, $state, $http, $window, toaster) {
 
     /* Подключение tooltip на всех страницах */
     /*$(function () { $('[data-toggle="tooltip"]').tooltip(); });*/
@@ -329,13 +329,43 @@ app.controller('AppController',function ($scope, $http, $window, toaster) {
             method: 'GET',
             url: '/getDataUser'
         }).then(
-            function (res) { // success
-                $scope.ur = res.data;
-            },
-            function (res) { // error
-                console.log("Error: " + res.status + " : " + res.data);
+            function (res) {
+                $scope.counter = 0;
+                $scope.allRoles = res.data;
+
+                if ($scope.allRoles.length)
+                    $scope.ur = $scope.allRoles[$scope.counter];
+
+                if ($scope.allRoles.length > 1) {
+                    $scope.multipleRoles = true;
+                    setNameNextRole();
+                }
             }
         );
+    }
+
+    function setNameNextRole() {
+        if (!$scope.allRoles[$scope.counter + 1]) // узнать название след роли, но не переключаться
+            $scope.nextRole = $scope.allRoles[0];
+        else // если след роль есть ($scope.counter + 1)
+            $scope.nextRole = $scope.allRoles[$scope.counter + 1];
+        if ($scope.nextRole === 'DEANERY')
+            $scope.nameNextRole = "Деканат";
+        else
+            if ($scope.nextRole === 'TEACHER')
+                $scope.nameNextRole = "Преподаватель";
+            else
+                if ($scope.nextRole === 'SECRETARY')
+                    $scope.nameNextRole = "Секретарь";
+    }
+
+    $scope.changeRole = function () {
+        $scope.counter++;
+        if (!$scope.allRoles[$scope.counter])
+            $scope.counter = 0;
+        $scope.ur = $scope.allRoles[$scope.counter];
+        setNameNextRole();
+        $state.go("help");
     }
 
     /*$rootScope.previousState;
@@ -389,6 +419,20 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $sce
             templateUrl: 'Templates/statements.html',
             controller: 'StatementsController'
         })
+        .state('statementId', { // выбор группы
+            url: '/statements/:id',
+            templateUrl: 'Templates/statementId.html',
+            controller: 'StatementIdController'
+        })
+        .state('state', { // просмотр ведомости представителем деканата
+            url: '/statements/:statementsId/:id',
+            /*params: {
+                id: null,
+                statementsId: null
+            },*/
+            templateUrl: 'Templates/state.html',
+            controller: 'StateController'
+        })
         .state('students', {
             url: '/students',
             templateUrl: 'Templates/students.html',
@@ -415,11 +459,11 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $sce
             controller: 'SubjectController'
         })
         .state('contentAttestation', {
-            url: '/contentAttestation',
-            params: {
+            url: '/contentAttestation/:attestationId/:id',
+            /*params: {
                 id: null,
                 attestationId: null
-            } ,
+            } ,*/
             templateUrl: 'Templates/contentAttestation.html',
             controller: 'ContentAttestationController'
             // добавить переменную, определяющую группа или подгруппа

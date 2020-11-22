@@ -1,0 +1,177 @@
+<div ng-show="ur == 'DEANERY'">
+
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a ui-sref="statements">Список аттестаций</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Список групп и подгрупп</li>
+    </ol>
+
+    <div class="py-4 mt-4 card col-md-10 mx-auto border-info">
+        <form class="simple-form" name="forms.statementsForm">
+            <div class="col-md-6 mx-auto">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox"
+                           class="custom-control-input"
+                           ng-model="isSubgroup"
+                           name="isSubgroup"
+                           ng-change="selectedOnSubgroupList()"
+                           id="customControlValidation">
+                    <label class="custom-control-label" for="customControlValidation">Выбрать подгруппу</label>
+                </div>
+            </div>
+
+            <div ng-show="isSubgroup">
+                <div class="col-md-6 mx-auto mt-3">
+                    <ui-select ng-model="subgroup.selected"
+                               ng-change="selectedOnSubgroupList()"
+                               ng-disabled="!subgroupList.length"
+                               name="subgroup"
+                               class="col-md-12 p-0"
+                               theme="select2" title="Выберите подгруппу"
+                               required>
+                        <ui-select-match placeholder="Выберите подгруппу...">
+                            {{$select.selected.name}}
+                        </ui-select-match>
+                        <ui-select-choices repeat="subgr in subgroupList | propsFilter: {name: $select.search} | orderBy:'name'">
+                            <div ng-bind-html="subgr.name | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                    <!--<label for="labelSubgroup">Подгруппа</label>
+                    <select class="custom-select form-control"
+                            ng-change="checkSubgroup()"
+                            ng-disabled="!subgroupList.length"
+                            name="subgroup"
+                            ng-model="subgroup"
+                            ng-options="item.id as item.name for item in subgroupList"
+                            id="labelSubgroup"
+                            required>
+                    </select>-->
+                </div>
+            </div>
+
+            <div ng-show="!isSubgroup">
+                <div class="col-md-6 mx-auto mt-3">
+                    <ui-select ng-model="group.selected"
+                               ng-change="selectedOnGroupList()"
+                               ng-disabled="!groupList.length"
+                               name="group"
+                               class="col-md-12 p-0"
+                               theme="select2" title="Выберите группу"
+                               required>
+                        <ui-select-match placeholder="Выберите группу...">
+                            {{$select.selected.number}}
+                        </ui-select-match>
+                        <ui-select-choices repeat="gr in groupList | propsFilter: {number: $select.search} | orderBy:'number'">
+                            <div ng-bind-html="gr.number | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                    <!--<label for="labelGroup">Группа</label>
+                    <select class="js-example-placeholder-single custom-select form-control"
+                            ng-change="selectedOnGroupList()"
+                            ng-disabled="!groupList.length || groups_NO_CONTENT"
+                            name="group"
+                            ng-model="group"
+                            ng-options="item.id as item.number for item in groupList"
+                            id="labelGroup"
+                            required>
+                    </select>-->
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="card col-md-10 mx-auto p-0 border-info">
+        <div ng-show="!isSubgroup">
+            <!--<div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!groups_NO_CONTENT && !groups.length">
+                На данный момент группы, которые доступны для просмотра, отсутствуют
+            </div>
+            <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="groups_NO_CONTENT && !groups.length">
+                На данный момент ведомости, заведённые на группы, по данной аттестации отсутствуют
+            </div>-->
+
+            <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!groups.length">
+                Ведомости не найдены
+            </div>
+
+            <div ng-if="groups.length">
+                <table class="table table-hover table-striped table-sm table-responsive-lg">
+                    <thead>
+                    <tr>
+                        <th class="text-center">Номер группы</th>
+                        <th class="text-center">Предмет</th>
+                        <th class="text-center">Форма работы</th>
+                        <th class="text-center">Преподаватель</th>
+                        <th class="text-center"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="group in groups | orderBy:'teacher.surname' track by $index">
+                        <td class="text-center border-info">{{group.groupNumber}}</td>
+                        <td class="text-center border-info">{{group.disciplineName}}</td>
+                        <td class="text-center border-info">{{group.form_of_workName}}</td>
+                        <td class="text-center border-info">
+                            {{group.teacher.surname + ' ' + group.teacher.name + ' ' + group.teacher.patronymic}}
+                        </td>
+                        <td class="text-center border-info">
+                            <button class="btn btn-md btn-info text-white"
+                                    type="button"
+                                    ui-sref="state({id: group.certificationAttestationId, statementsId: group.attestationId})"
+                                    title="Редактировать ведомость группы">
+                                <i class="fa fa-share-square-o"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <div ng-show="isSubgroup">
+
+           <!-- <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!groups_NO_CONTENT && !subgroups.length">
+                На данный момент подгруппы, которые доступны для просмотра, отсутствуют
+            </div>
+            <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="groups_NO_CONTENT && !subgroups.length">
+                На данный момент ведомости, заведённые на подгруппы, по данной аттестации отсутствуют
+            </div>-->
+
+            <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!subgroups.length">
+                Ведомости не найдены
+            </div>
+
+            <div ng-if="subgroups.length">
+                <table class="table table-hover table-striped table-sm table-responsive-lg">
+                    <thead>
+                    <tr>
+                        <th class="text-center">Название подгруппы</th>
+                        <th class="text-center">Предмет</th>
+                        <th class="text-center">Форма работы</th>
+                        <th class="text-center">Преподаватель</th>
+                        <th class="text-center"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="subgroup in subgroups | orderBy:'teacher.surname' track by $index">
+                        <td class="text-center border-info">{{subgroup.subgroupName}}</td>
+                        <td class="text-center border-info">{{subgroup.disciplineName}}</td>
+                        <td class="text-center border-info">{{subgroup.form_of_workName}}</td>
+                        <td class="text-center border-info">
+                            {{subgroup.teacher.surname + ' ' + subgroup.teacher.name + ' ' + subgroup.teacher.patronymic}}
+                        </td>
+                        <td class="text-center border-info">
+                            <button class="btn btn-md btn-info text-white"
+                                    type="button"
+                                    ui-sref="state({id: subgroup.certificationAttestationId, statementsId: subgroup.attestationId})"
+                                    title="Редактировать ведомость подгруппы">
+                                <i class="fa fa-share-square-o"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</div>

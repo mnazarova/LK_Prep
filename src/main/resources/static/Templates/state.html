@@ -1,0 +1,75 @@
+<div ng-show="ur == 'DEANERY'">
+
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a ui-sref="statements">Список аттестаций</a></li>
+        <li class="breadcrumb-item"><a ui-sref="statementId({id: statementsId})">Список групп и подгрупп</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Просмотр ведомости</li>
+    </ol>
+
+    <div class="my-3 card col-md-10 mx-auto border-info">
+
+        <div class="font-weight-bold h4 text-center mt-4">
+            Список студентов
+        </div>
+
+        <div ng-if="contentAttestation.length">
+            <table class="table table-hover table-striped table-sm table-responsive-lg my-3">
+                <thead>
+                    <tr>
+                        <th class="text-center">Фамилия</th>
+                        <th class="text-center">Имя</th>
+                        <th class="text-center">Отчество</th>
+                        <th class="text-center">Номер зачётной книжки</th>
+                        <th class="text-center">Работает</th>
+                        <th class="text-center" data-toggle="tooltip" data-placement="top"
+                            title="Дата изменения преподавателем">
+                            Дата
+                        </th>
+                        <th class="text-center">Аттестован</th>
+                        <th class="text-center" data-toggle="tooltip" data-placement="top"
+                            title="Дата изменения преподавателем">
+                            Дата
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="ca in contentAttestation | orderBy:'student.surname' track by $index">
+                        <td class="text-center">{{ca.student.surname}}</td>
+                        <td class="text-center">{{ca.student.name}}</td>
+                        <td class="text-center">{{ca.student.patronymic}}</td>
+                        <td class="text-center">{{ca.student.numberRecordBook}}</td>
+                        <td class="text-center">
+                            <!--<input type="checkbox" disabled="true" ng-model="ca.works">-->
+                            <select class="custom-select form-control"
+                                    disabled="true"
+                                    ng-model="ca.works"
+                                    ng-options="item.key as item.value for item in selected">
+                            </select>
+                        </td>
+                        <td class="text-center pt-2">
+                            {{ca.dateWorks?ca.dateWorks:'-' | date: 'dd.MM.yyyy'}}
+                            <!--<input type="date" disabled="true" ng-model="ca.dateWorks">-->
+                        </td>
+                        <td class="text-center px-3">
+                            <!--<input type="checkbox" disabled="true" ng-model="ca.attest">-->
+                            <select class="custom-select form-control"
+                                    disabled="true"
+                                    ng-model="ca.attest"
+                                    ng-options="item.key as item.value for item in selected">
+                            </select>
+                        </td>
+                        <td class="text-center pt-2">
+                            {{ca.dateAttest?ca.dateAttest:'-' | date: 'dd.MM.yyyy'}}
+                            <!--<input type="date" disabled="true" ng-model="ca.dateAttest">-->
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!contentAttestation.length">
+            Список студентов пуст
+        </div>
+    </div>
+
+</div>

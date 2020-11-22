@@ -1,38 +1,44 @@
 <div ng-show="ur == 'TEACHER'">
 
-    <div class="my-5 card bg-light col-md-10 mx-auto">
+    <div class="my-5 card col-md-10 mx-auto border-info">
+
         <br>
-        <div class="font-weight-bold h4 text-center mt-4">
+        <div class="font-weight-bold h4 text-center mt-2">
             Найдено действующих аттестаций: {{attestations.length}}
         </div>
 
-        <table class="ng-hide table table-hover my-5 table-responsive-lg" ng-show="attestations.length">
+        <table class="ng-hide table table-hover table-responsive-lg table-striped my-2" ng-show="attestations.length">
             <thead>
                 <tr>
-                    <th class="text-center w-50">Название</th>
-                    <th class="text-center w-25">Крайний срок сдачи
-                        <br>(не включая)
+                    <th class="text-center border-white w-50">Название</th>
+                    <th class="text-center border-white w-25">Крайний срок сдачи
+                        <!--<br>(не включая)-->
                         <!--<i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top"
                            title="Внимание! Если дедлайн поставлен на 02.09.2020, то изменения можно внести до 0.00 мск 02.09.2020"></i>-->
-                        <i class="fa fa-info-circle text-info" title="Нажмите для вывода справки" ng-click="toasterInfo('Справка!',
-                        'Если крайний срок сдачи - 02.09.2020, то изменения можно вносить до 01.00 мск 02.09.2020')"></i>
+                        <!--<i class="fa fa-info-circle text-info" data-toggle="tooltip" data-placement="top"
+                           title="Выводимая дата не включается. Нажмите для подробной информации" ng-click="toasterInfo('Справка!',
+                        'Если крайний срок сдачи - 02.09.2020, то изменения можно вносить до 01.00 мск 02.09.2020')">
+                        </i>-->
+                        <i class="fa fa-info-circle text-info" data-toggle="tooltip" data-placement="top"
+                           title="До этой даты (не включая) имеется возможность вносить изменения в ведомости">
+                        </i>
                     </th>
-                    <th class="w-25"></th>
+                    <th class="border-white w-25"></th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="attestation in attestations | orderBy:'id'" class="border-top">
-                    <td class="text-center">{{attestation.name}}</td>
-                    <td class="text-center">
+                    <td class="text-center border-info">{{attestation.name}}</td>
+                    <td class="text-center border-info">
                         {{attestation.deadline | date: 'dd.MM.yyyy'}}
                     </td>
-                    <td class="text-center py-3">
+                    <td class="text-center border-info py-3">
                         <a class="btn btn-info text-white"
                            type="button"
                            ng-click="transitionToSubject(attestation.id)"
                            title="Перейти в карточку аттестации">
                             <i class="fa fa-share-square"></i>
-                           Перейти
+                            Перейти
                         </a>
                     </td>
                 </tr>

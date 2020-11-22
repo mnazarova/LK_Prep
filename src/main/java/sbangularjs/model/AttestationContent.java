@@ -35,14 +35,14 @@ public class AttestationContent { // Содержание аттестации
     private Student student;
 
     public AttestationContent() {
-        works = false;
-        attest = false;
+//        works = false;
+//        attest = false;
     }
 
     public AttestationContent(CertificationAttestation ca, Student stud) {
         certificationAttestation = ca;
         student = stud;
-        works = false;
-        attest = false;
+//        works = false;
+//        attest = false;
     }
 }

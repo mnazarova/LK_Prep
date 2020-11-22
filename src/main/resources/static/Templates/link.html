@@ -98,7 +98,7 @@
                     </div>
                     <div class="col-md-8 mx-auto mt-3">
                         <label for="labelGroup">Группа</label>
-                        <select class="js-example-placeholder-single custom-select form-control"
+                        <select class="custom-select form-control"
                                 ng-change="checkGroup()"
                                 ng-disabled="!studentsForm.department.$modelValue"
                                 name="group"
@@ -316,7 +316,7 @@
                     <ui-select-match placeholder="Выберите предмет...">
                         {{$select.selected.department.shortName + ': ' + $select.selected.name}}
                     </ui-select-match>
-                    <ui-select-choices repeat="discipline in disciplines | propsFilter: {name: $select.search}">
+                    <ui-select-choices repeat="discipline in disciplines | propsFilter: {name: $select.search} | orderBy:'name'">
                         <div ng-bind-html="discipline.name | highlight: $select.search"></div>
                         <small>
                             Кафедра: {{discipline.department.shortName}}
@@ -346,7 +346,7 @@
                     <ui-select-match placeholder="Выберите преподавателя...">
                         {{$select.selected.surname + ' ' + $select.selected.name + ' ' + $select.selected.patronymic}}
                     </ui-select-match>
-                    <ui-select-choices repeat="teacher in teachers | propsFilter: {surname: $select.search, name: $select.search}">
+                    <ui-select-choices repeat="teacher in teachers | propsFilter: {surname: $select.search, name: $select.search} | orderBy:'surname'">
                         <div ng-bind-html="teacher.surname | highlight: $select.search"></div>
                         <small>
                             Имя: {{teacher.name}}

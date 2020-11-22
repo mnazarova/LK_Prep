@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import sbangularjs.DTO.SubjectDTO;
 import sbangularjs.model.Teacher;
 import sbangularjs.model.User;
-import sbangularjs.repository.AttestationRepository;
+import sbangularjs.repository.AttestationContentRepository;
 import sbangularjs.repository.CertificationAttestationRepository;
 import sbangularjs.repository.TeacherRepository;
 
@@ -22,9 +22,9 @@ import java.util.List;
 @PreAuthorize("hasAuthority('TEACHER')")
 @AllArgsConstructor(onConstructor = @_(@Autowired))
 public class SubjectController {
-    private AttestationRepository attestationRepository;
     private TeacherRepository teacherRepository;
     private CertificationAttestationRepository certificationAttestationRepository;
+    private AttestationContentRepository attestationContentRepository;
 
     @PatchMapping("/getGroupsByAttestationAndByTeacher")
     public ResponseEntity<List<SubjectDTO>> getGroupsByAttestationAndByTeacher(@AuthenticationPrincipal User user,
@@ -41,7 +41,16 @@ public class SubjectController {
         List<SubjectDTO> subList = certificationAttestationRepository.findAllSubjectsGroupDTO(certificationAttestationIds); // далее заполнить дату
         if (subList.isEmpty())
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); // You many decide to return HttpStatus.NOT_FOUND
+        setFinished(subList);
         return new ResponseEntity<>(subList, HttpStatus.OK);
+    }
+
+    private void setFinished(List<SubjectDTO> subList) {
+        for (SubjectDTO sub: subList)
+            if (attestationContentRepository.findUnfinishedByCertificationAttestationId(sub.getCertificationAttestationId()) == 0) // нет null полей
+                sub.setFinished(false);
+            else
+                sub.setFinished(true);
     }
 
     @PatchMapping("/getSubgroupsByAttestationAndByTeacher")
@@ -56,9 +65,10 @@ public class SubjectController {
         if(certificationAttestationIds.isEmpty())
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
-        List<SubjectDTO> subList = certificationAttestationRepository.findAllSubjectSubgroupDTO(certificationAttestationIds);
+        List<SubjectDTO> subList = certificationAttestationRepository.findAllSubjectsSubgroupDTO(certificationAttestationIds);
         if (subList.isEmpty())
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); // You many decide to return HttpStatus.NOT_FOUND
+        setFinished(subList);
         return new ResponseEntity<>(subList, HttpStatus.OK);
     }
 

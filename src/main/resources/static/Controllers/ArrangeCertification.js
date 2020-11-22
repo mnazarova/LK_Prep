@@ -26,12 +26,12 @@ app.controller("ArrangeCertificationController", function($scope, $http, $state)
                 'Content-Type': 'application/json'
             }
         }).then(
-            function(res) { // success
-                $scope.toasterSuccess('', 'Ведомость успешно создана');
-                $state.go('home'); // переход на страницу ведомостей ?
+            function(res) {
+                $scope.toasterSuccess('', 'Аттестация успешно создана');
+                $state.go('statements');
             },
-            function(res) { // error
-                console.log("Error: " + res.status + " : " + res.data);
+            function(res) {
+                // console.log("Error: " + res.status + " : " + res.data);
             }
         );
     };

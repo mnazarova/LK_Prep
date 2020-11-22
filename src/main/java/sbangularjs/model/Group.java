@@ -32,5 +32,9 @@ public class Group {
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CertificationAttestation> certificationsAttestation;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DeaneryGroupOrSubgroup> deaneryGroupOrSubgroupList;
+
     public Group() {}
 }

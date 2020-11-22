@@ -1,5 +1,11 @@
 <div ng-show="ur == 'DEANERY'">
 
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a ui-sref="statements">Список аттестаций</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Добавление аттестации</li>
+    </ol>
+
+
     <div class="my-3 col-md-10 card bg-light mx-auto">
         <form class="simple-form" name="arrangeCertificationForm">
 
@@ -91,8 +97,11 @@
                 </div>
                 <div class="col-md-8 mx-auto pl-1 mt-4">
                     <label for="labelDeadline">Крайний срок</label>
-                    <i class="fa fa-info-circle text-info" title="Нажмите для вывода справки" ng-click="toasterInfo('Справка!',
-                    'Крайний срок внесения изменений (преподаватель сможет вносить изменения до 01.00 мск)')"></i>
+                    <!--<i class="fa fa-info-circle text-info" title="Нажмите для вывода справки" ng-click="toasterInfo('Справка!',-->
+                    <!--'Крайний срок внесения изменений (преподаватель сможет вносить изменения до 01.00 мск)')"></i>-->
+                    <i class="fa fa-info-circle text-info" data-toggle="tooltip" data-placement="top"
+                       title="До этой даты (не включая) преподаватели смогут вносить изменения в ведомости">
+                    </i>
                     <div class="input-group mb-3">
                         <input type="date"
                                class="form-control"

@@ -15,8 +15,7 @@ public interface AttestationRepository extends JpaRepository<Attestation, Long> 
 //    List<Attestation> findByDeadlineIsBefore();
 
     @Query("select a from Attestation a where a.deadline > :deadlineDateTime")
-    List<Attestation> findAllWithDeadlineDateTimeAfter(
-            @Param("deadlineDateTime") Date deadlineDateTime);
+    List<Attestation> findAllWithDeadlineDateTimeAfter(@Param("deadlineDateTime") Date deadlineDateTime);
 
     List<Attestation> findByNameContainingIgnoreCase(String name);
     /*List<Student> findAllBySurnameContainingIgnoreCaseAndEmailContainingIgnoreCase(String surname, String email);

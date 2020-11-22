@@ -28,7 +28,7 @@ public class RegistrationController {
             produces = { MediaType.APPLICATION_JSON_VALUE,
                     MediaType.APPLICATION_XML_VALUE })
     @ResponseBody*/
-    @PostMapping("/registration")
+    /*@PostMapping("/registration")
     public String addUser(User user, Model model) {
         User userFromDB = userRepository.findByUsername(user.getUsername());
         if(userFromDB != null) {
@@ -54,5 +54,5 @@ public class RegistrationController {
 
 //        model.addAttribute("message", "Вы успешно зарегистрировались!");
 //        return "redirect:/login";
-    }
+    }*/
 }

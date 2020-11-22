@@ -54,10 +54,20 @@
                         <td class="text-center">{{ca.student.patronymic}}</td>
                         <td class="text-center">{{ca.student.numberRecordBook}}</td>
                         <td class="text-center">
-                            <input type="checkbox" ng-model="ca.works">
+                            <select class="custom-select form-control"
+                                    name="ca.works"
+                                    ng-model="ca.works"
+                                    ng-options="item.key as item.value for item in selected">
+                            </select>
+                            <!--<input type="checkbox" ng-model="ca.works">-->
                         </td>
-                        <td class="text-center">
-                            <input type="checkbox" ng-model="ca.attest">
+                        <td class="text-center px-3">
+                            <select class="custom-select form-control"
+                                    name="ca.attest"
+                                    ng-model="ca.attest"
+                                    ng-options="item.key as item.value for item in selected">
+                            </select>
+                            <!--<input type="checkbox" ng-model="ca.attest">-->
                         </td>
                     </tr>
                 </tbody>

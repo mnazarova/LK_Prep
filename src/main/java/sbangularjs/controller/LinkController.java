@@ -18,9 +18,6 @@ import java.util.*;
 @PreAuthorize("hasAuthority('SECRETARY')")
 @AllArgsConstructor(onConstructor = @_(@Autowired))
 public class LinkController {
-
-    StudentsController studentsController;
-
     private SubgroupRepository subgroupRepository;
     private GroupRepository groupRepository;
 
@@ -44,6 +41,25 @@ public class LinkController {
         if (subgroups.isEmpty())
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); // You many decide to return HttpStatus.NOT_FOUND
         return new ResponseEntity<>(subgroups, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/findNotExpelledStudents",
+            method = RequestMethod.PATCH,
+            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+    @ResponseBody
+//    @PatchMapping("/findNotExpelledStudents")
+    public /*ResponseEntity*/ List<Student> findNotExpelledStudents(@RequestBody Long groupId) {
+        List<Student> students = studentRepository.findByGroupId(groupId);
+        if (students.isEmpty()) return null;//new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        for(int i=students.size()-1;i>=0;i--) {
+            if(students.get(i).getExpelled() != null && students.get(i).getExpelled()) // Expelled = TRUE, отчислены только тогда, когда true
+                students.remove(students.get(i));
+        }
+
+        if (students.isEmpty()) // все студенты отчислены (переведены)
+            return null;//new ResponseEntity<>(HttpStatus.NO_CONTENT); // You many decide to return HttpStatus.NOT_FOUND
+        return students;//new ResponseEntity<>(students, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/findNotExpelledStudentsFromSubgroup",
@@ -228,7 +244,7 @@ public class LinkController {
                 return new ResponseEntity<>(null, HttpStatus.CONFLICT);
 
             newCertificationAttestation.setGroup(group);
-            students = studentsController.findNotExpelledStudents(group.getId());
+            students = findNotExpelledStudents(group.getId());
         }
         certificationAttestationRepository.save(newCertificationAttestation);
 

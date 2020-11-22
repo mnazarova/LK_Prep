@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import sbangularjs.model.AttestationContent;
+import sbangularjs.model.CertificationAttestation;
 import sbangularjs.model.User;
 import sbangularjs.repository.AttestationContentRepository;
+import sbangularjs.repository.CertificationAttestationRepository;
 
 import java.util.Date;
 import java.util.List;
@@ -23,10 +25,17 @@ import java.util.List;
 @AllArgsConstructor(onConstructor = @_(@Autowired))
 public class ContentAttestationController {
     private AttestationContentRepository attestationContentRepository;
+    CertificationAttestationRepository certificationAttestationRepository;
 
     @PatchMapping("/getContentAttestation")
     public ResponseEntity<List<AttestationContent>> getContentAttestation(@AuthenticationPrincipal User user,
-                                                                          @RequestParam Long id) {
+                                                                          @RequestParam Long id,
+                                                                          @RequestParam Long attestationId) {
+        CertificationAttestation certificationAttestation = certificationAttestationRepository.findCertificationAttestationById(id);
+        if (certificationAttestation == null || !certificationAttestation.getTeacher().getUsername().equals(user.getUsername())
+        || !certificationAttestation.getAttestation().getId().equals(attestationId))
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+
         List<AttestationContent> attestationContents = attestationContentRepository.findAllByCertificationAttestationId(id);
         if (attestationContents.isEmpty())
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); // You many decide to return HttpStatus.NOT_FOUND

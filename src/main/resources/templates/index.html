@@ -10,8 +10,6 @@
 
     <script src="Libs/angularjs/angular.min.js"></script> <!-- 1.8.0 -->
 
-
-
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.6/ui-bootstrap.js" integrity="sha512-3z5zbCPEG7DvKKz46yvPmKL+w+UDfwY0f2YWFVIwBb+2Y4E23jTZHZxG+naAiTllvMNQAhapPDKGHBT7V3fQOA==" crossorigin="anonymous"></script>-->
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.6/ui-bootstrap-tpls.js" integrity="sha512-Re9KhAaoh5qo/Cm/wtExVs7ETTKTx/81aXPHko2nWlUvTzELYhTwpp/DwUu+z8ul+DjtbJdPcmxEYwKewzG62w==" crossorigin="anonymous"></script>-->
     <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.6/ui-bootstrap-csp.css" integrity="sha512-TSigfdiJq7G9AWJnE/8D3M/HcBs9wfKpbrCbMg4iSs8IRVujA854B5wd/glfPzBRaeqiLLz1jHm6swYsci2txQ==" crossorigin="anonymous" />-->
@@ -97,12 +95,17 @@
                             <!--<a class="nav-link" ui-sref-active="active" ui-sref="home">Главное меню</a>-->
                         <!--</li>-->
                         <!-- Для деканата -->
-                        <li class="nav-item ng-hide" ng-show="ur == 'DEANERY'">
+                        <!--<li class="nav-item ng-hide" ng-show="ur == 'DEANERY'">
                             <a class="nav-link" ui-sref-active="active" ui-sref="arrangeCertification">
                                 <i class="fa fa-exclamation-circle"></i>
-                                <!--Устроить--> Добавить аттестацию
+                                Добавить аттестацию
                             </a>
-                        </li>
+                        </li>-->
+                        <!--<li class="nav-item ng-hide" ng-show="multipleRoles">
+                            <button class="nav-link ng-hide" ng-click="changeRole()" ng-show="multipleRoles">
+                                Интерфейс "{{nameNextRole}}"
+                            </button>
+                        </li>-->
                         <li class="nav-item ng-hide" ng-show="ur == 'DEANERY'">
                             <a class="nav-link" ui-sref-active="active" ui-sref="statements">
                                 <i class="fa fa-list-alt"></i>
@@ -167,6 +170,10 @@
         </div>
     </nav>
 
+    <button class="ng-hide btn btn-outline-info col-md-12" ng-click="changeRole()" ng-show="multipleRoles">
+        К интерфейсу "{{nameNextRole}}"
+    </button>
+
     <div class="view">
         <ui-view></ui-view>
     </div>
@@ -179,7 +186,7 @@
             <ul class="list-inline mb-0 mt-3" id="nav">
                 <!--<li class="list-inline-item"><a ui-sref-active="active" ui-sref="home">Главное меню</a></li>-->
 
-                <li class="list-inline-item ng-hide" ng-show="ur == 'DEANERY'"><a ui-sref-active="active" ui-sref="arrangeCertification"><!--Устроить--> Добавить аттестацию</a></li>
+                <!--<li class="list-inline-item ng-hide" ng-show="ur == 'DEANERY'"><a ui-sref-active="active" ui-sref="arrangeCertification">Добавить аттестацию</a></li>-->
                 <li class="list-inline-item ng-hide" ng-show="ur == 'DEANERY'"><a ui-sref-active="active" ui-sref="statements">Ведомости</a></li>
                 <li class="list-inline-item ng-hide" ng-show="ur == 'DEANERY'"><a ui-sref-active="active" ui-sref="students">Студенты</a></li>
 
@@ -223,6 +230,8 @@
 
     <script src="Controllers/ArrangeCertification.js"></script>
     <script src="Controllers/Statements.js"></script>
+    <script src="Controllers/StatementId.js"></script>
+    <script src="Controllers/State.js"></script>
     <script src="Controllers/Students.js"></script>
 
     <script src="Controllers/AddSubgroup.js"></script>

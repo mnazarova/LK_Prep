@@ -290,6 +290,7 @@ app.controller("LinkController", function($scope, $http, $state/*, $timeout, $in
     $scope.getDisciplinesByDep = function (selectedGroupId, selectedSemesterNumber) {
         if (selectedSemesterNumber == null) // == undefined (р. и с null)
             return;
+        // fetch();
         $http({
             method: 'PATCH',
             url: '/getDisciplinesByDep',
@@ -396,7 +397,7 @@ app.controller("LinkController", function($scope, $http, $state/*, $timeout, $in
             },
             function(res) {
                 $scope.$root['ModalController'].confirmYesAndNo("Преподаватель уже внёс изменения в ведомость по данному предмету! " +
-                    "Вы уверены, что хотие удалить?", "Да", "Нет", 'btn-outline-danger', 'btn-outline-info',
+                    "Вы уверены, что хотите удалить?", "Да", "Нет", 'btn-outline-danger', 'btn-outline-info',
                     function () {
                         deleteDiscipline(subjectAndTeacher);
                         $scope.toasterSuccess("Запись удалена");

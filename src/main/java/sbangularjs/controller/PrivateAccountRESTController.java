@@ -12,8 +12,8 @@ import java.util.Set;
 
 @RestController
 public class PrivateAccountRESTController {
-    @Autowired
-    private UserRepository userRepository;
+//    @Autowired
+//    private UserRepository userRepository;
 
 /*//    @RequestMapping("/privateAccount")
     @RequestMapping(value = "/privateAccount", //
@@ -28,7 +28,7 @@ public class PrivateAccountRESTController {
         return "privateAccount";
     }*/
 
-    @RequestMapping(value = "/getDataUser", //
+    /*@RequestMapping(value = "/getDataUser", //
             method = RequestMethod.GET, //
             produces = { MediaType.APPLICATION_JSON_VALUE, //
                     MediaType.APPLICATION_XML_VALUE })
@@ -36,7 +36,7 @@ public class PrivateAccountRESTController {
 //    @GetMapping("/getDataUser")
     public Set<Role> getDataUser(@AuthenticationPrincipal User user) {
         return userRepository.findByUsername(user.getUsername()).getRoles();
-    }
+    }*/
 
     /*@RequestMapping(value = "/getDataClient",method = RequestMethod.GET,produces = { MediaType.APPLICATION_JSON_VALUE,MediaType.APPLICATION_XML_VALUE })
     @ResponseBody

@@ -2,6 +2,7 @@ package sbangularjs.DTO;
 
 import lombok.Getter;
 import lombok.Setter;
+import sbangularjs.model.Teacher;
 
 import java.util.Date;
 
@@ -10,10 +11,11 @@ import java.util.Date;
 public class SubjectDTO {
 
     private Long subgroupId;
-    private String subgroupNumber;
+    private String subgroupName;
 
     private Long certificationAttestationId;
-    private Long teacherId;
+    private Teacher teacher;
+    private String form_of_workName;
     private Long attestationId;
 
     private Long groupId;
@@ -27,10 +29,10 @@ public class SubjectDTO {
 // готово к отправке
     public SubjectDTO() {}
 
-    public SubjectDTO(Long teacherId, Long attestationId,
+    /*public SubjectDTO(Long teacherId, Long attestationId,
                       Long disciplineId, String disciplineName, Long groupId,
                       String groupNumber, Date lastEdit, boolean finished) {
-        this.teacherId = teacherId;
+        this.teacher = teacher;
         this.attestationId = attestationId;
 
         this.disciplineId = disciplineId;
@@ -39,13 +41,16 @@ public class SubjectDTO {
         this.groupNumber = groupNumber;
         this.lastEdit = lastEdit;
         this.finished = finished;
-    }
+    }*/
 
-    public SubjectDTO(Long certificationAttestationId, Long teacherId, Long attestationId, Long disciplineId, String disciplineName,
+    public SubjectDTO(Long certificationAttestationId, String form_of_workName, Long attestationId,
+                      Teacher teacher/*Long teacherId, String teacherFullName*/, Long disciplineId, String disciplineName,
                       Long groupId, String groupNumber) {
         this.certificationAttestationId = certificationAttestationId;
-        this.teacherId = teacherId;
+        this.form_of_workName = form_of_workName;
         this.attestationId = attestationId;
+
+        this.teacher = teacher;
 
         this.disciplineId = disciplineId;
         this.disciplineName = disciplineName;
@@ -54,14 +59,17 @@ public class SubjectDTO {
         this.groupNumber = groupNumber;
     }
 
-    public SubjectDTO(Long subgroupId, String subgroupNumber, Long certificationAttestationId,
-                      Long teacherId, Long attestationId, Long disciplineId, String disciplineName) {
+    public SubjectDTO(Long subgroupId, String subgroupName,
+                      Long certificationAttestationId, String form_of_workName, Long attestationId,
+                      Teacher teacher /*Long teacherId, String teacherFullName*/, Long disciplineId, String disciplineName) {
         this.subgroupId = subgroupId;
-        this.subgroupNumber = subgroupNumber;
+        this.subgroupName = subgroupName;
 
         this.certificationAttestationId = certificationAttestationId;
-        this.teacherId = teacherId;
+        this.form_of_workName = form_of_workName;
         this.attestationId = attestationId;
+
+        this.teacher = teacher;
 
         this.disciplineId = disciplineId;
         this.disciplineName = disciplineName;
