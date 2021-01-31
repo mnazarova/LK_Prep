@@ -27,8 +27,8 @@ public class Teacher {
     private String email;
     @JsonIgnore // сокрытие данных
     private String username;
-    @JsonIgnore // сокрытие данных
-    private String password;
+//    @JsonIgnore // сокрытие данных
+//    private String password;
 
     @JsonIgnore
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
