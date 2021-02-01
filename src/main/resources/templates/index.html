@@ -5,8 +5,9 @@
     <meta http-equiv="X-UA-Compatible"
           content="IE-edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Личный кабинет преподавателей, БГТУ 'ВОЕНМЕХ' им. Д.Ф. Устинова">
+    <link rel="shortcut icon" href="">
     <title>Личный кабинет преподавателей</title>
-
 
     <script src="Libs/angularjs/angular.min.js"></script> <!-- 1.8.0 -->
 
@@ -21,6 +22,7 @@
     <link href="Styles/main.css" rel="stylesheet"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/3.0.0/toaster.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="Libs/angularjs/angular-block-ui/dist/angular-block-ui.min.css"/>
 
     <!-- ui-select files -->
     <link rel="stylesheet" href="Libs/angularjs/select.css">
@@ -180,9 +182,19 @@
 
     <footer class="py-3 bg-dark">
         <div class="my-2 text-white text-center text-small">
-            <img src="Images/logo.svg" width="100" alt="Военмех">
+            <a class="navbar-brand" href="#">
+                <img src="Images/logo.svg" width="100" alt="Военмех">
+            </a>
+            <p class="mb-1">БГТУ «ВОЕНМЕХ» им. Д.Ф. Устинова</p>
 
-            <p class="mb-1">© БГТУ «ВОЕНМЕХ» им. Д.Ф. Устинова, 2020</p>
+            <ul class="list-inline mb-0 mt-3">
+                <li class="list-inline-item"><a href="https://moodle.voenmeh.ru/login" title="ЭИОС Moodle"><img src="Images/moodle_new.png" alt="Moodle" width="50"></a></li>
+                <li class="list-inline-item"><a href="https://www.youtube.com/user/ibcibstu/featured" title="YouTube"><img src="Images/youtube55.png" alt="YouTube" width="50"></a></li>
+                <li class="list-inline-item"><a href="https://www.instagram.com/bstu_voenmeh/"><img src="Images/insta55.png" alt="Instagram" width="50"></a></li>
+                <li class="list-inline-item"><a href="https://mail.voenmeh.ru/mail" title="Корпоративная почта"><img src="Images/mail55_new.png" alt="Mail" width="50"></a></li>
+                <li class="list-inline-item"><a href="https://vk.com/voenmeh_i5" title="Официальная группа кафедры И5"><img src="Images/vk55.png" alt="Kafedra i5" width="55"></a></li>
+            </ul>
+
             <ul class="list-inline mb-0 mt-3" id="nav">
                 <!--<li class="list-inline-item"><a ui-sref-active="active" ui-sref="home">Главное меню</a></li>-->
 
@@ -207,10 +219,11 @@
 
 <script src="https://use.fontawesome.com/7328c42f01.js"></script>
 <script src="Libs/angularjs/angular-animate.min.js"></script>
-    <!--<script src="https://code.angularjs.org/1.8.0/angular-animate.min.js" ></script>-->
+<!--<script src="https://code.angularjs.org/1.8.0/angular-animate.min.js" ></script>-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/3.0.0/toaster.min.js"></script>
 <script src="Libs/angularjs/ui-router/release/angular-ui-router.min.js"></script>
-    <!-- ui-select files -->
+<script src="Libs/angularjs/angular-block-ui/dist/angular-block-ui.min.js"></script>
+<!-- ui-select files -->
 <script src="Libs/angularjs/select.js"></script>
 <script src="Libs/angularjs/angular-sanitize.js"></script>
 
