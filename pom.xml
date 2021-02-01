@@ -5,8 +5,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.mnazarova</groupId>
-    <artifactId>LK_Prep!</artifactId>
+    <artifactId>LK_Prep</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
 
     <name>SpringBootAngularJS</name>
     <description>Spring Boot + AngularJS</description>
@@ -68,6 +69,13 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+        </dependency>
+
+        <!-- tomcat -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <!-- angularjs-toaster
