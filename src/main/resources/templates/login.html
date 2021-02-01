@@ -22,10 +22,11 @@
 
     <div style="min-height: calc(100vh - 210px) !important;">
 
-        <div class="px-5 my-5 mx-auto card bg-light col-sm-8 col-md-6 col-lg-4">
-            <div class="my-4 text-center h4">
+        <div class="px-5 my-5 mx-auto card bg-light border-dark col-sm-8 col-md-6 col-lg-4">
+            <div class="mt-5 text-center h3">
                 <b>Авторизация</b>
             </div>
+            <hr>
 
             <div th:if="${param.error}" class="bg-danger text-white text-center pb-1 mb-3">
                 Вы ввели неверный логин и/или пароль. Попробуйте снова!
@@ -34,27 +35,38 @@
             <form th:action="@{/login}" method="post">
                 <div class="form-group">
                     <label for="labelName">Логин</label>
-                    <input type="text"
-                           class="form-control"
-                           ng-model="auth.login"
-                           name="username"
-                           id="labelName"
-                           placeholder="введите логин"
-                           required>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">&#9997;</div>
+                        </div>
+                        <input type="text"
+                               class="form-control border-dark"
+                               ng-model="auth.login"
+                               name="username"
+                               id="labelName"
+                               placeholder="введите логин"
+                               required>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="labelPassword">Пароль</label>
-                    <input type="password"
-                           class="form-control"
-                           ng-model="auth.password"
-                           name="password"
-                           id="labelPassword"
-                           placeholder="введите пароль"
-                           autocomplete="on"
-                           required>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">&#128274;</div>
+                        </div>
+                        <input type="password"
+                               class="form-control border-dark"
+                               ng-model="auth.password"
+                               name="password"
+                               id="labelPassword"
+                               placeholder="введите пароль"
+                               autocomplete="on"
+                               required>
+                    </div>
                 </div>
-                <div class="form-group text-right">
-                    <input class="btn btn-info px-4" type="submit" ng-click="transition()" value="Войти"/>
+
+                <div class="form-group my-5">
+                    <input class="btn btn-outline-info btn-block" type="submit" ng-click="transition()" value="Войти"/>
                 </div>
             </form>
         </div>
