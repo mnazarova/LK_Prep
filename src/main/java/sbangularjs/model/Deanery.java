@@ -25,7 +25,7 @@ public class Deanery {
 
     @JsonIgnore
     @OneToMany(mappedBy = "deanery", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DeaneryGroupOrSubgroup> deaneryGroupOrSubgroupList;
+    private List<DeaneryGroup> deaneryGroupList;
 
 
     public Deanery() {}

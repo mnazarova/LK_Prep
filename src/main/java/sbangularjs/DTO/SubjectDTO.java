@@ -14,8 +14,7 @@ public class SubjectDTO {
     private String subgroupName;
 
     private Long certificationAttestationId;
-    private Teacher teacher;
-    private String form_of_workName;
+//    private Teacher teacher;
     private Long attestationId;
 
     private Long groupId;
@@ -29,28 +28,13 @@ public class SubjectDTO {
 // готово к отправке
     public SubjectDTO() {}
 
-    /*public SubjectDTO(Long teacherId, Long attestationId,
-                      Long disciplineId, String disciplineName, Long groupId,
-                      String groupNumber, Date lastEdit, boolean finished) {
-        this.teacher = teacher;
-        this.attestationId = attestationId;
-
-        this.disciplineId = disciplineId;
-        this.disciplineName = disciplineName;
-        this.groupId = groupId;
-        this.groupNumber = groupNumber;
-        this.lastEdit = lastEdit;
-        this.finished = finished;
-    }*/
-
-    public SubjectDTO(Long certificationAttestationId, String form_of_workName, Long attestationId,
-                      Teacher teacher/*Long teacherId, String teacherFullName*/, Long disciplineId, String disciplineName,
+    public SubjectDTO(Long certificationAttestationId, Long attestationId,
+                      Long disciplineId, String disciplineName,
                       Long groupId, String groupNumber) {
         this.certificationAttestationId = certificationAttestationId;
-        this.form_of_workName = form_of_workName;
         this.attestationId = attestationId;
 
-        this.teacher = teacher;
+//        this.teacher = teacher;
 
         this.disciplineId = disciplineId;
         this.disciplineName = disciplineName;
@@ -60,16 +44,15 @@ public class SubjectDTO {
     }
 
     public SubjectDTO(Long subgroupId, String subgroupName,
-                      Long certificationAttestationId, String form_of_workName, Long attestationId,
-                      Teacher teacher /*Long teacherId, String teacherFullName*/, Long disciplineId, String disciplineName) {
+                      Long certificationAttestationId, Long attestationId,
+                      Long disciplineId, String disciplineName) {
         this.subgroupId = subgroupId;
         this.subgroupName = subgroupName;
 
         this.certificationAttestationId = certificationAttestationId;
-        this.form_of_workName = form_of_workName;
         this.attestationId = attestationId;
 
-        this.teacher = teacher;
+//        this.teacher = teacher;
 
         this.disciplineId = disciplineId;
         this.disciplineName = disciplineName;

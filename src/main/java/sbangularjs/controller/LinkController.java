@@ -1,3 +1,4 @@
+/*
 package sbangularjs.controller;
 
 import lombok.AllArgsConstructor;
@@ -48,7 +49,9 @@ public class LinkController {
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
 //    @PatchMapping("/findNotExpelledStudents")
-    public /*ResponseEntity*/ List<Student> findNotExpelledStudents(@RequestBody Long groupId) {
+    public */
+/*ResponseEntity*//*
+ List<Student> findNotExpelledStudents(@RequestBody Long groupId) {
         List<Student> students = studentRepository.findByGroupId(groupId);
         if (students.isEmpty()) return null;//new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
@@ -67,7 +70,9 @@ public class LinkController {
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     @ResponseBody
 //    @PatchMapping("/findNotExpelledStudentsFromSubgroup")
-    public /*ResponseEntity*/List<Student> findNotExpelledStudentsFromSubgroup(@RequestBody Subgroup subgroup) {
+    public */
+/*ResponseEntity*//*
+List<Student> findNotExpelledStudentsFromSubgroup(@RequestBody Subgroup subgroup) {
         List<Long> studentsIdFromSubgroup = studentSubgroupRepository.findStudentsIdBySubgroupId(subgroup.getId()); // ids
         List<Student> students = studentRepository.findByIds(studentsIdFromSubgroup);
         if (students.isEmpty()) return null; // new ResponseEntity<>(null, HttpStatus.NOT_FOUND);//return null;
@@ -293,3 +298,4 @@ public class LinkController {
         return getSubjectsWithTeachersByDep(user, groupIdOrSubgroupId, certificationAttestation.getAttestation().getId(), certificationAttestation.getIsSubgroup());
     }
 }
+*/

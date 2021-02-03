@@ -30,12 +30,7 @@ public class SubjectController {
     public ResponseEntity<List<SubjectDTO>> getGroupsByAttestationAndByTeacher(@AuthenticationPrincipal User user,
                                                                                @RequestParam(value = "id") Long id) {
         Teacher curTeacher = teacherRepository.findByUsername(user.getUsername());
-        List<Long> certificationAttestationIds = certificationAttestationRepository
-                .findAllByAttestationIdAndTeacherIdAndIsSubgroup(id, curTeacher.getId(), false);
-        /*List<Long> certificationAttestationIds = new ArrayList<>();
-        for (CertificationAttestation ca : certificationAttestations){
-            certificationAttestationIds.add(ca.getId());
-        }*/
+        List<Long> certificationAttestationIds = certificationAttestationRepository.findAllByAttestationIdAndTeacherId(id, curTeacher.getId());
         if(certificationAttestationIds == null)
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         List<SubjectDTO> subList = certificationAttestationRepository.findAllSubjectsGroupDTO(certificationAttestationIds); // далее заполнить дату
@@ -53,7 +48,8 @@ public class SubjectController {
                 sub.setFinished(true);
     }
 
-    @PatchMapping("/getSubgroupsByAttestationAndByTeacher")
+    /*@PatchMapping("/getSubgroupsByAttestationAndByTeacher")
+    УБРАТЬ!
     public ResponseEntity<List<SubjectDTO>> getSubgroupsByAttestationAndByTeacher(
             @AuthenticationPrincipal User user,
             @RequestParam(value = "id") Long attestationId) {
@@ -70,6 +66,6 @@ public class SubjectController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); // You many decide to return HttpStatus.NOT_FOUND
         setFinished(subList);
         return new ResponseEntity<>(subList, HttpStatus.OK);
-    }
+    }*/
 
 }

@@ -54,22 +54,6 @@ public class MainController {
         return "login";
     }
 
-    @RequestMapping("/privateAccount")
-    public String privateAccount(@AuthenticationPrincipal User user,
-                                 @RequestParam(name = "message", required = false) String message_privateAccount,
-                                 Model model) {
-        model.addAttribute("message_privateAccount", user.getUsername());
-        return "privateAccount";
-    }
-
-    @RequestMapping("/{medicineId}")
-    public String transitionMedicineId(@PathVariable Integer medicineId, Model model) {
-        model.addAttribute("med", medicineId);
-//        medicine();
-        return "medicine";
-//        return "redirect:/medicine";
-    }
-
     @RequestMapping("/search")
     public String search() {
         return "search";

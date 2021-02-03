@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import sbangularjs.model.*;
 import sbangularjs.repository.AttestationContentRepository;
 import sbangularjs.repository.CertificationAttestationRepository;
-import sbangularjs.repository.DeaneryGroupOrSubgroupRepository;
+import sbangularjs.repository.DeaneryGroupRepository;
 import sbangularjs.repository.DeaneryRepository;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public class StateController {
     private DeaneryRepository deaneryRepository;
     private CertificationAttestationRepository certificationAttestationRepository;
     private AttestationContentRepository attestationContentRepository;
-    private DeaneryGroupOrSubgroupRepository deaneryGroupOrSubgroupRepository;
+    private DeaneryGroupRepository deaneryGroupRepository;
 
     @PatchMapping("/getContentAttestationForDeanery")
     public ResponseEntity<List<AttestationContent>> getContentAttestationForDeanery(@AuthenticationPrincipal User user,
@@ -36,14 +36,14 @@ public class StateController {
         if (certificationAttestation == null) return new ResponseEntity<>(HttpStatus.CONFLICT);
 
         //        Boolean permissible = false;
-        DeaneryGroupOrSubgroup deaneryGroupOrSubgroup;
+        /*DeaneryGroup deaneryGroup;
         if (certificationAttestation.getIsSubgroup())
             deaneryGroupOrSubgroup = deaneryGroupOrSubgroupRepository
                     .findByDeaneryIdAndSubgroupId(curDeanery.getId(), certificationAttestation.getSubgroup().getId());
-        else
-            deaneryGroupOrSubgroup = deaneryGroupOrSubgroupRepository
+        else*/
+        DeaneryGroup deaneryGroup = deaneryGroupRepository
                     .findByDeaneryIdAndGroupId(curDeanery.getId(), certificationAttestation.getGroup().getId());
-        if (deaneryGroupOrSubgroup == null)
+        if (deaneryGroup == null)
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         // если представитель деканата перешёл на страницу группы, не принадлежащей ему, нельзя будет посмотреть данные по аттестации!
 

@@ -9,13 +9,11 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-public class DeaneryGroupOrSubgroup {
+public class DeaneryGroup {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name = "deanery_group_or_subgroup_id")
+    @Column(name = "deanery_group_id")
     private Long id;
-
-    private Boolean isSubgroup;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -27,11 +25,5 @@ public class DeaneryGroupOrSubgroup {
     @JoinColumn(name="group_id")
     private Group group;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="subgroup_id")
-    private Subgroup subgroup;
-
-
-    public DeaneryGroupOrSubgroup() {}
+    public DeaneryGroup() {}
 }

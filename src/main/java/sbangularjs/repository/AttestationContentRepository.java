@@ -14,6 +14,8 @@ public interface AttestationContentRepository extends JpaRepository<AttestationC
     AttestationContent findAttestationContentById(Long attestationContentId);
 
     List<AttestationContent> findAllByCertificationAttestationId(Long id);
+    List<AttestationContent> findAllByCertificationAttestationIdAndTeacherId(Long id, Long teacherId);
+
 
     @Query("select count(all ac) from AttestationContent ac " +
             " where ac.certificationAttestation.id= :certificationAttestationId and (ac.works=null or ac.attest=null)")

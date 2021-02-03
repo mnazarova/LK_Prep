@@ -20,7 +20,6 @@
                 <tr>
                     <th class="text-center"></th>
                     <th class="text-center">Номер группы</th>
-                    <th class="text-center">Форма работы</th>
                     <th class="text-center">Предмет</th>
                     <th class="text-center"></th>
                 </tr>
@@ -33,7 +32,6 @@
                         </i>
                     </td>
                     <td class="text-center border-info">{{group.groupNumber}}</td>
-                    <td class="text-center border-info">{{group.form_of_workName}}</td>
                     <td class="text-center border-info">{{group.disciplineName}}</td>
                     <td class="text-center border-info">
                         <button class="btn btn-md btn-info text-white"
@@ -47,48 +45,6 @@
                 </tbody>
             </table>
         </div>
-
-       <!--<div class="text-center" ng-if="groups.length">
-           <hr>
-           &lt;!&ndash; head &ndash;&gt;
-           <div class="row m-2">
-               <div class="col-lg">
-                   <b>Номер группы</b>
-               </div>
-               <div class="col-lg">
-                   <b>Форма работы</b>
-               </div>
-               <div class="col-lg-6">
-                   <b>Предмет</b>
-               </div>
-               <div class="col-lg"></div>
-           </div>
-
-           &lt;!&ndash; body &ndash;&gt;
-            <div ng-repeat="group in groups | orderBy:'id'">
-               <div class="row border border-dark m-2">
-                   <div class="col-lg my-auto">
-                       {{group.groupNumber}}
-                    </div>
-                    <div class="col-lg my-auto">
-                       {{group.form_of_workName}}
-                    </div>
-                    <div class="col-lg-6 my-auto">
-                        {{group.disciplineName}}
-                    </div>
-                    <div class="col-md my-2">
-                        <a class="btn btn-md btn-info text-white"
-                           type="button"
-                           ui-sref="contentAttestation({id: group.certificationAttestationId, attestationId: group.attestationId})"
-                           title="Редактировать ведомость группы">
-                            <i class="fa fa-share-square-o"></i>
-                            Ведомость
-                        </a>
-                    </div>
-                </div>
-            </div>
-       </div>-->
-
 
         <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!groups.length">
             <!--На данный момент группы, в которых Вы преподаёте, отсутствуют-->
@@ -105,7 +61,6 @@
                 <tr>
                     <th class="text-center"></th>
                     <th class="text-center">Название подгруппы</th>
-                    <th class="text-center">Форма работы</th>
                     <th class="text-center">Предмет</th>
                     <th class="text-center"></th>
                 </tr>
@@ -118,7 +73,6 @@
                         </i>
                     </td>
                     <td class="text-center border-info">{{subgroup.subgroupName}}</td>
-                    <td class="text-center border-info">{{subgroup.form_of_workName}}</td>
                     <td class="text-center border-info">{{subgroup.disciplineName}}</td>
                     <td class="text-center border-info">
                         <button class="btn btn-md btn-info text-white"
@@ -132,47 +86,6 @@
                 </tbody>
             </table>
         </div>
-
-        <!--<div class="text-center" ng-if="subgroups.length">
-            <hr>
-            &lt;!&ndash; head &ndash;&gt;
-            <div class="row m-2">
-                <div class="col-lg">
-                    <b>Название</b>
-                </div>
-                <div class="col-lg">
-                    <b>Форма работы</b>
-                </div>
-                <div class="col-lg-6">
-                    <b>Предмет</b>
-                </div>
-                <div class="col-lg"></div>
-            </div>
-
-            &lt;!&ndash; body &ndash;&gt;
-            <div ng-repeat="subgroup in subgroups | orderBy:'id'">
-                <div class="row border border-dark m-2">
-                    <div class="col-lg my-auto">
-                        {{subgroup.subgroupName}}
-                    </div>
-                    <div class="col-lg my-auto">
-                        {{subgroup.form_of_workName}}
-                    </div>
-                    <div class="col-lg-6 my-auto">
-                        {{subgroup.disciplineName}}
-                    </div>
-                    <div class="col-lg my-2">
-                        <a class="btn btn-md btn-info text-white"
-                           type="button"
-                           ui-sref="contentAttestation({id: subgroup.certificationAttestationId, attestationId: subgroup.attestationId})"
-                           title="Редактировать ведомость подгруппы">
-                            <i class="fa fa-share-square-o"></i>
-                            Ведомость
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>-->
 
         <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!subgroups.length">
             <!--На данный момент подгруппы, в которых Вы преподаёте, отсутствуют-->

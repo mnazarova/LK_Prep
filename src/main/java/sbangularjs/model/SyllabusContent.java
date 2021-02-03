@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -17,6 +18,9 @@ public class SyllabusContent { // Содержание учебного план
     private Long id;
 
     private Integer semesterNumber;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date deadline;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

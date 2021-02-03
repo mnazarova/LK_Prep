@@ -72,20 +72,13 @@
         </dependency>
 
         <!-- tomcat -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
             <scope>provided</scope>
-        </dependency>
+        </dependency>-->
 
-        <!-- angularjs-toaster
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>angularjs-toaster</artifactId>
-            <version>0.4.8</version>
-        </dependency>
-
-         font-awesome
+        <!--font-awesome
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>font-awesome</artifactId>

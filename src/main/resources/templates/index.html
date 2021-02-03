@@ -122,7 +122,7 @@
                         </li>
 
                         <!-- Для секретаря -->
-                        <li class="nav-item ng-hide" ng-show="ur == 'SECRETARY'">
+                        <!--<li class="nav-item ng-hide" ng-show="ur == 'SECRETARY'">
                             <a class="nav-link" ui-sref-active="active" ui-sref="addSubgroup">
                                 <i class="fa fa-plus-square"></i>
                                 Добавить подгруппу
@@ -132,8 +132,15 @@
                         <li class="nav-item ng-hide" ng-show="ur == 'SECRETARY'">
                             <a class="nav-link" ui-sref-active="active" ui-sref="link">
                                 <i class="fa fa-link"></i>
-                                Настроить списки <!--Аттестационные, Сессионные-->
-                                <!--Связать (под)группу и преподавателя-->
+                                Настроить списки &lt;!&ndash;Аттестационные, Сессионные&ndash;&gt;
+                                &lt;!&ndash;Связать (под)группу и преподавателя&ndash;&gt;
+                            </a>
+                        </li>-->
+
+                        <li class="nav-item ng-hide" ng-show="ur == 'SECRETARY'">
+                            <a class="nav-link" ui-sref-active="active" ui-sref="appoint">
+                                <i class="fa fa-calendar-check-o"></i>
+                                Назначить преподавателей
                             </a>
                         </li>
 
@@ -202,8 +209,9 @@
                 <li class="list-inline-item ng-hide" ng-show="ur == 'DEANERY'"><a ui-sref-active="active" ui-sref="statements">Ведомости</a></li>
                 <li class="list-inline-item ng-hide" ng-show="ur == 'DEANERY'"><a ui-sref-active="active" ui-sref="students">Студенты</a></li>
 
-                <li class="list-inline-item ng-hide" ng-show="ur == 'SECRETARY'"><a ui-sref-active="active" ui-sref="addSubgroup">Добавить подгруппу</a></li>
-                <li class="list-inline-item ng-hide" ng-show="ur == 'SECRETARY'"><a ui-sref-active="active" ui-sref="link">Настроить списки <!--Связать (под)группу и преподавателя--></a></li>
+<!--                <li class="list-inline-item ng-hide" ng-show="ur == 'SECRETARY'"><a ui-sref-active="active" ui-sref="addSubgroup">Добавить подгруппу</a></li>-->
+<!--                <li class="list-inline-item ng-hide" ng-show="ur == 'SECRETARY'"><a ui-sref-active="active" ui-sref="link">Настроить списки &lt;!&ndash;Связать (под)группу и преподавателя&ndash;&gt;</a></li>-->
+                <li class="list-inline-item ng-hide" ng-show="ur == 'SECRETARY'"><a ui-sref-active="active" ui-sref="appoint">Назначить преподавателей</a></li>
 
                 <li class="list-inline-item ng-hide" ng-show="ur == 'TEACHER'"><a ui-sref-active="active" ui-sref="attestation">Заполнение ведомостей</a></li>
                 <!--<li class="list-inline-item"><a ui-sref-active="active" ui-sref="privateAccount">Личный кабинет</a></li>-->
@@ -247,8 +255,10 @@
     <script src="Controllers/State.js"></script>
     <script src="Controllers/Students.js"></script>
 
-    <script src="Controllers/AddSubgroup.js"></script>
-    <script src="Controllers/Link.js"></script>
+<!--    <script src="Controllers/AddSubgroup.js"></script>-->
+<!--    <script src="Controllers/Link.js"></script>-->
+    <script src="Controllers/Appoint.js"></script>
+    <script src="Controllers/AppointId.js"></script>
 
     <script src="Controllers/Attestation.js"></script>
     <script src="Controllers/Subject.js"></script>

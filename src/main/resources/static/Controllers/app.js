@@ -1,11 +1,33 @@
 var app = angular.module("app", [
     'ui.router',
+    'blockUI',
     'toaster',
     'ngAnimate',
     'ngSanitize',
     'ui.select',
     'ui.bootstrap'
 ]);
+
+app.config(function(blockUIConfig) {
+
+    blockUIConfig.message = 'Пожалуйста, подождите...';
+    blockUIConfig.delay = 500;
+    // blockUIConfig.autoBlock = false;
+
+    /*blockUIConfig.requestFilter = function(config) {
+
+        if (
+            config.url.match(/^api\/dashboard($|\/).*!/) ||
+            config.url.match(/^api\/billing\/session\/inprogress($|\/).*!/) ||
+            config.url.match(/^api\/vckp\/coin\/session($|\/).*!/) ||
+            config.url.match(/^ver.txt($|\/).*!/)
+        ) {
+            return false;
+        }
+
+    }*/
+
+});
 
 app.controller('ModalController',function ($scope, $uibModal, /*$uibModalInstance,*/ $sce) {
 
@@ -379,9 +401,6 @@ app.controller('AppController',function ($scope, $state, $http, $window, toaster
 
 });
 
-
-
-
 app.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $sceProvider) {
 
     $sceProvider.enabled(false);// для uib-tooltip
@@ -447,6 +466,16 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $sce
             url: '/link',
             templateUrl: 'Templates/link.html',
             controller: 'LinkController'
+        })
+        .state('appoint', {
+            url: '/appoint',
+            templateUrl: 'Templates/appoint.html',
+            controller: 'AppointController'
+        })
+        .state('appointId', {
+            url: '/appoint/:id',
+            templateUrl: 'Templates/appointId.html',
+            controller: 'AppointIdController'
         })
         .state('attestation', {
             url: '/attestation',

@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import sbangularjs.model.AttestationContent;
 import sbangularjs.model.CertificationAttestation;
+import sbangularjs.model.Teacher;
 import sbangularjs.model.User;
 import sbangularjs.repository.AttestationContentRepository;
 import sbangularjs.repository.CertificationAttestationRepository;
+import sbangularjs.repository.TeacherRepository;
 
 import java.util.Date;
 import java.util.List;
@@ -25,18 +27,22 @@ import java.util.List;
 @AllArgsConstructor(onConstructor = @_(@Autowired))
 public class ContentAttestationController {
     private AttestationContentRepository attestationContentRepository;
-    CertificationAttestationRepository certificationAttestationRepository;
+    private CertificationAttestationRepository certificationAttestationRepository;
+    private TeacherRepository teacherRepository;
 
     @PatchMapping("/getContentAttestation")
     public ResponseEntity<List<AttestationContent>> getContentAttestation(@AuthenticationPrincipal User user,
                                                                           @RequestParam Long id,
                                                                           @RequestParam Long attestationId) {
         CertificationAttestation certificationAttestation = certificationAttestationRepository.findCertificationAttestationById(id);
-        if (certificationAttestation == null || !certificationAttestation.getTeacher().getUsername().equals(user.getUsername())
+        Teacher teacher = teacherRepository.findByUsername(user.getUsername());
+        if (certificationAttestation == null || teacher == null || !certificationAttestation.getAttestation().getId().equals(attestationId))
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+        /*if (certificationAttestation == null || !certificationAttestation.getTeacher().getUsername().equals(user.getUsername())
         || !certificationAttestation.getAttestation().getId().equals(attestationId))
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);*/
 
-        List<AttestationContent> attestationContents = attestationContentRepository.findAllByCertificationAttestationId(id);
+        List<AttestationContent> attestationContents = attestationContentRepository.findAllByCertificationAttestationIdAndTeacherId(id, teacher.getId());
         if (attestationContents.isEmpty())
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); // You many decide to return HttpStatus.NOT_FOUND
         return new ResponseEntity<>(attestationContents, HttpStatus.OK);

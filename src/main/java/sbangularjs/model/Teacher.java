@@ -32,11 +32,11 @@ public class Teacher {
 
     @JsonIgnore
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CertificationAttestation> certificationsAttestation;
+    private List<PlaceWork> placesWork;
 
     @JsonIgnore
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<PlaceWork> placesWork;
+    private List<AttestationContent> attestationContents;
 
     public Teacher() {}
 }

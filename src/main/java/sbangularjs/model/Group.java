@@ -18,6 +18,8 @@ public class Group {
     private Long id;
 
     private String number;
+    private Boolean active;
+    private Integer curSemestr;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,7 +36,7 @@ public class Group {
 
     @JsonIgnore
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DeaneryGroupOrSubgroup> deaneryGroupOrSubgroupList;
+    private List<DeaneryGroup> deaneryGroupList;
 
     public Group() {}
 }

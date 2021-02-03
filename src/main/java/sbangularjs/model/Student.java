@@ -35,10 +35,6 @@ public class Student {
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AttestationContent> attestationContents;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<StudentSubgroup> studentSubgroups;
-
     public Student() {}
 
     public Student(String surname, String name, String numberRecordBook, Boolean expelled) {

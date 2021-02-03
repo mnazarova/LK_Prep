@@ -25,14 +25,19 @@ public class AttestationContent { // Содержание аттестации
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateAttest;
 
+    @ManyToOne(fetch = FetchType.EAGER) // или @JsonIgnoreProperties ({"hibernateLazyInitializer", "handler"})
+    @JoinColumn(name="student_id")
+    private Student student;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY) // или @JsonIgnoreProperties ({"hibernateLazyInitializer", "handler"})
     @JoinColumn(name="certification_attestation_id")
     private CertificationAttestation certificationAttestation; // ведомость аттестации
 
-    @ManyToOne(fetch = FetchType.EAGER) // или @JsonIgnoreProperties ({"hibernateLazyInitializer", "handler"})
-    @JoinColumn(name="student_id")
-    private Student student;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="teacher_id")
+    private Teacher teacher;
 
     public AttestationContent() {
 //        works = false;

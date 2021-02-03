@@ -12,12 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import sbangularjs.DTO.SubjectDTO;
 import sbangularjs.model.Deanery;
 import sbangularjs.model.Group;
-import sbangularjs.model.Subgroup;
 import sbangularjs.model.User;
 import sbangularjs.repository.CertificationAttestationRepository;
 import sbangularjs.repository.DeaneryRepository;
 import sbangularjs.repository.GroupRepository;
-import sbangularjs.repository.SubgroupRepository;
 
 import java.util.List;
 
@@ -27,7 +25,6 @@ import java.util.List;
 public class StatementIdController {
     private DeaneryRepository deaneryRepository;
     private GroupRepository groupRepository;
-    private SubgroupRepository subgroupRepository;
     private CertificationAttestationRepository certificationAttestationRepository;
 
     @PatchMapping("/getGroupListByDeanery")
@@ -41,8 +38,9 @@ public class StatementIdController {
         return new ResponseEntity<>(groupList, HttpStatus.OK);
     }
 
-    @PatchMapping("/getSubroupListByDeanery")
+    /*@PatchMapping("/getSubroupListByDeanery")
     public ResponseEntity<List<Subgroup>> getSubroupListByDeanery(@AuthenticationPrincipal User user) {
+        // УБРАТЬ!
         Deanery curDeanery = deaneryRepository.findByUsername(user.getUsername());
         if (curDeanery != null) {
             List<Subgroup> subgroupList = subgroupRepository.findSubgroupsByDeaneryId(curDeanery.getId());
@@ -51,7 +49,7 @@ public class StatementIdController {
         }
         else
             return new ResponseEntity<>(HttpStatus.CONFLICT);
-    }
+    }*/
 
     @PatchMapping("/getGroupsByAttestationAndByDeanery")
     public ResponseEntity<List<SubjectDTO>> getGroupsByAttestationAndByDeanery(@AuthenticationPrincipal User user,
@@ -68,10 +66,11 @@ public class StatementIdController {
         return new ResponseEntity<>(subList, HttpStatus.OK);
     }
 
-    @PatchMapping("/getSubgroupsByAttestationAndByDeanery")
+    /*@PatchMapping("/getSubgroupsByAttestationAndByDeanery")
     public ResponseEntity<List<SubjectDTO>> getSubgroupsByAttestationAndByDeanery(
             @AuthenticationPrincipal User user,
             @RequestParam(value = "id") Long attestationId) {
+        // УБРАТЬ!
         Deanery curDeanery = deaneryRepository.findByUsername(user.getUsername());
         if (curDeanery == null)
             return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -83,7 +82,7 @@ public class StatementIdController {
         List<SubjectDTO> subList = certificationAttestationRepository.findAllSubjectsSubgroupDTO(certificationAttestationIds);
         if (subList == null) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         return new ResponseEntity<>(subList, HttpStatus.OK);
-    }
+    }*/
 
     @PatchMapping("/selectedOnGroupList")
     public ResponseEntity<List<SubjectDTO>> selectedOnGroupList(@AuthenticationPrincipal User user,
@@ -100,7 +99,8 @@ public class StatementIdController {
         return new ResponseEntity<>(subList, HttpStatus.OK);
     }
 
-    @PatchMapping("/selectedOnSubgroupList")
+    /*@PatchMapping("/selectedOnSubgroupList")
+    УБРАТЬ!
     public ResponseEntity<List<SubjectDTO>> selectedOnSubgroupList(@AuthenticationPrincipal User user,
                                                                    @RequestParam(value = "id") Long id, @RequestParam List<Long> subgroupId) {
         Deanery curDeanery = deaneryRepository.findByUsername(user.getUsername());
@@ -114,5 +114,5 @@ public class StatementIdController {
         if (subList == null) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
         return new ResponseEntity<>(subList, HttpStatus.OK);
-    }
+    }*/
 }

@@ -98,7 +98,6 @@
                     <tr>
                         <th class="text-center">Номер группы</th>
                         <th class="text-center">Предмет</th>
-                        <th class="text-center">Форма работы</th>
                         <th class="text-center">Преподаватель</th>
                         <th class="text-center"></th>
                     </tr>
@@ -107,7 +106,6 @@
                     <tr ng-repeat="group in groups | orderBy:'teacher.surname' track by $index">
                         <td class="text-center border-info">{{group.groupNumber}}</td>
                         <td class="text-center border-info">{{group.disciplineName}}</td>
-                        <td class="text-center border-info">{{group.form_of_workName}}</td>
                         <td class="text-center border-info">
                             {{group.teacher.surname + ' ' + group.teacher.name + ' ' + group.teacher.patronymic}}
                         </td>
@@ -145,7 +143,6 @@
                     <tr>
                         <th class="text-center">Название подгруппы</th>
                         <th class="text-center">Предмет</th>
-                        <th class="text-center">Форма работы</th>
                         <th class="text-center">Преподаватель</th>
                         <th class="text-center"></th>
                     </tr>
@@ -154,7 +151,6 @@
                     <tr ng-repeat="subgroup in subgroups | orderBy:'teacher.surname' track by $index">
                         <td class="text-center border-info">{{subgroup.subgroupName}}</td>
                         <td class="text-center border-info">{{subgroup.disciplineName}}</td>
-                        <td class="text-center border-info">{{subgroup.form_of_workName}}</td>
                         <td class="text-center border-info">
                             {{subgroup.teacher.surname + ' ' + subgroup.teacher.name + ' ' + subgroup.teacher.patronymic}}
                         </td>

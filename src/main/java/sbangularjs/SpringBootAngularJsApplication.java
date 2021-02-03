@@ -12,8 +12,8 @@ public class SpringBootAngularJsApplication extends SpringBootServletInitializer
         SpringApplication.run(SpringBootAngularJsApplication.class, args);
     }
 
-    @Override
+    /*@Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(SpringBootAngularJsApplication.class);
-    }
+    }*/
 }
