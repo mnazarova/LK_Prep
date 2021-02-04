@@ -22,8 +22,7 @@ public class Secretary {
     @JsonIgnore // сокрытие данных
     private String username;
 
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name="department_id")
     private Department department;
 

@@ -1,11 +1,7 @@
 <div ng-show="ur == 'SECRETARY'">
 
-    <!--<ol class="breadcrumb">
-        <li class="breadcrumb-item"><a ui-sref="statements">Список групп</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Список групп и подгрупп</li>
-    </ol>-->
-
     <div class="py-4 mt-4 card col-md-10 mx-auto border-info">
+
         <form class="simple-form" name="appointForm">
             <div class="col-md-6 mx-auto mt-3">
                 <ui-select ng-model="group.selected"
@@ -44,7 +40,7 @@
                     <td class="text-center border-info"></td>
                     <td class="text-center border-info">{{group.number}}</td>
                     <td class="text-center border-info h5">
-                        <div class="badge badge-secondary">{{group.curSemestr}}</div>
+                        <div class="badge badge-secondary">{{group.curSemester}}</div>
                     </td>
                     <td class="text-center border-info">
                         <button class="btn btn-md btn-info text-white"

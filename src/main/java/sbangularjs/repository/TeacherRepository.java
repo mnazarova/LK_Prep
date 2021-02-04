@@ -13,7 +13,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
 
     @Query("select t from Teacher t " +
            "join PlaceWork pw on pw.teacher.id = t.id and pw.department.id = :departmentId")
-    Set<Teacher> findByDepartmentId(Long departmentId);
+    List<Teacher> findByDepartmentId(Long departmentId);
 
     Teacher findByUsername(String username);
 }

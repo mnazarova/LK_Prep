@@ -3,6 +3,8 @@ package sbangularjs.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.Persistent;
+import sbangularjs.DTO.ConnectTeacherStudentDTO;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -32,14 +34,17 @@ public class SyllabusContent { // Содержание учебного план
     @JoinColumn(name="discipline_id")
     private Discipline discipline;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+//    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="attestation_form_id")
     private AttestationForm attestationForm;
 
     @JsonIgnore
     @OneToMany(mappedBy = "syllabusContent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CertificationAttestation> certificationsAttestation;
+
+    @Transient
+    private List<ConnectTeacherStudentDTO> ConnectTeacherStudentDTOList;
 
     public SyllabusContent() {}
 }

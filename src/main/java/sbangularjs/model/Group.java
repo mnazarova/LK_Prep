@@ -19,7 +19,7 @@ public class Group {
 
     private String number;
     private Boolean active;
-    private Integer curSemestr;
+    private Integer curSemester;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

@@ -8,53 +8,222 @@
     <div class="py-4 mt-4 card col-md-10 mx-auto border-info">
 
         <div class="font-weight-bold h4 text-center mt-4">
-            Группа {{group}}
+            Группа: <div class="badge badge-info">{{group.number}}</div>
+            <br>
+            Текущий семестр: <div class="badge badge-info">{{group.curSemester}}</div>
         </div>
 
-        <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!disciplines.length">
+        <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!syllabusContentList.length">
             В данном семестре у группы нет дисциплин с Вашей кафедры
         </div>
 
-        <div class="ng-hide m-2 p-2" ng-show="disciplines.length">
+        <div class="ng-hide m-2 p-2" ng-show="syllabusContentList.length">
             <form class="simple-form" name="appointIdForm"></form>
-            <table class="table table-hover table-striped table-sm table-responsive-lg">
+            <table class="table table-hover table-striped table-responsive-xl table-container">
                 <thead>
-                <!--<div id="accordion">
-                      <div class="card">
-                        <div class="card-header" id="headingOne">
-                          <h5 class="mb-0">
-                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                              Collapsible Group Item #1
-                            </button>
-                          </h5>
-                        </div>
-
-                        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-                          <div class="card-body">
-                            Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                          </div>
-                        </div>
-                      </div>-->
                 <tr>
                     <th class="text-center"></th>
-                    <th class="text-center">Номер группы</th>
-                    <th class="text-center">Номер текущего семестра</th>
+                    <th class="text-center">Название дисциплины</th>
+                    <th class="text-center">Аттестация</th>
+                    <th class="text-center">Допуск</th>
+                    <th class="text-center">Экзамен/Зачёт/Диф.зачёт</th>
+                    <th class="text-center">КП/КР</th>
                     <th class="text-center"></th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr ng-repeat="group in groups | orderBy:'teacher.surname' track by $index">
+                <tbody data-ng-repeat="syllabusContent in syllabusContentList track by $index" data-ng-switch on="showStudents[$index]">
+                <tr>
                     <td class="text-center border-info"></td>
-                    <td class="text-center border-info">{{group.number}}</td>
-                    <td class="text-center border-info">{{group.curSemestr}}</td>
                     <td class="text-center border-info">
-                        <button class="btn btn-md btn-info text-white"
-                                type="button"
-                                ui-sref="state({appointId: group.id})"
-                                title="Назначить преподавателей">
-                            <i class="fa fa-share-square-o"></i>
+                        <button class="btn btn-link" data-ng-click="toggleShowStudents($index)">
+                            {{syllabusContent.discipline.name}}
                         </button>
                     </td>
+                    <!--Аттестация-->
+                    <td class="text-center border-info">
+                        <ui-select ng-model="attestationTeacher.selected"
+                                   ng-disabled="!teachers"
+                                   ng-change="selectedAttestationTeacher()"
+                                   name="attestationTeacher"
+                                   class="pt-1"
+                                   theme="select2" title="Выберите преподавателя"
+                                   required>
+                            <ui-select-match placeholder="Выберите преп...">
+                                {{$select.selected.surname + ' ' + $select.selected.initials}}
+                            </ui-select-match>
+                            <ui-select-choices repeat="teacher in teachers | propsFilter: {surname: $select.search, name: $select.search} | orderBy:'surname'">
+                                <div ng-bind-html="teacher.surname | highlight: $select.search"></div>
+                                <small>
+                                    {{teacher.name}}
+                                    <span ng-bind-html="teacher.patronymic | highlight: $select.search"></span>
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </td>
+                    <!--Допуск-->
+                    <td class="text-center border-info">
+                        <ui-select ng-model="admittanceTeacher.selected"
+                                   ng-disabled="!teachers"
+                                   ng-change="selectedAdmittanceTeacher()"
+                                   name="admittanceTeacher"
+                                   class="pt-1"
+                                   theme="select2" title="Выберите преподавателя"
+                                   required>
+                            <ui-select-match placeholder="Выберите преп...">
+                                {{$select.selected.surname + ' ' + $select.selected.initials}}
+                            </ui-select-match>
+                            <ui-select-choices repeat="teacher in teachers | propsFilter: {surname: $select.search, name: $select.search} | orderBy:'surname'">
+                                <div ng-bind-html="teacher.surname | highlight: $select.search"></div>
+                                <small>
+                                    {{teacher.name}}
+                                    <span ng-bind-html="teacher.patronymic | highlight: $select.search"></span>
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </td>
+                    <!-- Экзамен/Зачёт/Диф.зачёт -->
+                    <td class="text-center border-info">
+                        <ui-select ng-model="examTeacher.selected"
+                                   ng-disabled="!teachers"
+                                   ng-change="selectedExamTeacher()"
+                                   name="examTeacher"
+                                   class="pt-1"
+                                   theme="select2" title="Выберите преподавателя"
+                                   required>
+                            <ui-select-match placeholder="Выберите преп...">
+                                {{$select.selected.surname + ' ' + $select.selected.initials}}
+                            </ui-select-match>
+                            <ui-select-choices repeat="teacher in teachers | propsFilter: {surname: $select.search, name: $select.search} | orderBy:'surname'">
+                                <div ng-bind-html="teacher.surname | highlight: $select.search"></div>
+                                <small>
+                                    {{teacher.name}}
+                                    <span ng-bind-html="teacher.patronymic | highlight: $select.search"></span>
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </td>
+                    <!-- КП/КР -->
+                    <td class="text-center border-info">
+                        <ui-select ng-model="krOrKpTeacher.selected"
+                                   ng-disabled="!teachers"
+                                   ng-change="selectedKrOrKpTeacher()"
+                                   name="krOrKpTeacher"
+                                   class="pt-1"
+                                   theme="select2" title="Выберите преподавателя"
+                                   required>
+                            <ui-select-match placeholder="Выберите преп...">
+                                {{$select.selected.surname + ' ' + $select.selected.initials}}
+                            </ui-select-match>
+                            <ui-select-choices repeat="teacher in teachers | propsFilter: {surname: $select.search, name: $select.search} | orderBy:'surname'">
+                                <div ng-bind-html="teacher.surname | highlight: $select.search"></div>
+                                <small>
+                                    {{teacher.name}}
+                                    <span ng-bind-html="teacher.patronymic | highlight: $select.search"></span>
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </td>
+                    <td class="text-center border-info">
+                        <!-- Сохранить -->
+                        <button class="btn btn-md btn-info text-white"
+                                type="button"
+                                data-ng-click="saveTeachersByDiscipline($index)"
+                                title="Назначить преподавателей">
+                            <i class="fa fa-save"></i>
+                        </button>
+                    </td>
+                </tr>
+                <!-- Студенты -->
+                <tr data-ng-switch-when="true" ng-repeat="connectTeacherStudentDTO in syllabusContent.connectTeacherStudentDTOList | orderBy:'studentFullName' track by $index">
+                    <td class="text-center border-info"></td>
+                    <td class="text-center border-info">
+                        {{connectTeacherStudentDTO.studentFullName}}
+                    </td>
+                    <!--Аттестация-->
+                    <td class="text-center border-info">
+                        <ui-select ng-model="connectTeacherStudentDTO.attestationTeacher.selected"
+                                   ng-disabled="!teachers"
+                                   ng-change="selectedAttestationTeacherWithDTO()"
+                                   name="connectTeacherStudentDTO.attestationTeacher"
+                                   class="pt-1"
+                                   theme="select2" title="Выберите преподавателя"
+                                   required>
+                            <ui-select-match placeholder="Выберите преп...">
+                                {{$select.selected.surname + ' ' + $select.selected.initials}}
+                            </ui-select-match>
+                            <ui-select-choices repeat="teacher in teachers | propsFilter: {surname: $select.search, name: $select.search} | orderBy:'surname'">
+                                <div ng-bind-html="teacher.surname | highlight: $select.search"></div>
+                                <small>
+                                    {{teacher.name}}
+                                    <span ng-bind-html="teacher.patronymic | highlight: $select.search"></span>
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </td>
+                    <!--Допуск-->
+                    <td class="text-center border-info">
+                        <ui-select ng-model="connectTeacherStudentDTO.admittanceTeacher.selected"
+                                   ng-disabled="!teachers"
+                                   ng-change="selectedAdmittanceTeacherWithDTO()"
+                                   name="connectTeacherStudentDTO.admittanceTeacher"
+                                   class="pt-1"
+                                   theme="select2" title="Выберите преподавателя"
+                                   required>
+                            <ui-select-match placeholder="Выберите преп...">
+                                {{$select.selected.surname + ' ' + $select.selected.initials}}
+                            </ui-select-match>
+                            <ui-select-choices repeat="teacher in teachers | propsFilter: {surname: $select.search, name: $select.search} | orderBy:'surname'">
+                                <div ng-bind-html="teacher.surname | highlight: $select.search"></div>
+                                <small>
+                                    {{teacher.name}}
+                                    <span ng-bind-html="teacher.patronymic | highlight: $select.search"></span>
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </td>
+                    <!-- Экзамен/Зачёт/Диф.зачёт -->
+                    <td class="text-center border-info">
+                        <ui-select ng-model="connectTeacherStudentDTO.examTeacher.selected"
+                                   ng-disabled="!teachers"
+                                   ng-change="selectedExamTeacherWithDTO()"
+                                   name="connectTeacherStudentDTO.examTeacher"
+                                   class="pt-1"
+                                   theme="select2" title="Выберите преподавателя"
+                                   required>
+                            <ui-select-match placeholder="Выберите преп...">
+                                {{$select.selected.surname + ' ' + $select.selected.initials}}
+                            </ui-select-match>
+                            <ui-select-choices repeat="teacher in teachers | propsFilter: {surname: $select.search, name: $select.search} | orderBy:'surname'">
+                                <div ng-bind-html="teacher.surname | highlight: $select.search"></div>
+                                <small>
+                                    {{teacher.name}}
+                                    <span ng-bind-html="teacher.patronymic | highlight: $select.search"></span>
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </td>
+                    <!-- КП/КР -->
+                    <td class="text-center border-info">
+                        <ui-select ng-model="connectTeacherStudentDTO.krOrKpTeacher.selected"
+                                   ng-disabled="!teachers"
+                                   ng-change="selectedKrOrKpTeacherWithDTO()"
+                                   name="connectTeacherStudentDTO.krOrKpTeacher"
+                                   class="pt-1"
+                                   theme="select2" title="Выберите преподавателя"
+                                   required>
+                            <ui-select-match placeholder="Выберите преп...">
+                                {{$select.selected.surname + ' ' + $select.selected.initials}}
+                            </ui-select-match>
+                            <ui-select-choices repeat="teacher in teachers | propsFilter: {surname: $select.search, name: $select.search} | orderBy:'surname'">
+                                <div ng-bind-html="teacher.surname | highlight: $select.search"></div>
+                                <small>
+                                    {{teacher.name}}
+                                    <span ng-bind-html="teacher.patronymic | highlight: $select.search"></span>
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </td>
+                    <td class="text-center border-info"></td>
                 </tr>
                 </tbody>
             </table>

@@ -9,13 +9,11 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import sbangularjs.model.Group;
-import sbangularjs.model.Secretary;
-import sbangularjs.model.User;
-import sbangularjs.repository.DisciplineRepository;
-import sbangularjs.repository.GroupRepository;
-import sbangularjs.repository.SecretaryRepository;
+import sbangularjs.DTO.ConnectTeacherStudentDTO;
+import sbangularjs.model.*;
+import sbangularjs.repository.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -24,18 +22,66 @@ import java.util.List;
 public class AppointIdController {
 
     private SecretaryRepository secretaryRepository;
-    private DisciplineRepository disciplineRepository;
+    private StudentRepository studentRepository;
+    private TeacherRepository teacherRepository;
+    private GroupRepository groupRepository;
+    private SyllabusContentRepository syllabusContentRepository;
 
-    @PatchMapping("/getDisciplineListByGroupIdAndDepartmentId")
-    public ResponseEntity getDisciplineListByGroupIdAndDepartmentId(@AuthenticationPrincipal User user, @RequestParam Long groupId) {
+    @PatchMapping("/getGroupById")
+    public ResponseEntity getGroupById(@RequestParam Long groupId) {
+        Group group = groupRepository.findGroupById(groupId);
+        if (group == null || group.getActive() == null || !group.getActive())
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+        return new ResponseEntity<>(group, HttpStatus.OK);
+    }
+
+    @PatchMapping("/getTeacherListByDepartmentId")
+    public ResponseEntity getTeacherListByDepartmentId(@AuthenticationPrincipal User user) {
         Secretary curSecretary = secretaryRepository.findByUsername(user.getUsername());
         if (curSecretary == null || curSecretary.getDepartment() == null)
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+        List<Teacher> teacherList = teacherRepository.findByDepartmentId(curSecretary.getDepartment().getId());
+        if (teacherList == null)
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+        return new ResponseEntity<>(teacherList, HttpStatus.OK);
+    }
 
-//        Group group = groupRepository.findGroupById(groupId);
-//        if (group == null)
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // You many decide to return HttpStatus.NOT_FOUND
-//        return new ResponseEntity<>(group, HttpStatus.OK);
+    @PatchMapping("/getSyllabusContentListByGroupIdAndDepartmentId")
+    public ResponseEntity getSyllabusContentListByGroupIdAndDepartmentId(@AuthenticationPrincipal User user, @RequestParam Long groupId) {
+        Secretary curSecretary = secretaryRepository.findByUsername(user.getUsername());
+        Group group = groupRepository.findGroupById(groupId);
+        if (curSecretary == null || curSecretary.getDepartment() == null || group == null || group.getSyllabus() == null || group.getCurSemester() == null)
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+
+        List<SyllabusContent> syllabusContents = syllabusContentRepository.findSyllabusContentsBySyllabusIdAndDepartmentIdAndCurSemester(
+                group.getSyllabus().getId(), curSecretary.getDepartment().getId(), group.getCurSemester());
+        if (syllabusContents.isEmpty())
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+
+        List<Student> students = studentRepository.findByGroupId(groupId);
+        if (students.isEmpty()) new ResponseEntity<>(null, HttpStatus.OK); // нет студентов в группе
+        for(int i=students.size()-1;i>=0;i--) {
+            if(students.get(i).getExpelled() != null && students.get(i).getExpelled()) // Expelled = TRUE, отчислены только тогда, когда true
+                students.remove(students.get(i));
+        }
+        if (students.isEmpty()) new ResponseEntity<>(null, HttpStatus.OK); // все студенты отчислены или переведены
+
+        for (SyllabusContent sc: syllabusContents) {
+            List<ConnectTeacherStudentDTO> connectTeacherStudentDTOList = new ArrayList<>();
+            for (Student student: students) {
+                ConnectTeacherStudentDTO connectTeacherStudentDTO = new ConnectTeacherStudentDTO();
+
+                connectTeacherStudentDTO.setStudentId(student.getId());
+                connectTeacherStudentDTO.setStudentFullName(String.format("%s %s %s", student.getSurname() != null ? student.getSurname() :' ',
+                        student.getName() != null ? student.getName():' ', student.getPatronymic()  != null ? student.getPatronymic():' '));
+
+                /*установка преподавателей*/
+
+                connectTeacherStudentDTOList.add(connectTeacherStudentDTO);
+            }
+            sc.setConnectTeacherStudentDTOList(connectTeacherStudentDTOList);
+        }
+        return new ResponseEntity<>(syllabusContents, HttpStatus.OK);
     }
 
     /*@PatchMapping("/findByNameSubgroup")

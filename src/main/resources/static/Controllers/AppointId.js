@@ -1,20 +1,57 @@
 app.controller("AppointIdController", function($scope, $http, $stateParams) {
-    console.log($stateParams)
+    $scope.showStudents = [];
 
-    getDisciplineListByGroupIdAndDepartmentId();
-    function getDisciplineListByGroupIdAndDepartmentId() {
+    getGroupById();
+    function getGroupById() {
         $http({
             method: 'PATCH',
-            url: '/getDisciplineListByGroupIdAndDepartmentId',
+            url: '/getGroupById',
             params: {
-                groupId: $scope.$stateParams
+                groupId: $stateParams.id
             }
         }).then(
             function(res) {
-                $scope.disciplineList = res.data;
-                console.log($scope.disciplineList)
+                $scope.group = res.data;
             }
         );
+    }
+
+    getSyllabusContentListByGroupIdAndDepartmentId();
+    function getSyllabusContentListByGroupIdAndDepartmentId() {
+        $http({
+            method: 'PATCH',
+            url: '/getSyllabusContentListByGroupIdAndDepartmentId',
+            params: {
+                groupId: $stateParams.id
+            }
+        }).then(
+            function(res) {
+                $scope.syllabusContentList = res.data;
+                console.log($scope.syllabusContentList)
+            }
+        );
+    }
+
+    getTeacherListByDepartmentId();
+    function getTeacherListByDepartmentId() {
+        $http({
+            method: 'PATCH',
+            url: '/getTeacherListByDepartmentId'
+        }).then(
+            function(res) {
+                $scope.teachers = res.data;
+                $scope.teacher = {};
+                console.log($scope.teachers)
+            }
+        );
+    }
+
+    $scope.toggleShowStudents = function (index) {
+        $scope.showStudents[index] = !$scope.showStudents[index];
+    };
+
+    $scope.saveTeachersByDiscipline = function (index) {
+        console.log(index)
     }
 
     /*$scope.selectedOnGroupList = function () {
