@@ -3,7 +3,6 @@ package sbangularjs.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.Persistent;
 import sbangularjs.DTO.ConnectTeacherStudentDTO;
 
 import javax.persistence.*;
@@ -42,6 +41,10 @@ public class SyllabusContent { // Содержание учебного план
     @JsonIgnore
     @OneToMany(mappedBy = "syllabusContent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CertificationAttestation> certificationsAttestation;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "syllabusContent", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SessionSheet> sessionSheets;
 
     @Transient
     private List<ConnectTeacherStudentDTO> ConnectTeacherStudentDTOList;

@@ -13,16 +13,7 @@
     overflow: auto;
 }
 
-/*@media (min-width: 1780px) {
-    .table-container {
-        !*display: block;*!
-        width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        !*-ms-overflow-style: -ms-autohiding-scrollbar;*!
-    }
-}*/
-@media (min-width: 1175px) {
+@media (min-width: 1200px) and (max-width: 1400px) {
     .table-container {
         display: block;
         width: 100%;
@@ -31,15 +22,6 @@
         -ms-overflow-style: -ms-autohiding-scrollbar;
     }
 }
-
-/*@media (max-width: 1199.98px)
-.table-responsive-xl {
-    display: block;
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    -ms-overflow-style: -ms-autohiding-scrollbar;
-}*/
 
 /* Хлебные крошки breadcrumb */
 .breadcrumb{
@@ -70,6 +52,10 @@
 }
 /** /block-ui spinner */
 
+.bg-aqua-gradient {
+    background: rgb(223, 240, 254);
+    background: linear-gradient(135deg, rgb(223, 240, 254), rgb(240, 247, 253));
+}
 /* Чтобы работали модалки в Bootstrap 4  либо добавить стили, либо замена в исходниках*/
 /* изменено modal-in-class in на show */
 /*.fade.in {

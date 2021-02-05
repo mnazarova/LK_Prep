@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import sbangularjs.DTO.ConnectTeacherStudentDTO;
 import sbangularjs.model.*;
@@ -46,8 +47,8 @@ public class AppointIdController {
         return new ResponseEntity<>(teacherList, HttpStatus.OK);
     }
 
-    @PatchMapping("/getSyllabusContentListByGroupIdAndDepartmentId")
-    public ResponseEntity getSyllabusContentListByGroupIdAndDepartmentId(@AuthenticationPrincipal User user, @RequestParam Long groupId) {
+    @PatchMapping("/getSyllabusContentListWithoutAttestationByGroupIdAndDepartmentId")
+    public ResponseEntity getSyllabusContentListWithoutAttestationByGroupIdAndDepartmentId(@AuthenticationPrincipal User user, @RequestParam Long groupId) {
         Secretary curSecretary = secretaryRepository.findByUsername(user.getUsername());
         Group group = groupRepository.findGroupById(groupId);
         if (curSecretary == null || curSecretary.getDepartment() == null || group == null || group.getSyllabus() == null || group.getCurSemester() == null)
@@ -76,12 +77,23 @@ public class AppointIdController {
                         student.getName() != null ? student.getName():' ', student.getPatronymic()  != null ? student.getPatronymic():' '));
 
                 /*установка преподавателей*/
+                Teacher teacher = teacherRepository.findByUsername("palekhova_oa");
+//                if ()
+                connectTeacherStudentDTO.setAdmittanceTeacher(teacher);
+                connectTeacherStudentDTO.setExamTeacher(teacher);
+                connectTeacherStudentDTO.setKrOrKpTeacher(teacher);
 
                 connectTeacherStudentDTOList.add(connectTeacherStudentDTO);
             }
             sc.setConnectTeacherStudentDTOList(connectTeacherStudentDTOList);
         }
         return new ResponseEntity<>(syllabusContents, HttpStatus.OK);
+    }
+
+    @PatchMapping("/saveTeachersByDiscipline")
+    public ResponseEntity saveTeachersByDiscipline(@RequestBody SyllabusContent syllabusContent/*@RequestParam Long syllabusContentId, @RequestParam ConnectTeacherStudentDTO connectTeacherStudentDTOList*/) {
+        System.out.println(syllabusContent);
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     /*@PatchMapping("/findByNameSubgroup")

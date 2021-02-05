@@ -38,5 +38,9 @@ public class Teacher {
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AttestationContent> attestationContents;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SessionSheetContent> sessionSheetContents;
+
     public Teacher() {}
 }
