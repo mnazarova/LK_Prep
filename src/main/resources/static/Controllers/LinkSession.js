@@ -1,10 +1,10 @@
-app.controller("AppointController", function($scope, $http) {
+app.controller("LinkSessionController", function($scope, $http) {
 
-    getGroupListByActiveIsTrue();
-    function getGroupListByActiveIsTrue() {
+    sessionGetGroupListByActiveIsTrue();
+    function sessionGetGroupListByActiveIsTrue() {
         $http({
             method: 'PATCH',
-            url: '/getGroupListByActiveIsTrue'
+            url: '/sessionGetGroupListByActiveIsTrue'
         }).then(
             function(res) {
                 $scope.groupList = res.data;
@@ -14,15 +14,15 @@ app.controller("AppointController", function($scope, $http) {
         );
     }
 
-    $scope.selectedGroup = function () {
-        console.log($scope.appointForm.group.$modelValue.id)
-        if(!$scope.appointForm.group.$modelValue)
+    $scope.sessionSelectedGroup = function () {
+        // console.log($scope.linkSessionForm.group.$modelValue.id)
+        if(!$scope.linkSessionForm.group.$modelValue)
             return;
         $http({
             method: 'PATCH',
-            url: '/selectedGroup',
+            url: '/sessionSelectedGroup',
             params: {
-                groupId: $scope.appointForm.group.$modelValue.id
+                groupId: $scope.linkSessionForm.group.$modelValue.id
             }
         }).then(
             function(res) {

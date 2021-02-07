@@ -14,19 +14,24 @@ import sbangularjs.DTO.ConnectTeacherStudentDTO;
 import sbangularjs.model.*;
 import sbangularjs.repository.*;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 @PreAuthorize("hasAuthority('SECRETARY')")
 @AllArgsConstructor(onConstructor = @_(@Autowired))
-public class AppointIdController {
+public class LinkSessionIdController {
 
     private SecretaryRepository secretaryRepository;
     private StudentRepository studentRepository;
     private TeacherRepository teacherRepository;
+
     private GroupRepository groupRepository;
     private SyllabusContentRepository syllabusContentRepository;
+    private SessionSheetRepository sessionSheetRepository;
+    private SessionSheetContentRepository sessionSheetContentRepository;
+    private SplitAttestationFormRepository splitAttestationFormRepository;
 
     @PatchMapping("/getGroupById")
     public ResponseEntity getGroupById(@RequestParam Long groupId) {
@@ -41,7 +46,7 @@ public class AppointIdController {
         Secretary curSecretary = secretaryRepository.findByUsername(user.getUsername());
         if (curSecretary == null || curSecretary.getDepartment() == null)
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
-        List<Teacher> teacherList = teacherRepository.findByDepartmentId(curSecretary.getDepartment().getId());
+        List<Teacher> teacherList = teacherRepository.findByDepartmentIdAndActiveIsTrue(curSecretary.getDepartment().getId());
         if (teacherList == null)
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
         return new ResponseEntity<>(teacherList, HttpStatus.OK);
@@ -51,8 +56,11 @@ public class AppointIdController {
     public ResponseEntity getSyllabusContentListWithoutAttestationByGroupIdAndDepartmentId(@AuthenticationPrincipal User user, @RequestParam Long groupId) {
         Secretary curSecretary = secretaryRepository.findByUsername(user.getUsername());
         Group group = groupRepository.findGroupById(groupId);
-        if (curSecretary == null || curSecretary.getDepartment() == null || group == null || group.getSyllabus() == null || group.getCurSemester() == null)
-            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+        if (group == null || group.getCurSemester() == null)
+            return new ResponseEntity<>(0, HttpStatus.CONFLICT);
+
+        if (curSecretary == null || curSecretary.getDepartment() == null || group.getSyllabus() == null)
+            return new ResponseEntity<>(1, HttpStatus.CONFLICT);
 
         List<SyllabusContent> syllabusContents = syllabusContentRepository.findSyllabusContentsBySyllabusIdAndDepartmentIdAndCurSemester(
                 group.getSyllabus().getId(), curSecretary.getDepartment().getId(), group.getCurSemester());
@@ -60,41 +68,213 @@ public class AppointIdController {
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
 
         List<Student> students = studentRepository.findByGroupId(groupId);
-        if (students.isEmpty()) new ResponseEntity<>(null, HttpStatus.OK); // нет студентов в группе
+        if (students.size() == 0) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT); // нет студентов в группе
         for(int i=students.size()-1;i>=0;i--) {
             if(students.get(i).getExpelled() != null && students.get(i).getExpelled()) // Expelled = TRUE, отчислены только тогда, когда true
                 students.remove(students.get(i));
         }
-        if (students.isEmpty()) new ResponseEntity<>(null, HttpStatus.OK); // все студенты отчислены или переведены
+        if (students.isEmpty()) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT); // все студенты отчислены или переведены
 
         for (SyllabusContent sc: syllabusContents) {
-            List<ConnectTeacherStudentDTO> connectTeacherStudentDTOList = new ArrayList<>();
-            for (Student student: students) {
-                ConnectTeacherStudentDTO connectTeacherStudentDTO = new ConnectTeacherStudentDTO();
-
-                connectTeacherStudentDTO.setStudentId(student.getId());
-                connectTeacherStudentDTO.setStudentFullName(String.format("%s %s %s", student.getSurname() != null ? student.getSurname() :' ',
-                        student.getName() != null ? student.getName():' ', student.getPatronymic()  != null ? student.getPatronymic():' '));
-
-                /*установка преподавателей*/
-                Teacher teacher = teacherRepository.findByUsername("palekhova_oa");
-//                if ()
-                connectTeacherStudentDTO.setAdmittanceTeacher(teacher);
-                connectTeacherStudentDTO.setExamTeacher(teacher);
-                connectTeacherStudentDTO.setKrOrKpTeacher(teacher);
-
-                connectTeacherStudentDTOList.add(connectTeacherStudentDTO);
-            }
-            sc.setConnectTeacherStudentDTOList(connectTeacherStudentDTOList);
+            sc.setConnectTeacherStudentDTOList(setConnectTeacherStudentDTO(students, groupId, sc));
         }
         return new ResponseEntity<>(syllabusContents, HttpStatus.OK);
     }
 
-    @PatchMapping("/saveTeachersByDiscipline")
-    public ResponseEntity saveTeachersByDiscipline(@RequestBody SyllabusContent syllabusContent/*@RequestParam Long syllabusContentId, @RequestParam ConnectTeacherStudentDTO connectTeacherStudentDTOList*/) {
-        System.out.println(syllabusContent);
-        return new ResponseEntity<>(null, HttpStatus.OK);
+    private List<ConnectTeacherStudentDTO> setConnectTeacherStudentDTO(List<Student> students, Long groupId, SyllabusContent sc) {
+        List<ConnectTeacherStudentDTO> connectTeacherStudentDTOList = new ArrayList<>();
+        for (Student student: students) {
+            ConnectTeacherStudentDTO connectTeacherStudentDTO = new ConnectTeacherStudentDTO();
+
+            connectTeacherStudentDTO.setStudentId(student.getId());
+            connectTeacherStudentDTO.setStudentFullName(String.format("%s %s %s", student.getSurname() != null ? student.getSurname() :' ',
+                    student.getName() != null ? student.getName():' ', student.getPatronymic()  != null ? student.getPatronymic():' '));
+
+            /*установка преподавателей*/
+            if (sc.getAttestationForm().getName().contains("Экзамен")) {
+                connectTeacherStudentDTO.setAdmittanceTeacher(searchAndSetTeacher(sc.getId(), groupId, 6L, student.getId())); // Допуск
+                connectTeacherStudentDTO.setExamTeacher(searchAndSetTeacher(sc.getId(), groupId, 1L, student.getId())); // Экзамен
+            }
+
+            if (sc.getAttestationForm().getName().contains("Дифф. зачет"))
+                connectTeacherStudentDTO.setExamTeacher(searchAndSetTeacher(sc.getId(), groupId, 2L, student.getId())); // Дифф. зачет
+            if (sc.getAttestationForm().getName().contains("Зачет")) // регистрозависимый метод
+                connectTeacherStudentDTO.setExamTeacher(searchAndSetTeacher(sc.getId(), groupId, 3L, student.getId())); // Зачет
+
+            if (sc.getAttestationForm().getName().contains("КР")) // регистрозависимый метод
+                connectTeacherStudentDTO.setKrOrKpTeacher(searchAndSetTeacher(sc.getId(), groupId, 4L, student.getId())); // КР
+            if (sc.getAttestationForm().getName().contains("КП")) // регистрозависимый метод
+                connectTeacherStudentDTO.setKrOrKpTeacher(searchAndSetTeacher(sc.getId(), groupId, 5L, student.getId())); // КП
+            /*установка преподавателей*/
+
+            connectTeacherStudentDTOList.add(connectTeacherStudentDTO);
+        }
+        return connectTeacherStudentDTOList;
     }
+
+    private Teacher searchAndSetTeacher(Long syllabusContentId, Long groupId, Long splitAttestationFormId, Long studentId) {
+        SessionSheet sessionSheet = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormId(
+                syllabusContentId, groupId, splitAttestationFormId);
+        if (sessionSheet != null) {
+            SessionSheetContent sessionSheetContent = sessionSheetContentRepository.findSessionSheetContentBySessionSheetIdAndStudentId(
+                    sessionSheet.getId(), studentId);
+            if (sessionSheetContent != null)
+                return sessionSheetContent.getTeacher();
+        }
+        return null;
+    }
+
+    private List<Student> getNotExpelledStudents(Long groupId) { // получить не отчисленных к данному моменту студентов этой группы
+        List<Student> students = studentRepository.findByGroupId(groupId);
+//        if (students.isEmpty()) return null; // нет студентов в группе
+        for(int i=students.size()-1;i>=0;i--) {
+            if(students.get(i).getExpelled() != null && students.get(i).getExpelled()) // Expelled = TRUE, отчислены только тогда, когда true
+                students.remove(students.get(i));
+        }
+//        if (students.isEmpty()) return null; // все студенты отчислены или переведены
+        return students;
+    }
+
+    @Transactional
+    @PatchMapping("/saveTeachersByDiscipline")
+    public ResponseEntity saveTeachersByDiscipline(@RequestBody SyllabusContent syllabusContent, @RequestParam Long groupId) {
+//        try {
+            if (syllabusContent == null || syllabusContent.getId() == null || syllabusContent.getConnectTeacherStudentDTOList() == null)
+                return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+
+        SessionSheet sessionSheet;
+        List<SessionSheetContent> sessionSheetContents;
+        if (syllabusContent.getAttestationForm().getName().contains("Экзамен")) { // регистрозависимый метод
+//                saveOrUpdateSessionSheet(6L, ConnectTeacherStudentDTO.class.getDeclaredMethod("getAdmittanceTeacher"), syllabusContent.getId(), groupId, syllabusContent.getConnectTeacherStudentDTOList());
+
+            sessionSheet = findOrSetSessionSheet(syllabusContent.getId(), groupId, 6L);  // Допуск
+            sessionSheetContents = new ArrayList<>();
+            for (ConnectTeacherStudentDTO connectTeacherStudentDTO : syllabusContent.getConnectTeacherStudentDTOList()) {
+                SessionSheetContent sessionSheetContent = findOrSetSessionSheetContent(sessionSheet, connectTeacherStudentDTO.getStudentId());
+
+                if (connectTeacherStudentDTO.getAdmittanceTeacher() != null)
+                    sessionSheetContent.setTeacher(connectTeacherStudentDTO.getAdmittanceTeacher());
+
+                sessionSheetContents.add(sessionSheetContent);
+            }
+            sessionSheet.setSessionSheetContents(sessionSheetContents);
+            sessionSheetRepository.save(sessionSheet);
+            
+            saveOrUpdateExamOrPass(1L, syllabusContent.getId(), groupId, syllabusContent.getConnectTeacherStudentDTOList()); // Экзамен
+        }
+
+        if (syllabusContent.getAttestationForm().getName().contains("Дифф. зачет")) // регистрозависимый метод
+            saveOrUpdateExamOrPass(2L, syllabusContent.getId(), groupId, syllabusContent.getConnectTeacherStudentDTOList());
+        if (syllabusContent.getAttestationForm().getName().contains("Зачет")) // регистрозависимый метод
+            saveOrUpdateExamOrPass(3L, syllabusContent.getId(), groupId, syllabusContent.getConnectTeacherStudentDTOList());
+
+        if (syllabusContent.getAttestationForm().getName().contains("КР")) // регистрозависимый метод
+            saveOrUpdateKrOrKp(4L, syllabusContent.getId(), groupId, syllabusContent.getConnectTeacherStudentDTOList());
+        if (syllabusContent.getAttestationForm().getName().contains("КП")) // регистрозависимый метод
+            saveOrUpdateKrOrKp(5L, syllabusContent.getId(), groupId, syllabusContent.getConnectTeacherStudentDTOList());
+
+        SyllabusContent sc = syllabusContentRepository.findSyllabusContentById(syllabusContent.getId());
+        List<Student> students = getNotExpelledStudents(groupId);
+        if (students.isEmpty()) return new ResponseEntity<>(null, HttpStatus.OK); // все студенты отчислены или переведены
+        sc.setConnectTeacherStudentDTOList(setConnectTeacherStudentDTO(students, groupId, sc));
+
+        return new ResponseEntity<>(sc, HttpStatus.OK);
+
+//        getSyllabusContentListWithoutAttestationByGroupIdAndDepartmentId(user, groupId)
+        /*}
+        catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+        }*/
+    }
+
+    private void saveOrUpdateExamOrPass(Long splitAttestationFormId, Long syllabusContentId, Long groupId, List<ConnectTeacherStudentDTO> connectTeacherStudentDTOList) {
+        SessionSheet sessionSheet = findOrSetSessionSheet(syllabusContentId, groupId, splitAttestationFormId);
+        List<SessionSheetContent> sessionSheetContents = new ArrayList<>();
+        for (ConnectTeacherStudentDTO connectTeacherStudentDTO : connectTeacherStudentDTOList) {
+            SessionSheetContent sessionSheetContent = findOrSetSessionSheetContent(sessionSheet, connectTeacherStudentDTO.getStudentId());
+
+            if (connectTeacherStudentDTO.getExamTeacher() != null)
+                sessionSheetContent.setTeacher(connectTeacherStudentDTO.getExamTeacher());
+
+            sessionSheetContents.add(sessionSheetContent);
+        }
+        sessionSheet.setSessionSheetContents(sessionSheetContents);
+        sessionSheetRepository.save(sessionSheet);
+    }
+
+    private void saveOrUpdateKrOrKp(Long splitAttestationFormId, Long syllabusContentId, Long groupId, List<ConnectTeacherStudentDTO> connectTeacherStudentDTOList) {
+        SessionSheet sessionSheet = findOrSetSessionSheet(syllabusContentId, groupId, splitAttestationFormId);
+        List<SessionSheetContent> sessionSheetContents = new ArrayList<>();
+        for (ConnectTeacherStudentDTO connectTeacherStudentDTO : connectTeacherStudentDTOList) {
+            SessionSheetContent sessionSheetContent = findOrSetSessionSheetContent(sessionSheet, connectTeacherStudentDTO.getStudentId());
+
+            if (connectTeacherStudentDTO.getKrOrKpTeacher() != null)
+                sessionSheetContent.setTeacher(connectTeacherStudentDTO.getKrOrKpTeacher());
+
+            sessionSheetContents.add(sessionSheetContent);
+        }
+        sessionSheet.setSessionSheetContents(sessionSheetContents);
+        sessionSheetRepository.save(sessionSheet);
+    }
+
+    private SessionSheetContent findOrSetSessionSheetContent(SessionSheet sessionSheet, Long connectTeacherStudentDTOStudentId) {
+        SessionSheetContent sessionSheetContent = new SessionSheetContent();
+        if (sessionSheet.getId() != null) { // Сессионная ведомость была создана
+            sessionSheetContent = sessionSheetContentRepository.findSessionSheetContentBySessionSheetIdAndStudentId(
+                    sessionSheet.getId(), connectTeacherStudentDTOStudentId);
+            if (sessionSheetContent == null)
+                sessionSheetContent = new SessionSheetContent();
+        }
+        sessionSheetContent.setSessionSheet(sessionSheet);
+        sessionSheetContent.setStudent(studentRepository.findStudentById(connectTeacherStudentDTOStudentId));
+        return sessionSheetContent;
+    }
+
+    private SessionSheet findOrSetSessionSheet(Long syllabusContentId, Long groupId, Long splitAttestationFormId) {
+        SessionSheet sessionSheet = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormId(
+                syllabusContentId, groupId, splitAttestationFormId);
+        if (sessionSheet == null) { // новая ведомость
+            sessionSheet = new SessionSheet();
+            sessionSheet.setSyllabusContent(syllabusContentRepository.findSyllabusContentById(syllabusContentId));
+            sessionSheet.setGroup(groupRepository.findGroupById(groupId));
+            sessionSheet.setSplitAttestationForm(splitAttestationFormRepository.findSplitAttestationFormById(splitAttestationFormId));
+        }
+        return sessionSheet;
+    }
+
+    /*private boolean saveOrUpdateSessionSheet(Long splitAttestationFormId, Method addingTeacher, Long syllabusContentId,
+                                             Long groupId, List<ConnectTeacherStudentDTO> connectTeacherStudentDTOList) {
+        SessionSheet sessionSheet = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormId(
+                syllabusContentId, groupId, splitAttestationFormId); // Допуск
+        if (sessionSheet == null) {
+            sessionSheet = new SessionSheet();
+            sessionSheet.setSyllabusContent(syllabusContentRepository.findSyllabusContentById(syllabusContentId));
+            sessionSheet.setGroup(groupRepository.findGroupById(groupId));
+            sessionSheet.setSplitAttestationForm(splitAttestationFormRepository.findSplitAttestationFormById(splitAttestationFormId));
+        }
+
+        List<SessionSheetContent> sessionSheetContents = new ArrayList<>();
+        for (ConnectTeacherStudentDTO connectTeacherStudentDTO : connectTeacherStudentDTOList) {
+            SessionSheetContent sessionSheetContent = new SessionSheetContent();
+            if (sessionSheet.getId() != null) { // Сессионная ведомость была создана
+                sessionSheetContent = sessionSheetContentRepository.findSessionSheetContentBySessionSheetIdAndStudentId(
+                        sessionSheet.getId(), connectTeacherStudentDTO.getStudentId());
+                if (sessionSheetContent == null)
+                    sessionSheetContent = new SessionSheetContent();
+            }
+            sessionSheetContent.setSessionSheet(sessionSheet);
+            sessionSheetContent.setStudent(studentRepository.findStudentById(connectTeacherStudentDTO.getStudentId()));
+            addingTeacher.invoke();
+            if (connectTeacherStudentDTO.addingTeacher() != null)
+                sessionSheetContent.setTeacher(connectTeacherStudentDTO.addingTeacher());
+
+            sessionSheetContents.add(sessionSheetContent);
+        }
+        sessionSheet.setSessionSheetContents(sessionSheetContents);
+        sessionSheetRepository.save(sessionSheet);
+        return true; // success
+    }*/
 
     /*@PatchMapping("/findByNameSubgroup")
     public ResponseEntity findByNameSubgroup(@RequestBody Subgroup subgroup) {

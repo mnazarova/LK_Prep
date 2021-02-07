@@ -12,8 +12,8 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     Teacher findTeacherById(Long teacherId);
 
     @Query("select t from Teacher t " +
-           "join PlaceWork pw on pw.teacher.id = t.id and pw.department.id = :departmentId")
-    List<Teacher> findByDepartmentId(Long departmentId);
+           "join PlaceWork pw on pw.teacher.id = t.id and pw.department.id = :departmentId and t.active = true")
+    List<Teacher> findByDepartmentIdAndActiveIsTrue(Long departmentId);
 
     Teacher findByUsername(String username);
 }

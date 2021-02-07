@@ -467,15 +467,25 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $sce
             templateUrl: 'Templates/link.html',
             controller: 'LinkController'
         })
-        .state('appoint', {
-            url: '/appoint',
-            templateUrl: 'Templates/appoint.html',
-            controller: 'AppointController'
+        .state('linkSession', {
+            url: '/linkSession',
+            templateUrl: 'Templates/linkSession.html',
+            controller: 'LinkSessionController'
         })
-        .state('appointId', {
-            url: '/appoint/:id',
-            templateUrl: 'Templates/appointId.html',
-            controller: 'AppointIdController'
+        .state('linkSessionId', {
+            url: '/linkSession/:id',
+            templateUrl: 'Templates/linkSessionId.html',
+            controller: 'LinkSessionIdController'
+        })
+        .state('linkAttestation', {
+            url: '/linkAttestation',
+            templateUrl: 'Templates/linkAttestation.html',
+            controller: 'LinkAttestationController'
+        })
+        .state('linkAttestationId', {
+            url: '/linkAttestation/:attestationId/:id',
+            templateUrl: 'Templates/linkAttestationId.html',
+            controller: 'LinkAttestationIdController'
         })
         .state('attestation', {
             url: '/attestation',

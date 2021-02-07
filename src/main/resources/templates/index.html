@@ -106,9 +106,15 @@
                         </li>-->
 
                         <li class="nav-item ng-hide" ng-show="ur == 'SECRETARY'">
-                            <a class="nav-link" ui-sref-active="active" ui-sref="appoint">
+                            <a class="nav-link" ui-sref-active="active" ui-sref="linkAttestation">
+                                <i class="fa fa-list-alt"></i>
+                                Аттестация
+                            </a>
+                        </li>
+                        <li class="nav-item ng-hide" ng-show="ur == 'SECRETARY'">
+                            <a class="nav-link" ui-sref-active="active" ui-sref="linkSession">
                                 <i class="fa fa-calendar-check-o"></i>
-                                Назначить преподавателей
+                                Сессия
                             </a>
                         </li>
 
@@ -179,7 +185,8 @@
 
 <!--                <li class="list-inline-item ng-hide" ng-show="ur == 'SECRETARY'"><a ui-sref-active="active" ui-sref="addSubgroup">Добавить подгруппу</a></li>-->
 <!--                <li class="list-inline-item ng-hide" ng-show="ur == 'SECRETARY'"><a ui-sref-active="active" ui-sref="link">Настроить списки &lt;!&ndash;Связать (под)группу и преподавателя&ndash;&gt;</a></li>-->
-                <li class="list-inline-item ng-hide" ng-show="ur == 'SECRETARY'"><a ui-sref-active="active" ui-sref="appoint">Назначить преподавателей</a></li>
+                <li class="list-inline-item ng-hide" ng-show="ur == 'SECRETARY'"><a ui-sref-active="active" ui-sref="linkAttestation">Аттестация</a></li>
+                <li class="list-inline-item ng-hide" ng-show="ur == 'SECRETARY'"><a ui-sref-active="active" ui-sref="linkSession">Сессия</a></li>
 
                 <li class="list-inline-item ng-hide" ng-show="ur == 'TEACHER'"><a ui-sref-active="active" ui-sref="attestation">Заполнение ведомостей</a></li>
                 <!--<li class="list-inline-item"><a ui-sref-active="active" ui-sref="privateAccount">Личный кабинет</a></li>-->
@@ -225,8 +232,10 @@
 
 <!--    <script src="Controllers/AddSubgroup.js"></script>-->
 <!--    <script src="Controllers/Link.js"></script>-->
-    <script src="Controllers/Appoint.js"></script>
-    <script src="Controllers/AppointId.js"></script>
+    <script src="Controllers/LinkSession.js"></script>
+    <script src="Controllers/LinkSessionId.js"></script>
+    <script src="Controllers/LinkAttestation.js"></script>
+    <script src="Controllers/LinkAttestationId.js"></script>
 
     <script src="Controllers/Attestation.js"></script>
     <script src="Controllers/Subject.js"></script>

@@ -9,6 +9,7 @@ import java.util.Set;
 
 public interface SyllabusContentRepository extends JpaRepository<SyllabusContent, Long> {
     List<SyllabusContent> findAll();
+    SyllabusContent findSyllabusContentById(Long Id);
 
     SyllabusContent findBySyllabusIdAndDisciplineIdAndSemesterNumber(Long syllabusId, Long disciplineId, Integer semesterNumber);
 

@@ -1,4 +1,4 @@
-app.controller("AppointIdController", function($scope, $http, $stateParams) {
+app.controller("LinkAttestationIdController", function($scope, $http, $stateParams) {
     $scope.showStudents = [];
     $scope.changes = [];
     $scope.syllabusContentList = {};
@@ -28,7 +28,7 @@ app.controller("AppointIdController", function($scope, $http, $stateParams) {
             function(res) {
                 $scope.teachers = res.data;
                 $scope.teacher = {};
-                console.log($scope.teachers)
+                // console.log($scope.teachers)
             }
         );
     }
@@ -43,8 +43,18 @@ app.controller("AppointIdController", function($scope, $http, $stateParams) {
             }
         }).then(
             function(res) {
+                if (!res.data)
+                    $scope.toasterError('В группе отсутствуют студенты. Обратитесь к администратору!');
+
                 $scope.syllabusContentList = res.data;
                 initTable();
+            },
+            function(res) { // error
+                // console.log(res.data)
+                if (res.data === 0)
+                    $scope.toasterError('Отсутствует номер текущего семестра группы.');
+                else
+                    $scope.toasterError('Обратитесь к администратору!');
             }
         );
     }
@@ -52,9 +62,9 @@ app.controller("AppointIdController", function($scope, $http, $stateParams) {
     function initTable() {
         // console.log($scope.syllabusContentList);
         for (let index=0, size = Object.keys($scope.syllabusContentList).length; index < size; index++) {
-            $scope.setGlobalAdmittanceTeacher(index);
-            $scope.setGlobalExamTeacher(index);
-            $scope.setGlobalKrOrKpTeacher(index);
+            $scope.setGlobalAdmittanceTeacher(index, $scope.syllabusContentList);
+            $scope.setGlobalExamTeacher(index, $scope.syllabusContentList);
+            $scope.setGlobalKrOrKpTeacher(index, $scope.syllabusContentList);
             $scope.oldSyllabusContentList[index] = angular.copy($scope.syllabusContentList[index]);
             $scope.checkChanges(index);
         }
@@ -62,7 +72,7 @@ app.controller("AppointIdController", function($scope, $http, $stateParams) {
 
     $scope.checkChanges = function (index) {
         $scope.changes[index] = !angular.equals($scope.oldSyllabusContentList[index], $scope.syllabusContentList[index]); // true если равны
-        console.log($scope.changes[index])
+        // console.log($scope.changes[index])
         // console.log($scope.oldSyllabusContentList[index])
         // console.log($scope.syllabusContentList[index])
     };
@@ -79,16 +89,16 @@ app.controller("AppointIdController", function($scope, $http, $stateParams) {
         });
         $scope.checkChanges(index);
     };
-    $scope.setGlobalAdmittanceTeacher = function (index) {
-        let array = $scope.syllabusContentList[index].connectTeacherStudentDTOList;
+    $scope.setGlobalAdmittanceTeacher = function (index, scList) {
+        let array = scList[index].connectTeacherStudentDTOList;
         let length = array.length;
         if (length < 1 || !array[0].admittanceTeacher)
             return;
         let el = array[0].admittanceTeacher.id, i= 1;
         for(; i < length; i++)
             if (el !== array[i].admittanceTeacher.id) break;
-        if (i === length) $scope.syllabusContentList[index].admittanceTeacher = array[0].admittanceTeacher;
-        else $scope.syllabusContentList[index].admittanceTeacher = null;
+        if (i === length) scList[index].admittanceTeacher = array[0].admittanceTeacher;
+        else scList[index].admittanceTeacher = null;
     };
 
     $scope.selectedExamTeacher = function (index) {
@@ -98,16 +108,19 @@ app.controller("AppointIdController", function($scope, $http, $stateParams) {
         });
         $scope.checkChanges(index);
     };
-    $scope.setGlobalExamTeacher = function (index) {
-        let array = $scope.syllabusContentList[index].connectTeacherStudentDTOList;
+    $scope.setGlobalExamTeacher = function (index, scList) {
+        let array = scList[index].connectTeacherStudentDTOList;
         let length = array.length;
+        // console.log(array[0])
         if (length < 1 || !array[0].examTeacher)
             return;
         let el = array[0].examTeacher.id, i= 1;
-        for(; i < length; i++)
-            if (el !== array[i].examTeacher.id) break;
-        if (i === length) $scope.syllabusContentList[index].examTeacher = array[0].examTeacher;
-        else $scope.syllabusContentList[index].examTeacher = null; // break
+        for(; i < length; i++) {
+            // console.log(!array[i].examTeacher)
+            if (!array[i].examTeacher || el !== array[i].examTeacher.id) break;
+        }
+        if (i === length) scList[index].examTeacher = array[0].examTeacher;
+        else scList[index].examTeacher = null; // break
 
         // $scope.checkTeacher($scope.syllabusContentList[index].connectTeacherStudentDTOList, index, examTeacher)
     };
@@ -129,77 +142,64 @@ app.controller("AppointIdController", function($scope, $http, $stateParams) {
         });
         $scope.checkChanges(index);
     };
-    $scope.setGlobalKrOrKpTeacher = function (index) {
-        let array = $scope.syllabusContentList[index].connectTeacherStudentDTOList, length = array.length;
+    $scope.setGlobalKrOrKpTeacher = function (index, scList) {
+        let array = scList[index].connectTeacherStudentDTOList, length = array.length;
         if (length < 1 || !array[0].krOrKpTeacher)
             return;
         let el = array[0].krOrKpTeacher.id, i= 1;
         for(; i < length; i++)
             if (el !== array[i].krOrKpTeacher.id) break;
-        if (i === length) $scope.syllabusContentList[index].krOrKpTeacher = array[0].krOrKpTeacher;
-        else $scope.syllabusContentList[index].krOrKpTeacher = null;
+        if (i === length) scList[index].krOrKpTeacher = array[0].krOrKpTeacher;
+        else scList[index].krOrKpTeacher = null;
     };
 
     // Студенты
     $scope.selectedAdmittanceTeacherWithDTO = function (index) {
-        $scope.setGlobalAdmittanceTeacher(index);
+        $scope.setGlobalAdmittanceTeacher(index, $scope.syllabusContentList);
         $scope.checkChanges(index);
     };
 
     $scope.selectedExamTeacherWithDTO = function (index) {
-        $scope.setGlobalExamTeacher(index);
+        $scope.setGlobalExamTeacher(index, $scope.syllabusContentList);
         $scope.checkChanges(index);
     };
 
     $scope.selectedKrOrKpTeacherWithDTO = function (index) {
-        $scope.setGlobalKrOrKpTeacher(index);
+        $scope.setGlobalKrOrKpTeacher(index, $scope.syllabusContentList);
         $scope.checkChanges(index);
     };
     // Студенты
 
 
     $scope.saveTeachersByDiscipline = function (index) {
-        console.log(index)
-        console.log($scope.syllabusContentList[index])
-        // console.log($scope.syllabusContentList[index].id)
-        // console.log($scope.syllabusContentList[index].connectTeacherStudentDTOList[0])
+
+        if (!$scope.changes[index]) {
+            $scope.toasterWarning('По выбранной дисциплине изменения отсутствуют');
+            return;
+        }
+
         $http({
             method: 'PATCH',
             url: '/saveTeachersByDiscipline',
-            /*params: {
-                syllabusContentId: $scope.syllabusContentList[index].id,
-                connectTeacherStudentDTOList: $scope.syllabusContentList[index].connectTeacherStudentDTOList[0]
-            },*/
+            params: {
+                groupId: $stateParams.id
+                // syllabusContentId: $scope.syllabusContentList[index].id,
+                // connectTeacherStudentDTOList: $scope.syllabusContentList[index].connectTeacherStudentDTOList[0]
+            },
             data: angular.toJson($scope.syllabusContentList[index]),
             headers: {
                 'Content-Type': 'application/json'
             }
         }).then(
             function(res) {
-                /*$scope.setGlobalAdmittanceTeacher(index);
-            $scope.setGlobalExamTeacher(index);
-            $scope.setGlobalKrOrKpTeacher(index);
-            $scope.oldSyllabusContentList[index] = angular.copy(//$scope.syllabusContentList[index]);
-            $scope.checkChanges(index);*/
+                // console.log(res.data)
+                $scope.toasterSuccess('', 'Изменения по выбранной дисциплине успешно сохранены');
+                $scope.oldSyllabusContentList[index] = angular.copy(res.data);
+                $scope.setGlobalAdmittanceTeacher(index, $scope.oldSyllabusContentList);
+                $scope.setGlobalExamTeacher(index, $scope.oldSyllabusContentList);
+                $scope.setGlobalKrOrKpTeacher(index, $scope.oldSyllabusContentList);
+                $scope.checkChanges(index);
             }
         );
     }
-
-    /*$scope.selectedOnGroupList = function () {
-        // if(!$scope.statementsForm.group.$modelValue)
-        //     return;
-        $http({
-            method: 'PATCH',
-            url: '/selectedOnGroupList',
-            params: {
-                id: $scope.statementsForm.group.$modelValue.id,
-                groupId: $scope.forms.statementsForm.group.$modelValue.id
-            }
-        }).then(
-            function(res) {
-                $scope.groups = res.data;
-            }
-        );
-    };*/
-
 });

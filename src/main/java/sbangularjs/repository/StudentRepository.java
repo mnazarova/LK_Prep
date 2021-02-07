@@ -10,6 +10,7 @@ import java.util.Set;
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
     Student findByNumberRecordBook(String username);
+    Student findStudentById(Long id);
     List<Student> findByGroupId(Long groupId);
 
     @Query("select s from Student s where s.id in :studentIds")

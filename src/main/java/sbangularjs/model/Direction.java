@@ -1,5 +1,6 @@
 package sbangularjs.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,6 +20,7 @@ public class Direction { // Направление
 
     private String name;
 
+//    @JsonIgnore
     @OneToMany(mappedBy = "direction", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Syllabus> syllabuses;
 

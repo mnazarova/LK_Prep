@@ -1,6 +1,7 @@
 package sbangularjs.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import sbangularjs.DTO.ConnectTeacherStudentDTO;
@@ -23,8 +24,9 @@ public class SyllabusContent { // Содержание учебного план
     @Temporal(TemporalType.TIMESTAMP)
     private Date deadline;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+//    @JsonIgnore
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="syllabus_id")
     private Syllabus syllabus;
 

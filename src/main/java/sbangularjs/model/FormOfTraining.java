@@ -1,5 +1,6 @@
 package sbangularjs.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +18,7 @@ public class FormOfTraining { // Форма обучения
 
     private String name;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "form_of_training", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Syllabus> syllabuses;
 

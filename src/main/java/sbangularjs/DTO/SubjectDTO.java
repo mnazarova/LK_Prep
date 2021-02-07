@@ -2,7 +2,6 @@ package sbangularjs.DTO;
 
 import lombok.Getter;
 import lombok.Setter;
-import sbangularjs.model.Teacher;
 
 import java.util.Date;
 

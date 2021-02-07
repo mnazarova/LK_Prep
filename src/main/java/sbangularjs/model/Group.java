@@ -42,5 +42,8 @@ public class Group {
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SessionSheet> sessionSheets;
 
+    @Transient
+    private Boolean blank; // for secretaries
+
     public Group() {}
 }
