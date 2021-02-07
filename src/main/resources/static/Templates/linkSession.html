@@ -1,8 +1,8 @@
 <div ng-show="ur == 'SECRETARY'">
 
-    <div class="py-4 mt-4 card col-md-10 mx-auto border-info">
+    <div class="p-0 mt-4 card col-md-10 mx-auto border-info">
 
-        <div class="font-weight-bold h4 text-center mt-2">Назначение преподавателей</div>
+        <div class="font-weight-bold h4 text-center mt-4">Назначение преподавателей</div>
         <div class="font-weight-bold h5 text-center mt-2">Сессионные ведомости</div>
         <hr>
 
@@ -26,10 +26,10 @@
         </form>
 
         <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!groups.length">
-            Необходимо выбрать группу
+            Группы отсутствуют
         </div>
 
-        <div class="ng-hide m-2 p-2" ng-show="groups.length">
+        <div class="ng-hide my-3" ng-show="groups.length">
             <table class="table table-hover table-striped table-sm table-responsive-lg">
                 <thead>
                 <tr>

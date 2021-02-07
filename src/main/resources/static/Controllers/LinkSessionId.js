@@ -4,11 +4,11 @@ app.controller("LinkSessionIdController", function($scope, $http, $stateParams) 
     $scope.syllabusContentList = {};
     $scope.oldSyllabusContentList = {};
 
-    getGroupById();
-    function getGroupById() {
+    sessionGetGroupById();
+    function sessionGetGroupById() {
         $http({
             method: 'PATCH',
-            url: '/getGroupById',
+            url: '/sessionGetGroupById',
             params: {
                 groupId: $stateParams.id
             }
@@ -19,11 +19,11 @@ app.controller("LinkSessionIdController", function($scope, $http, $stateParams) 
         );
     }
 
-    getTeacherListByDepartmentId();
-    function getTeacherListByDepartmentId() {
+    sessionGetTeacherListByDepartmentId();
+    function sessionGetTeacherListByDepartmentId() {
         $http({
             method: 'PATCH',
-            url: '/getTeacherListByDepartmentId'
+            url: '/sessionGetTeacherListByDepartmentId'
         }).then(
             function(res) {
                 $scope.teachers = res.data;
@@ -96,7 +96,7 @@ app.controller("LinkSessionIdController", function($scope, $http, $stateParams) 
             return;
         let el = array[0].admittanceTeacher.id, i= 1;
         for(; i < length; i++)
-            if (el !== array[i].admittanceTeacher.id) break;
+            if (!array[i].admittanceTeacher || el !== array[i].admittanceTeacher.id) break;
         if (i === length) scList[index].admittanceTeacher = array[0].admittanceTeacher;
         else scList[index].admittanceTeacher = null;
     };
@@ -148,7 +148,7 @@ app.controller("LinkSessionIdController", function($scope, $http, $stateParams) 
             return;
         let el = array[0].krOrKpTeacher.id, i= 1;
         for(; i < length; i++)
-            if (el !== array[i].krOrKpTeacher.id) break;
+            if (!array[i].krOrKpTeacher || el !== array[i].krOrKpTeacher.id) break;
         if (i === length) scList[index].krOrKpTeacher = array[0].krOrKpTeacher;
         else scList[index].krOrKpTeacher = null;
     };

@@ -1,14 +1,14 @@
 <div ng-show="ur == 'SECRETARY'">
 
-    <div class="py-4 mt-4 card col-md-10 mx-auto border-info">
+    <div class="p-0 mt-4 card col-md-10 mx-auto border-info">
 
-        <div class="font-weight-bold h4 text-center mt-2">Назначение преподавателей</div>
+        <div class="font-weight-bold h4 text-center mt-4">Назначение преподавателей</div>
         <div class="font-weight-bold h5 text-center mt-2">Аттестационные ведомости</div>
 
         <form class="simple-form" name="linkAttestationForm">
             <div class="col-md-4 mx-auto my-3">
                 <ui-select ng-model="attestation.selected"
-                           ng-change="SelectedAttestation()"
+                           ng-change="changeAttestationSelected()"
                            ng-disabled="!attestations.length"
                            name="attestation"
                            class="col-md-12 p-0"
@@ -22,21 +22,20 @@
                     </ui-select-choices>
                 </ui-select>
                 <div class="text-center my-2 font-weight-bold">
-                    <div ng-show="attestation.selected">Дедлайн: {{attestation.deadline | date: 'dd.MM.yyyy'}}</div>
+                    <div ng-show="attestation.selected">Дедлайн: {{attestation.selected.deadline | date: 'dd.MM.yyyy'}}</div>
                     <div class="text-danger" ng-show="!attestation.selected">Необходимо выбрать аттестацию!</div>
                 </div>
             </div>
-            <hr>
 
-            <div class="col-md-4 mx-auto my-3">
+            <div class="col-md-4 mx-auto my-3" ng-hide="!groupList.length">
+                <hr>
                 <ui-select ng-model="group.selected"
                            ng-change="attestationSelectedGroup()"
-                           ng-disabled="!groupList.length"
                            name="group"
                            class="col-md-12 p-0"
-                           theme="select2" title="Выберите группу"
+                           theme="select2" title="Поиск группы"
                            required>
-                    <ui-select-match placeholder="Выберите группу...">
+                    <ui-select-match placeholder="Поиск группы...">
                         {{$select.selected.number}}
                     </ui-select-match>
                     <ui-select-choices repeat="gr in groupList | propsFilter: {number: $select.search} | orderBy:'number'">
@@ -46,11 +45,11 @@
             </div>
         </form>
 
-        <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!groups.length">
-            Необходимо выбрать группу
+        <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!groups.length && attestation.selected">
+            Группы отсутствуют
         </div>
 
-        <div class="ng-hide m-2 p-2" ng-show="groups.length">
+        <div class="ng-hide my-3" ng-show="groups.length">
             <table class="table table-hover table-striped table-sm table-responsive-xs">
                 <thead>
                 <tr>

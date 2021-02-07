@@ -32,7 +32,7 @@ public class CertificationAttestation { // Ведомость аттестаци
     private SyllabusContent syllabusContent;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "certificationAttestation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "certificationAttestation", cascade = CascadeType.ALL/*, orphanRemoval = true*/)
     private List<AttestationContent> attestationContents;
 
     public CertificationAttestation() {}

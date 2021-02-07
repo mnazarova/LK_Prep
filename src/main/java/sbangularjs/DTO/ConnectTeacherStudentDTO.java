@@ -1,5 +1,6 @@
 package sbangularjs.DTO;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import sbangularjs.model.Teacher;
@@ -11,6 +12,7 @@ public class ConnectTeacherStudentDTO {
     private Long studentId;
     private String studentFullName;
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Teacher attestationTeacher;
     // Допуск
     private Teacher admittanceTeacher;

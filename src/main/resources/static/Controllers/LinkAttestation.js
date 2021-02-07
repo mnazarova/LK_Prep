@@ -1,7 +1,61 @@
 app.controller("LinkAttestationController", function($scope, $http) {
 
-    attestationGetGroupListByActiveIsTrue();
-    function attestationGetGroupListByActiveIsTrue() {
+    getActingAttestation();
+    function getActingAttestation() {
+        $http({
+            method: 'PATCH',
+            url: '/getActingAttestation'
+        }).then(
+            function(res) { // success
+                $scope.attestations = res.data;
+
+                $scope.attestation = {};
+
+                $scope.attestation.selected = res.data[0];
+                $scope.changeAttestationSelected();
+            }
+        );
+    }
+
+    $scope.attestationSelectedGroup = function () {
+        if(!$scope.linkAttestationForm.group.$modelValue)
+            return;
+        $http({
+            method: 'PATCH',
+            url: '/attestationSelectedGroup',
+            params: {
+                groupId: $scope.linkAttestationForm.group.$modelValue.id,
+                attestationId: $scope.attestation.selected.id
+            }
+        }).then(
+            function(res) {
+                $scope.groups = [];
+                $scope.groups.push(res.data);
+            }
+        );
+    };
+
+    $scope.changeAttestationSelected = function () {
+        // console.log($scope.attestation.selected.id)
+        if(!$scope.attestation.selected.id)
+            return;
+        $http({
+            method: 'PATCH',
+            url: '/changeAttestationSelected',
+            params: {
+                attestationId: $scope.attestation.selected.id
+            }
+        }).then(
+            function(res) {
+                $scope.groupList = res.data;
+                $scope.groups = res.data;
+            }
+        );
+    };
+
+
+    // attestationGetGroupListByActiveIsTrue();
+    /*function attestationGetGroupListByActiveIsTrue() { вместо этого метода changeAttestationSelected
         $http({
             method: 'PATCH',
             url: '/attestationGetGroupListByActiveIsTrue'
@@ -11,37 +65,6 @@ app.controller("LinkAttestationController", function($scope, $http) {
                 $scope.groups = res.data;
             }
         );
-    }
-
-    getActingAttestation();
-    function getActingAttestation() {
-        $http({
-            method: 'PATCH',
-            url: '/getActingAttestation'
-        }).then(
-            function(res) { // success
-                $scope.attestations = res.data;
-                $scope.attestation = {};
-            }
-        );
-    }
-
-    $scope.attestationSelectedGroup = function () {
-        // console.log($scope.linkAttestationForm.group.$modelValue.id)
-        if(!$scope.linkAttestationForm.group.$modelValue)
-            return;
-        $http({
-            method: 'PATCH',
-            url: '/attestationSelectedGroup',
-            params: {
-                groupId: $scope.linkAttestationForm.group.$modelValue.id
-            }
-        }).then(
-            function(res) {
-                $scope.groups = [];
-                $scope.groups.push(res.data);
-            }
-        );
-    };
+    }*/
 
 });

@@ -33,16 +33,16 @@ public class LinkSessionIdController {
     private SessionSheetContentRepository sessionSheetContentRepository;
     private SplitAttestationFormRepository splitAttestationFormRepository;
 
-    @PatchMapping("/getGroupById")
-    public ResponseEntity getGroupById(@RequestParam Long groupId) {
+    @PatchMapping("/sessionGetGroupById")
+    public ResponseEntity sessionGetGroupById(@RequestParam Long groupId) {
         Group group = groupRepository.findGroupById(groupId);
         if (group == null || group.getActive() == null || !group.getActive())
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
         return new ResponseEntity<>(group, HttpStatus.OK);
     }
 
-    @PatchMapping("/getTeacherListByDepartmentId")
-    public ResponseEntity getTeacherListByDepartmentId(@AuthenticationPrincipal User user) {
+    @PatchMapping("/sessionGetTeacherListByDepartmentId")
+    public ResponseEntity sessionGetTeacherListByDepartmentId(@AuthenticationPrincipal User user) {
         Secretary curSecretary = secretaryRepository.findByUsername(user.getUsername());
         if (curSecretary == null || curSecretary.getDepartment() == null)
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
@@ -220,7 +220,7 @@ public class LinkSessionIdController {
 
     private SessionSheetContent findOrSetSessionSheetContent(SessionSheet sessionSheet, Long connectTeacherStudentDTOStudentId) {
         SessionSheetContent sessionSheetContent = new SessionSheetContent();
-        if (sessionSheet.getId() != null) { // Сессионная ведомость была создана
+        if (sessionSheet!= null && sessionSheet.getId() != null) { // Сессионная ведомость была создана
             sessionSheetContent = sessionSheetContentRepository.findSessionSheetContentBySessionSheetIdAndStudentId(
                     sessionSheet.getId(), connectTeacherStudentDTOStudentId);
             if (sessionSheetContent == null)

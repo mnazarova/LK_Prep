@@ -11,6 +11,11 @@
             Группа: <div class="badge bg-aqua-gradient">{{group.number}}</div>
             <br>
             Текущий семестр: <div class="badge bg-aqua-gradient">{{group.curSemester}}</div>
+            <br>
+            <div class="h4 mt-3">
+                Название аттестации: <div class="badge bg-aqua-gradient">{{attestation.name}}</div>
+                Дедлайн: <div class="badge bg-aqua-gradient">{{attestation.deadline | date: 'dd.MM.yyyy'}}</div>
+            </div>
         </div>
 
         <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!syllabusContentList.length">
@@ -24,10 +29,10 @@
                     <tr>
                         <th class="text-center"></th>
                         <th class="text-center">Название дисциплины</th>
-    <!--                    <th class="text-center">Аттестация</th>-->
-                        <th class="text-center">Допуск</th>
-                        <th class="text-center">Экзамен/Зачёт/Диф.зачёт</th>
-                        <th class="text-center">КП/КР</th>
+                        <th class="text-center">Аттестация</th>
+<!--                        <th class="text-center">Допуск</th>-->
+<!--                        <th class="text-center">Экзамен/Зачёт/Диф.зачёт</th>-->
+<!--                        <th class="text-center">КП/КР</th>-->
                         <th class="text-center"></th>
                     </tr>
                     </thead>
@@ -41,15 +46,15 @@
                             </button>
                         </td>
                         <!--Аттестация-->
-                        <!--<td class="text-center border-info">
-                            <ui-select ng-model="attestationTeacher"
+                        <td class="text-center border-info">
+                            <ui-select ng-model="syllabusContent.attestationTeacher"
                                        ng-disabled="!teachers"
-                                       ng-change="selectedAttestationTeacher()"
+                                       ng-change="selectedAttestationTeacher($index)"
                                        name="attestationTeacher"
-                                       class="pt-1"
-                                       theme="select2" title="Выберите преподавателя">
-                                <ui-select-match placeholder="Выберите преп...">
-                                    {{$select.selected.surname + ' ' + $select.selected.initials}}
+                                       class="col-md-10 pt-1"
+                                       theme="select2" title="Назначить преподавателя всей группе">
+                                <ui-select-match placeholder="Назначить преподавателя всей группе...">
+                                    {{$select.selected.surname + ' ' + $select.selected.name + ' ' + $select.selected.patronymic}}
                                 </ui-select-match>
                                 <ui-select-choices repeat="teacher in teachers | propsFilter: {surname: $select.search, name: $select.search} | orderBy:'surname'">
                                     <div ng-bind-html="teacher.surname | highlight: $select.search"></div>
@@ -59,9 +64,9 @@
                                     </small>
                                 </ui-select-choices>
                             </ui-select>
-                        </td>-->
+                        </td>
                         <!--Допуск-->
-                        <td class="text-center border-info">
+                        <!--<td class="text-center border-info">
                             <div ng-hide="syllabusContent.attestationForm.id==1||syllabusContent.attestationForm.id==5||syllabusContent.attestationForm.id==6">-</div>
                             <ui-select ng-model="syllabusContent.admittanceTeacher"
                                        ng-show="syllabusContent.attestationForm.id==1||syllabusContent.attestationForm.id==5||syllabusContent.attestationForm.id==6"
@@ -81,9 +86,9 @@
                                     </small>
                                 </ui-select-choices>
                             </ui-select>
-                        </td>
+                        </td>-->
                         <!-- Экзамен/Зачёт/Диф.зачёт -->
-                        <td class="text-center border-info">
+                        <!--<td class="text-center border-info">
                             <div ng-show="syllabusContent.attestationForm.id==8">-</div>
                             <ui-select ng-model="syllabusContent.examTeacher"
                                        ng-hide="syllabusContent.attestationForm.id==8"
@@ -103,9 +108,9 @@
                                     </small>
                                 </ui-select-choices>
                             </ui-select>
-                        </td>
+                        </td>-->
                         <!-- КП/КР -->
-                        <td class="text-center border-info">
+                        <!--<td class="text-center border-info">
                             <div ng-show="syllabusContent.attestationForm.id==1||syllabusContent.attestationForm.id==2||syllabusContent.attestationForm.id==3||syllabusContent.attestationForm.id==8">-</div>
                             <ui-select ng-model="syllabusContent.krOrKpTeacher"
                                        ng-hide="syllabusContent.attestationForm.id==1||syllabusContent.attestationForm.id==2||syllabusContent.attestationForm.id==3||syllabusContent.attestationForm.id==8"
@@ -125,14 +130,14 @@
                                     </small>
                                 </ui-select-choices>
                             </ui-select>
-                        </td>
+                        </td>-->
                         <!-- Сохранить -->
                         <td class="text-center">
                             <button class="btn btn-md text-white"
                                     ng-class="{'btn-warning': changes[$index],
                                       'btn-info': !changes[$index]}"
                                     type="button"
-                                    data-ng-click="saveTeachersByDiscipline($index)"
+                                    data-ng-click="saveAttestationTeachers($index)"
                                     title="Сохранить изменения по данной дисциплине">
                                 <i class="fa fa-save"></i>
                             </button>
@@ -145,10 +150,10 @@
                             {{connectTeacherStudentDTO.studentFullName}}
                         </td>
                         <!--Аттестация-->
-                        <!--<td class="text-center border-info">
+                        <td class="text-center border-info">
                             <ui-select ng-model="connectTeacherStudentDTO.attestationTeacher"
                                        ng-disabled="!teachers"
-                                       ng-change="selectedAttestationTeacherWithDTO()"
+                                       ng-change="selectedAttestationTeacherWithDTO($parentIndex)"
                                        name="connectTeacherStudentDTO.attestationTeacher"
                                        class="pt-1"
                                        theme="select2" title="Выберите преподавателя"
@@ -164,9 +169,9 @@
                                     </small>
                                 </ui-select-choices>
                             </ui-select>
-                        </td>-->
+                        </td>
                         <!--Допуск-->
-                        <td class="text-center border-info">
+                        <!--<td class="text-center border-info">
                             <div ng-hide="syllabusContent.attestationForm.id==1||syllabusContent.attestationForm.id==5||syllabusContent.attestationForm.id==6">-</div>
                             <ui-select ng-model="connectTeacherStudentDTO.admittanceTeacher"
                                        ng-show="syllabusContent.attestationForm.id==1||syllabusContent.attestationForm.id==5||syllabusContent.attestationForm.id==6"
@@ -187,9 +192,9 @@
                                     </small>
                                 </ui-select-choices>
                             </ui-select>
-                        </td>
+                        </td>-->
                         <!-- Экзамен/Зачёт/Диф.зачёт -->
-                        <td class="text-center border-info">
+                        <!--<td class="text-center border-info">
                             <div ng-show="syllabusContent.attestationForm.id==8">-</div>
                             <ui-select ng-model="connectTeacherStudentDTO.examTeacher"
                                        ng-hide="syllabusContent.attestationForm.id==8"
@@ -210,9 +215,9 @@
                                     </small>
                                 </ui-select-choices>
                             </ui-select>
-                        </td>
+                        </td>-->
                         <!-- КП/КР -->
-                        <td class="text-center border-info">
+                        <!--<td class="text-center border-info">
                             <div ng-show="syllabusContent.attestationForm.id==1||syllabusContent.attestationForm.id==2
                             ||syllabusContent.attestationForm.id==3||syllabusContent.attestationForm.id==8">-</div>
                             <ui-select ng-model="connectTeacherStudentDTO.krOrKpTeacher"
@@ -235,7 +240,7 @@
                                     </small>
                                 </ui-select-choices>
                             </ui-select>
-                        </td>
+                        </td>-->
                         <td class="text-center border-info"></td>
                     </tr>
                     </tbody>

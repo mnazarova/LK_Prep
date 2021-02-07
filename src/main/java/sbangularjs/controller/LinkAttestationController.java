@@ -24,19 +24,38 @@ public class LinkAttestationController {
     private GroupRepository groupRepository;
     private SecretaryRepository secretaryRepository;
     private SyllabusContentRepository syllabusContentRepository;
-    private SessionSheetRepository sessionSheetRepository;
-    private SessionSheetContentRepository sessionSheetContentRepository;
     private AttestationRepository attestationRepository;
+    private CertificationAttestationRepository certificationAttestationRepository;
+    private AttestationContentRepository attestationContentRepository;
 
-    @PatchMapping("/attestationGetGroupListByActiveIsTrue")
-    public ResponseEntity attestationGetGroupListByActiveIsTrue(@AuthenticationPrincipal User user) {
+    @PatchMapping("/getActingAttestation")
+    public ResponseEntity getActingAttestation() {
+        List<Attestation> attestations = attestationRepository.findAllWithDeadlineDateTimeAfter(new Date());
+        if (attestations.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(attestations, HttpStatus.OK);
+    }
+
+    @PatchMapping("/attestationSelectedGroup")
+    public ResponseEntity attestationSelectedGroup(@AuthenticationPrincipal User user, @RequestParam Long groupId, Long attestationId) {
+        Group group = groupRepository.findGroupById(groupId);
+        if (group == null)
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // You many decide to return HttpStatus.NOT_FOUND
+        List<Group> groupList = new ArrayList<>();
+        groupList.add(group);
+        return new ResponseEntity<>(setBlankForGroups(user, groupList, attestationId).get(0), HttpStatus.OK);
+    }
+
+
+    @PatchMapping("/changeAttestationSelected")
+    public ResponseEntity changeAttestationSelected(@AuthenticationPrincipal User user, Long attestationId) {
         List<Group> groupList = groupRepository.getGroupListByActiveIsTrue();
         if (groupList.isEmpty())
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); // You many decide to return HttpStatus.NOT_FOUND
-        return new ResponseEntity<>(setBlankForGroups(user, groupList), HttpStatus.OK);
+        return new ResponseEntity<>(setBlankForGroups(user, groupList, attestationId), HttpStatus.OK);
     }
 
-    private List<Group> setBlankForGroups(User user, List<Group> groupList) {
+    private List<Group> setBlankForGroups(User user, List<Group> groupList, Long attestationId) {
         Secretary curSecretary = secretaryRepository.findByUsername(user.getUsername());
 //        if (curSecretary == null || curSecretary.getDepartment() == null)
 //            return new ResponseEntity<>(1, HttpStatus.CONFLICT);
@@ -61,59 +80,25 @@ public class LinkAttestationController {
                 break;
             }
 
-            gr.setBlank(checkAllSyllabusContentAndStudents(syllabusContents, students, gr.getId())); // true - exist blank field
+            gr.setBlank(checkAllSyllabusContentAndStudents(syllabusContents, students, gr.getId(), attestationId)); // true - exist blank field
         }
         return groupList;
     }
 
-    private boolean checkAllSyllabusContentAndStudents(List<SyllabusContent> syllabusContents, List<Student> students, Long groupId) {
+    private boolean checkAllSyllabusContentAndStudents(List<SyllabusContent> syllabusContents, List<Student> students, Long groupId, Long attestationId) {
         for (SyllabusContent sc: syllabusContents) {
             for (Student student: students) {
-                if (sc.getAttestationForm().getName().contains("Экзамен")) {
-                    if (findNullTeacher(sc.getId(), groupId, 6L, student.getId())) // Допуск
-                        return true;
-                    if (findNullTeacher(sc.getId(), groupId, 1L, student.getId())) // Экзамен
-                        return true;
-                }
-                if (sc.getAttestationForm().getName().contains("Дифф. зачет"))
-                    if (findNullTeacher(sc.getId(), groupId, 2L, student.getId())) return true; // Дифф. зачет
-                if (sc.getAttestationForm().getName().contains("Зачет")) // регистрозависимый метод
-                    if (findNullTeacher(sc.getId(), groupId, 3L, student.getId())) return true; // Зачет
+                CertificationAttestation certificationAttestation = certificationAttestationRepository.findCertificationAttestationBySyllabusContentIdAndGroupIdAndAttestationId(
+                        sc.getId(), groupId, attestationId);  // Аттестация
+                if (certificationAttestation == null || certificationAttestation.getId() == null) return true;
 
-                if (sc.getAttestationForm().getName().contains("КР")) // регистрозависимый метод
-                    if (findNullTeacher(sc.getId(), groupId, 4L, student.getId())) return true; // КР
-                if (sc.getAttestationForm().getName().contains("КП")) // регистрозависимый метод
-                    if (findNullTeacher(sc.getId(), groupId, 5L, student.getId())) return true; // КП
-
+                AttestationContent attestationContent = attestationContentRepository.findAttestationContentByCertificationAttestationIdAndStudentId(
+                        certificationAttestation.getId(), student.getId());
+                if (attestationContent == null || attestationContent.getTeacher() == null || attestationContent.getTeacher().getId() == null) // false - если преподаватель назначен
+                    return true;
             }
         }
         return false;
     }
 
-    private boolean findNullTeacher(Long syllabusContentId, Long groupId, Long splitAttestationFormId, Long studentId) {
-        SessionSheet sessionSheet = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormId(
-                syllabusContentId, groupId, splitAttestationFormId);
-        if (sessionSheet == null || sessionSheet.getId() == null)
-            return true;
-        SessionSheetContent sessionSheetContent = sessionSheetContentRepository.findSessionSheetContentBySessionSheetIdAndStudentId(sessionSheet.getId(), studentId);
-        return sessionSheetContent == null || sessionSheetContent.getTeacher() == null || sessionSheetContent.getTeacher().getId() == null; // false - если преподаватель назначен
-    }
-
-    @PatchMapping("/attestationSelectedGroup")
-    public ResponseEntity attestationSelectedGroup(@AuthenticationPrincipal User user, @RequestParam Long groupId) {
-        Group group = groupRepository.findGroupById(groupId);
-        if (group == null)
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // You many decide to return HttpStatus.NOT_FOUND
-        List<Group> groupList = new ArrayList<>();
-        groupList.add(group);
-        return new ResponseEntity<>(setBlankForGroups(user, groupList).get(0), HttpStatus.OK);
-    }
-
-    @PatchMapping("/getActingAttestation")
-    public ResponseEntity getActingAttestation() {
-        List<Attestation> attestations = attestationRepository.findAllWithDeadlineDateTimeAfter(new Date());
-        if (attestations.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        return new ResponseEntity<>(attestations, HttpStatus.OK);
-    }
 }
