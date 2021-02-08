@@ -13,11 +13,20 @@ public interface AttestationContentRepository extends JpaRepository<AttestationC
     /* SECRETARY */
     AttestationContent findAttestationContentByCertificationAttestationIdAndStudentId(Long certificationAttestationId, Long studentId);
 
+    /* TEACHER */
+    List<AttestationContent> findAllByCertificationAttestationIdAndTeacherId(Long certificationAttestationId, Long teacherId);
+
+    /*@Query("select count(ac) from AttestationContent ac " +
+            "where ac.certificationAttestation.id = :certificationAttestationId and ac.teacher.id = :teacherId " +
+            "and ac.works is not null and ac.attest is not null")
+    Integer findFinishedByCertificationAttestationId(Long certificationAttestationId, Long teacherId);*/
+
+    @Query("select count(ac) from AttestationContent ac " +
+            "where ac.certificationAttestation.id= :certificationAttestationId and ac.teacher.id = :teacherId " +
+            "and (ac.works = null or ac.attest = null)")
+    Integer findUnfinishedByCertificationAttestationId(Long certificationAttestationId, Long teacherId);
+
     /*  */
     List<AttestationContent> findAllByCertificationAttestationId(Long id);
-    List<AttestationContent> findAllByCertificationAttestationIdAndTeacherId(Long id, Long teacherId);
 
-    @Query("select count(all ac) from AttestationContent ac " +
-            " where ac.certificationAttestation.id= :certificationAttestationId and (ac.works=null or ac.attest=null)")
-    Integer findUnfinishedByCertificationAttestationId(Long certificationAttestationId);
 }

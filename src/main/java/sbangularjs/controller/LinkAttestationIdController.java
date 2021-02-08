@@ -97,23 +97,18 @@ public class LinkAttestationIdController {
             connectTeacherStudentDTO.setStudentFullName(String.format("%s %s %s", student.getSurname() != null ? student.getSurname() :' ',
                     student.getName() != null ? student.getName():' ', student.getPatronymic()  != null ? student.getPatronymic():' '));
 
-            connectTeacherStudentDTO.setAttestationTeacher(searchAndSetTeacher(sc.getId(), groupId, student.getId(), attestationId)); // Аттестация
+            CertificationAttestation certificationAttestation = certificationAttestationRepository.findCertificationAttestationBySyllabusContentIdAndGroupIdAndAttestationId(
+                    sc.getId(), groupId, attestationId);
+            if (certificationAttestation != null && certificationAttestation.getId() != null) {
+                AttestationContent attestationContent = attestationContentRepository.findAttestationContentByCertificationAttestationIdAndStudentId(
+                        certificationAttestation.getId(), student.getId());
+                if (attestationContent != null && attestationContent.getTeacher() != null)
+                    connectTeacherStudentDTO.setAttestationTeacher(attestationContent.getTeacher()); // Аттестация
+            }
 
             connectTeacherStudentDTOList.add(connectTeacherStudentDTO);
         }
         return connectTeacherStudentDTOList;
-    }
-
-    private Teacher searchAndSetTeacher(Long syllabusContentId, Long groupId, Long studentId, Long attestationId) {
-        CertificationAttestation certificationAttestation = certificationAttestationRepository.findCertificationAttestationBySyllabusContentIdAndGroupIdAndAttestationId(
-                syllabusContentId, groupId, attestationId);
-        if (certificationAttestation != null && certificationAttestation.getId() != null) {
-            AttestationContent attestationContent = attestationContentRepository.findAttestationContentByCertificationAttestationIdAndStudentId(
-                    certificationAttestation.getId(), studentId);
-            if (attestationContent != null)
-                return attestationContent.getTeacher(); // даже если null
-        }
-        return null;
     }
 
     private List<Student> getNotExpelledStudents(Long groupId) { // получить не отчисленных к данному моменту студентов этой группы
@@ -169,6 +164,13 @@ public class LinkAttestationIdController {
         }
         attestationContent.setCertificationAttestation(certificationAttestation);
         attestationContent.setStudent(studentRepository.findStudentById(studentId));
+
+        /*Стирание данных аттестационного оценивания*/
+        attestationContent.setAttest(null);
+        attestationContent.setDateAttest(null);
+        attestationContent.setWorks(null);
+        attestationContent.setDateWorks(null);
+
         return attestationContent;
     }
 

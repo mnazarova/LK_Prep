@@ -12,7 +12,6 @@ public class ConnectTeacherStudentDTO {
     private Long studentId;
     private String studentFullName;
 
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Teacher attestationTeacher;
     // Допуск
     private Teacher admittanceTeacher;

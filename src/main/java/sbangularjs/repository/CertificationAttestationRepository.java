@@ -11,19 +11,21 @@ public interface CertificationAttestationRepository extends JpaRepository<Certif
     List<CertificationAttestation> findAll();
     CertificationAttestation findCertificationAttestationById(Long certificationAttestationId);
 
-
+    /* TEACHER */
     @Query("select ca.id from AttestationContent at " +
             "join CertificationAttestation ca on ca.id = at.certificationAttestation.id " +
             "and ca.attestation.id = :attestationId and at.teacher.id = :teacherId")
-    List<Long> findAllByAttestationIdAndTeacherId(Long attestationId, Long teacherId);
+    List<Long> findCertificationAttestationIdsByAttestationIdAndTeacherId(Long attestationId, Long teacherId);
 
     @Query(value = "select new sbangularjs.DTO.SubjectDTO(ca.id, ca.attestation.id, " +
-            " d.id, d.name, g.id, g.number) " +
-            " from CertificationAttestation ca " +
-            " join Discipline d on d.id = ca.syllabusContent.discipline.id " +
-            " join Group g on g.id = ca.group.id " +
-            " where ca.id in :certificationAttestationIds ")
-    List<SubjectDTO> findAllSubjectsGroupDTO(List<Long> certificationAttestationIds);
+            "ca.syllabusContent.discipline.id, ca.syllabusContent.discipline.name, ca.group.id, ca.group.number) " +
+            "from CertificationAttestation ca where ca.id in :certificationAttestationIds ")
+    List<SubjectDTO> findAllSubjectsGroupDTOByCAIds(List<Long> certificationAttestationIds);
+
+    @Query(value = "select new sbangularjs.DTO.SubjectDTO(ca.id, ca.attestation.id, " +
+            "ca.syllabusContent.discipline.id, ca.syllabusContent.discipline.name, ca.group.id, ca.group.number) " +
+            "from CertificationAttestation ca where ca.id in :certificationAttestationIds and ca.group.id = :groupId ")
+    List<SubjectDTO> findAllSubjectsGroupDTOByCAIdsAndGroupId(List<Long> certificationAttestationIds, Long groupId);
 
     /* SECRETARY */
     CertificationAttestation findCertificationAttestationBySyllabusContentIdAndGroupIdAndAttestationId(Long syllabusContentId, Long groupId, Long attestationId);

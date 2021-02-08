@@ -29,13 +29,12 @@ public class AttestationContent { // Содержание аттестации
     @JoinColumn(name="student_id")
     private Student student;
 
-    @JsonIgnore
+//    @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER) // или @JsonIgnoreProperties ({"hibernateLazyInitializer", "handler"})
     @JoinColumn(name="certification_attestation_id")
     private CertificationAttestation certificationAttestation; // ведомость аттестации
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="teacher_id")
     private Teacher teacher;
 

@@ -121,13 +121,20 @@
                         <!-- Для преподавателя -->
                         <li class="nav-item ng-hide" ng-show="ur == 'TEACHER'">
                             <a class="nav-link" ui-sref-active="active" ui-sref="attestation">
-                                <i class="fa fa-pencil-square"></i>
-                                Заполнение ведомостей
+                                <i class="fa fa-file-text"></i>
+                                Аттестация
+                            </a>
+                        </li>
+                        <li class="nav-item ng-hide" ng-show="ur == 'TEACHER'">
+                            <a class="nav-link" ui-sref-active="active" ui-sref="session">
+                                <i class="fa fa-book"></i>
+<!--                                <i class="fa fa-pencil-square"></i>-->
+                                Сессия
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" ui-sref-active="active" ui-sref="help">
-                                <i class="fa fa-book"></i>
+                                <i class="fa fa-info-circle"></i>
                                 Справка
                             </a>
                         </li>

@@ -1,17 +1,20 @@
 <div ng-show="ur == 'TEACHER'">
 
-    <div class="my-5 card col-md-10 mx-auto border-info">
+    <div class="my-5 card col-md-10 mx-auto border-info p-0">
 
-        <br>
-        <div class="font-weight-bold h4 text-center mt-2">
-            Найдено действующих аттестаций: {{attestations.length}}
+        <div class="font-weight-bold h4 text-center mt-4">
+            Заполнение аттестационных ведомостей
+            <br>
+            <div class="h5">
+                Найдено действующих аттестаций: <div class="badge bg-aqua-gradient">{{attestations.length}}</div>
+            </div>
         </div>
 
-        <table class="ng-hide table table-hover table-responsive-lg table-striped my-2" ng-show="attestations.length">
+        <table class="ng-hide table table-hover table-responsive-sm m-0 p-0" ng-show="attestations.length">
             <thead>
                 <tr>
-                    <th class="text-center border-white w-50">Название</th>
-                    <th class="text-center border-white w-25">Крайний срок сдачи
+                    <th class="text-center border-white">Название</th>
+                    <th class="text-center border-white">Крайний срок сдачи
                         <!--<br>(не включая)-->
                         <!--<i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top"
                            title="Внимание! Если дедлайн поставлен на 02.09.2020, то изменения можно внести до 0.00 мск 02.09.2020"></i>-->
@@ -23,20 +26,20 @@
                            title="До этой даты (не включая) имеется возможность вносить изменения в ведомости">
                         </i>
                     </th>
-                    <th class="border-white w-25"></th>
+                    <th class="border-white"></th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="bg-aqua-gradient">
                 <tr ng-repeat="attestation in attestations | orderBy:'id'" class="border-top">
                     <td class="text-center border-info">{{attestation.name}}</td>
                     <td class="text-center border-info">
                         {{attestation.deadline | date: 'dd.MM.yyyy'}}
                     </td>
-                    <td class="text-center border-info py-3">
+                    <td class="text-center border-info py-2">
                         <a class="btn btn-info text-white"
                            type="button"
                            ng-click="transitionToSubject(attestation.id)"
-                           title="Перейти в карточку аттестации">
+                           title="Перейти к списку групп">
                             <i class="fa fa-share-square"></i>
                             Перейти
                         </a>
@@ -46,11 +49,9 @@
         </table>
 
         <div class="ng-hide" ng-show="!attestations.length">
-            <br>
-            <div class="font-weight-bold text-center m-2 p-2 alert-warning">
+            <div class="font-weight-bold text-center my-3 py-2 alert-warning">
                 На данный момент отсутствуют действующие аттестации
             </div>
-            <br>
         </div>
 
     </div>

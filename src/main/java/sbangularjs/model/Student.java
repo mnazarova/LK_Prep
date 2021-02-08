@@ -26,8 +26,8 @@ public class Student {
 
     private Boolean expelled;
 
-    @JsonIgnore // когда 500
-    @ManyToOne(fetch = FetchType.LAZY)
+//    @JsonIgnore // когда 500
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="group_id")
     private Group group;
 

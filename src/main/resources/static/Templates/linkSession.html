@@ -13,9 +13,9 @@
                            ng-disabled="!groupList.length"
                            name="group"
                            class="col-md-12 p-0"
-                           theme="select2" title="Выберите группу"
+                           theme="select2" title="Поиск группы"
                            required>
-                    <ui-select-match placeholder="Выберите группу...">
+                    <ui-select-match placeholder="Поиск группы...">
                         {{$select.selected.number}}
                     </ui-select-match>
                     <ui-select-choices repeat="gr in groupList | propsFilter: {number: $select.search} | orderBy:'number'">

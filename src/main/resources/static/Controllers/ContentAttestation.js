@@ -12,32 +12,44 @@ app.controller("ContentAttestationController", function($scope, $state, $statePa
             method: 'PATCH',
             url: '/getContentAttestation',
             params: {
-                id: $stateParams.id,
+                certificationAttestationId: $stateParams.id,
                 attestationId: $stateParams.attestationId
             }
         }).then(
             function(res) { // success
                 $scope.contentAttestation = res.data;
                 $scope.contentAttestationCopy = angular.copy($scope.contentAttestation);
+
+                $scope.groupNumber = $scope.contentAttestation[0].certificationAttestation.group.number;
+                $scope.attestation = $scope.contentAttestation[0].certificationAttestation.attestation;
+                $scope.disciplineName = $scope.contentAttestation[0].certificationAttestation.syllabusContent.discipline.name;
                 // console.log($scope.contentAttestation);
             },
             function(res) { // error
-                // console.log("Error: " + res.status + " : " + res.data);
-                $state.go("attestation");
+                if (res.data === 0)
+                    $scope.toasterError('Проблема с Вашей учётной записью. Пожалуйста, обратитесь к администратору!');
+                else
+                    $state.go('subject', {id: $stateParams.attestationId});
+                    // $scope.toasterError('В выбранную аттестацию запрещено вносить изменения!');
             }
         );
     }
 
-    $scope.replyAll = function() {
+    /*$scope.replyAll = function() {
         if (angular.equals($scope.contentAttestationCopy, $scope.contentAttestation))
             $scope.toasterWarning('Изменения отсутствуют');
         else
             $scope.contentAttestation = angular.copy($scope.contentAttestationCopy);
-            // getContentAttestation();
+    };*/
+
+    $scope.checkChanges = function () {
+        $scope.changes = !angular.equals($scope.contentAttestationCopy, $scope.contentAttestation); // true если равны
+        // console.log($scope.contentAttestationCopy)
+        // console.log($scope.contentAttestation)
     };
 
     $scope.saveContentAttestation = function() {
-        if (angular.equals($scope.contentAttestationCopy, $scope.contentAttestation)) {
+        if (!$scope.changes) {
             $scope.toasterWarning('Изменения отсутствуют');
             return;
         }
@@ -50,8 +62,11 @@ app.controller("ContentAttestationController", function($scope, $state, $statePa
             }
         }).then(
             function(res) {
+                // console.log(res.data)
                 $scope.toasterSuccess('', 'Данные успешно сохранены');
+                $scope.contentAttestation = angular.copy(res.data);
                 $scope.contentAttestationCopy = angular.copy($scope.contentAttestation);
+                $scope.checkChanges();
             },
             function(res) {
                 $scope.toasterError('', 'Данные не были сохранены');

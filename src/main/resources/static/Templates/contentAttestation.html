@@ -2,14 +2,28 @@
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a ui-sref="attestation">Список действующих аттестаций</a></li>
-        <li class="breadcrumb-item"><a ui-sref="subject({id: attestationId})">Список предметов</a></li>
+        <li class="breadcrumb-item"><a ui-sref="subject({id: attestationId})">Список групп</a></li>
         <li class="breadcrumb-item active" aria-current="page">Редактирование ведомости</li>
     </ol>
 
-    <div class="my-3 card col-md-10 mx-auto">
+    <div class="my-3 pt-5 card col-md-10 mx-auto">
 
-        <div class="font-weight-bold h4 text-center mt-4">
+        <div class="font-weight-bold h4 text-center" ng-show="attestation || disciplineName">
+            <span ng-show="attestation">
+                Аттестация: <div class="badge bg-aqua-gradient">"{{attestation.name}}"
+                (до {{attestation.deadline | date: 'dd.MM.yyyy'}})</div>
+            </span>
+            <span ng-show="disciplineName">
+                Дисциплина: <div class="badge bg-aqua-gradient">{{disciplineName}}</div>
+            </span>
+            <hr>
+        </div>
+
+        <div class="font-weight-bold h4 text-center">
             Список студентов
+            <span ng-show="groupNumber">
+                группы <div class="badge bg-aqua-gradient">"{{groupNumber}}"</div>
+            </span>
         </div>
 
         <!--<div class="mt-4 row mx-2">
@@ -36,7 +50,17 @@
         </div>-->
 
         <div ng-if="contentAttestation.length">
-            <table class="table table-hover table-striped table-sm table-responsive-lg my-3">
+            <div class="text-right mb-4">
+                <button class="btn btn-md btn-info text-white"
+                        ng-class="{'btn-warning': changes, 'btn-info': !changes}"
+                        type="button"
+                        title="Сохранить изменения"
+                        ng-click="saveContentAttestation()">
+                    <i class="fa fa-floppy-o"></i>
+                    Сохранить
+                </button>
+            </div>
+            <table class="table table-hover table-sm table-responsive-sm my-3">
                 <thead>
                     <tr>
                         <th class="text-center">Фамилия</th>
@@ -47,7 +71,7 @@
                         <th class="text-center">Аттестован</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="bg-aqua-gradient">
                     <tr ng-repeat="ca in contentAttestation | orderBy:'student.surname' track by $index">
                         <td class="text-center">{{ca.student.surname}}</td>
                         <td class="text-center">{{ca.student.name}}</td>
@@ -55,6 +79,7 @@
                         <td class="text-center">{{ca.student.numberRecordBook}}</td>
                         <td class="text-center">
                             <select class="custom-select form-control"
+                                    ng-click="checkChanges()"
                                     name="ca.works"
                                     ng-model="ca.works"
                                     ng-options="item.key as item.value for item in selected">
@@ -63,6 +88,7 @@
                         </td>
                         <td class="text-center px-3">
                             <select class="custom-select form-control"
+                                    ng-click="checkChanges()"
                                     name="ca.attest"
                                     ng-model="ca.attest"
                                     ng-options="item.key as item.value for item in selected">
@@ -72,16 +98,17 @@
                     </tr>
                 </tbody>
             </table>
-            <div class="text-right mb-4">
-                <hr>
-                <button class="btn btn-warning text-white"
+            <hr>
+            <div class="text-right my-4">
+                <!--<button class="btn btn-warning text-white"
                         type="button"
                         title="Отменить изменения"
                         ng-click="replyAll()">
                     <i class=" fa fa-reply-all"></i>
                     Отменить
-                </button>
-                <button class="btn btn-info text-white"
+                </button>-->
+                <button class="btn btn-md text-white"
+                        ng-class="{'btn-warning': changes, 'btn-info': !changes}"
                         type="button"
                         title="Сохранить изменения"
                         ng-click="saveContentAttestation()">

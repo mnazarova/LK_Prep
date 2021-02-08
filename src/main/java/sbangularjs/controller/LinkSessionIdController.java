@@ -228,6 +228,11 @@ public class LinkSessionIdController {
         }
         sessionSheetContent.setSessionSheet(sessionSheet);
         sessionSheetContent.setStudent(studentRepository.findStudentById(connectTeacherStudentDTOStudentId));
+
+        /*Стирание данных сессионного оценивания*/
+        sessionSheetContent.setEvaluation(null);
+        sessionSheetContent.setDate(null);
+
         return sessionSheetContent;
     }
 

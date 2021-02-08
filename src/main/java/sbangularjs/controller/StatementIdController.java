@@ -61,7 +61,7 @@ public class StatementIdController {
 
         List<Long> certificationAttestationIds = certificationAttestationRepository.findAllByAttestationIdAndGroupIds(id, groupIds);
         if(certificationAttestationIds.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        List<SubjectDTO> subList = certificationAttestationRepository.findAllSubjectsGroupDTO(certificationAttestationIds);
+        List<SubjectDTO> subList = certificationAttestationRepository.findAllSubjectsGroupDTOByCAIds(certificationAttestationIds);
         if (subList.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         return new ResponseEntity<>(subList, HttpStatus.OK);
     }
@@ -93,7 +93,7 @@ public class StatementIdController {
         List<Long> certificationAttestationIds = certificationAttestationRepository.findAllByAttestationIdAndGroupIds(id, groupId);
         if(certificationAttestationIds.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
-        List<SubjectDTO> subList = certificationAttestationRepository.findAllSubjectsGroupDTO(certificationAttestationIds);
+        List<SubjectDTO> subList = certificationAttestationRepository.findAllSubjectsGroupDTOByCAIds(certificationAttestationIds);
         if (subList.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
         return new ResponseEntity<>(subList, HttpStatus.OK);

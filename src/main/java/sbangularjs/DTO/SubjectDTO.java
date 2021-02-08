@@ -9,9 +9,6 @@ import java.util.Date;
 @Setter
 public class SubjectDTO {
 
-    private Long subgroupId;
-    private String subgroupName;
-
     private Long certificationAttestationId;
 //    private Teacher teacher;
     private Long attestationId;
@@ -32,9 +29,7 @@ public class SubjectDTO {
                       Long groupId, String groupNumber) {
         this.certificationAttestationId = certificationAttestationId;
         this.attestationId = attestationId;
-
 //        this.teacher = teacher;
-
         this.disciplineId = disciplineId;
         this.disciplineName = disciplineName;
 
@@ -42,18 +37,4 @@ public class SubjectDTO {
         this.groupNumber = groupNumber;
     }
 
-    public SubjectDTO(Long subgroupId, String subgroupName,
-                      Long certificationAttestationId, Long attestationId,
-                      Long disciplineId, String disciplineName) {
-        this.subgroupId = subgroupId;
-        this.subgroupName = subgroupName;
-
-        this.certificationAttestationId = certificationAttestationId;
-        this.attestationId = attestationId;
-
-//        this.teacher = teacher;
-
-        this.disciplineId = disciplineId;
-        this.disciplineName = disciplineName;
-    }
 }

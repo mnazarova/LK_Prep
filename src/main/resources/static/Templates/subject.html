@@ -2,20 +2,40 @@
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a ui-sref="attestation">Список действующих аттестаций</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Список предметов</li>
+        <li class="breadcrumb-item active" aria-current="page">Список групп</li>
     </ol>
 
     <!-- Оставить заявку!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!-->
-
     <!--Группы       Последние изменения были сделаны (дата)-->
-    <!--Подгруппы    Внимание! Ведомость не заполнена.-->
+
     <div class="my-3 pb-3 card col-md-10 mx-auto border-info p-0">
+
         <div class="font-weight-bold h4 text-center my-4">
             Группы
         </div>
 
+        <form class="simple-form" name="subjectForm">
+            <div class="col-lg-2 col-sm-3 mx-auto mb-4">
+                <ui-select ng-model="group.selected"
+                           ng-change="subjectSelectedGroup()"
+                           ng-disabled="!groupList.length"
+                           name="group"
+                           class="col-lg-12 p-0"
+                           theme="select2" title="Выбор группы"
+                           required>
+                    <ui-select-match placeholder="Выбор группы...">
+                        {{$select.selected.groupNumber}}
+                    </ui-select-match>
+                    <ui-select-choices repeat="gr in groupList | propsFilter: {groupNumber: $select.search} | orderBy:'groupNumber'">
+                        <div ng-bind-html="gr.groupNumber | highlight: $select.search"></div>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </form>
+
+
         <div ng-if="groups.length">
-            <table class="table table-hover table-striped table-sm table-responsive-lg">
+            <table class="table table-hover table-striped table-sm table-responsive-sm">
                 <thead>
                 <tr>
                     <th class="text-center"></th>
@@ -27,7 +47,7 @@
                 <tbody>
                 <tr ng-repeat="group in groups | orderBy:'groupNumber' track by $index">
                     <td class="text-center border-info">
-                        <i class="text-warning fa fa-2x fa-exclamation px-2" ng-if="group.finished" data-toggle="tooltip" data-placement="top"
+                        <i class="text-warning fa fa-2x fa-exclamation px-2" ng-if="!group.finished" data-toggle="tooltip" data-placement="top"
                            title="Внимание! В ведомости остались незаполненные поля">
                         </i>
                     </td>
@@ -46,52 +66,10 @@
             </table>
         </div>
 
-        <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!groups.length">
+        <div class="ng-hide font-weight-bold text-center p-2 alert-warning" ng-show="!groups.length">
             <!--На данный момент группы, в которых Вы преподаёте, отсутствуют-->
             На данный момент ведомости групп отсутствуют
         </div>
-
-        <div class="font-weight-bold h4 text-center my-4">
-            Подгруппы
-        </div>
-
-        <div ng-if="subgroups.length">
-            <table class="table table-hover table-striped table-sm table-responsive-lg">
-                <thead>
-                <tr>
-                    <th class="text-center"></th>
-                    <th class="text-center">Название подгруппы</th>
-                    <th class="text-center">Предмет</th>
-                    <th class="text-center"></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="subgroup in subgroups | orderBy:'subgroupName' track by $index">
-                    <td class="text-center border-info">
-                        <i class="text-warning fa fa-2x fa-exclamation px-2" ng-if="subgroup.finished" data-toggle="tooltip" data-placement="top"
-                           title="Внимание! В ведомости остались незаполненные поля">
-                        </i>
-                    </td>
-                    <td class="text-center border-info">{{subgroup.subgroupName}}</td>
-                    <td class="text-center border-info">{{subgroup.disciplineName}}</td>
-                    <td class="text-center border-info">
-                        <button class="btn btn-md btn-info text-white"
-                                type="button"
-                                ui-sref="contentAttestation({id: subgroup.certificationAttestationId, attestationId: subgroup.attestationId})"
-                                title="Редактировать ведомость группы">
-                            <i class="fa fa-share-square-o"></i>
-                        </button>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!subgroups.length">
-            <!--На данный момент подгруппы, в которых Вы преподаёте, отсутствуют-->
-            На данный момент ведомости подгрупп отсутствуют
-        </div>
-
 
     </div>
 
