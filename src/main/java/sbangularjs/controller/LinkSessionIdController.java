@@ -233,6 +233,8 @@ public class LinkSessionIdController {
         sessionSheetContent.setEvaluation(null);
         sessionSheetContent.setDate(null);
 
+        sessionSheetContent.setActive(true);
+
         return sessionSheetContent;
     }
 

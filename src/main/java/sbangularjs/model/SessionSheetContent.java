@@ -15,6 +15,8 @@ public class SessionSheetContent { // Содержание сессионной 
     @Column(name = "session_sheet_content_id")
     private Long id;
 
+    private Boolean active;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 

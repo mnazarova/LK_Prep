@@ -171,6 +171,8 @@ public class LinkAttestationIdController {
         attestationContent.setWorks(null);
         attestationContent.setDateWorks(null);
 
+        attestationContent.setActive(true);
+
         return attestationContent;
     }
 

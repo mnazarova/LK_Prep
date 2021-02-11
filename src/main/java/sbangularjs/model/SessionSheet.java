@@ -17,7 +17,7 @@ public class SessionSheet { // Сессионная ведомость
     private Long id;
 
     private Long idSpec1;
-//    private Long idSpec2;
+    private Long idSpec2;
     private Boolean isAdditional;
 
 //    @JsonIgnore

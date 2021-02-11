@@ -1,6 +1,5 @@
 package sbangularjs.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,9 +15,9 @@ public class AttestationContent { // Содержание аттестации
     @Column(name = "attestation_content_id")
     private Long id;
 
-    // По умолчанию ставить false
     private Boolean works; // Работает?
     private Boolean attest; // Аттестован?
+    private Boolean active;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateWorks;
