@@ -19,10 +19,10 @@
 
         <div class="ng-hide my-3" ng-show="syllabusContentList.length">
             <form class="simple-form" name="syllabusContentList">
-                <table class="table table-hover table-striped table-responsive-xl table-container">
+                <table class="table table-hover table-striped table-responsive-xl table-container-link-session">
                     <thead>
                     <tr>
-                        <th class="text-center"></th>
+<!--                        <th class="text-center"></th>-->
                         <th class="text-center">Название дисциплины</th>
     <!--                    <th class="text-center">Аттестация</th>-->
                         <th class="text-center">Допуск</th>
@@ -34,7 +34,7 @@
                     <tbody data-ng-repeat="syllabusContent in syllabusContentList track by $index" ng-init="$parentIndex=$index"  data-ng-switch on="showStudents[$index]">
                     <!-- Содержание учебного плана -->
                     <tr class="bg-white bg-aqua-gradient">
-                        <td class="text-center border-info"></td>
+<!--                        <td class="text-center border-info"></td>-->
                         <td class="text-center border-info">
                             <button class="btn btn-link" data-ng-click="toggleShowStudents($index)">
                                 {{syllabusContent.discipline.name}}
@@ -140,7 +140,7 @@
                     </tr>
                     <!-- Студенты -->
                     <tr data-ng-switch-when="true" ng-repeat="connectTeacherStudentDTO in syllabusContent.connectTeacherStudentDTOList | orderBy:'studentFullName' track by $index">
-                        <td class="text-center border-info"></td>
+<!--                        <td class="text-center border-info"></td>-->
                         <td class="text-center border-info">
                             {{connectTeacherStudentDTO.studentFullName}}
                         </td>

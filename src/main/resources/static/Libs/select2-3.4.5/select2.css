@@ -130,7 +130,8 @@ Version: 3.4.5 Timestamp: Mon Nov  4 08:22:42 PST 2013
 .select2-drop {
     width: 100%;
     margin-top: -1px;
-    position: absolute;
+    /*position: absolute;*/
+    display: contents;
     z-index: 9999;
     top: 100%;
 

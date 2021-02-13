@@ -13,8 +13,18 @@
     overflow: auto;
 }
 
-@media (min-width: 1200px) and (max-width: 1400px) {
-    .table-container {
+@media (max-width: 1065px) {
+    .table-container-link-attestation {
+        display: block;
+        /*display: inline-table;*/
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+    }
+}
+@media (min-width: 1200px) and (max-width: 1335px) { /*1365*/
+    .table-container-link-session {
         display: block;
         width: 100%;
         overflow-x: auto;
