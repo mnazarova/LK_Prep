@@ -1,4 +1,4 @@
-app.controller("ContentAttestationController", function($scope, $state, $stateParams, $http) {
+app.controller("ContentSessionController", function($scope, $state, $stateParams, $http) {
 
     $scope.attestationId = $stateParams.attestationId;
     $scope.isHead = $stateParams.isHead === 'true';

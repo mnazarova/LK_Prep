@@ -467,6 +467,7 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $sce
             templateUrl: 'Templates/link.html',
             controller: 'LinkController'
         })
+        /*SECRETARY*/
         .state('linkSession', {
             url: '/linkSession',
             templateUrl: 'Templates/linkSession.html',
@@ -487,6 +488,7 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $sce
             templateUrl: 'Templates/linkAttestationId.html',
             controller: 'LinkAttestationIdController'
         })
+        /*TEACHER*/
         .state('attestation', {
             url: '/attestation',
             templateUrl: 'Templates/attestation.html',
@@ -498,14 +500,26 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $sce
             controller: 'SubjectController'
         })
         .state('contentAttestation', {
-            url: '/contentAttestation/:attestationId/:id',
+            url: '/contentAttestation/:isHead/:attestationId/:id',
+            /*params: {
+                isHead: false
+            },*/
             /*params: {
                 id: null,
                 attestationId: null
             } ,*/
             templateUrl: 'Templates/contentAttestation.html',
             controller: 'ContentAttestationController'
-            // добавить переменную, определяющую группа или подгруппа
+        })
+        .state('session', {
+            url: '/session',
+            templateUrl: 'Templates/session.html',
+            controller: 'SessionController'
+        })
+        .state('contentSession', {
+            url: '/contentSession/:isHead/:id',
+            templateUrl: 'Templates/contentSession.html',
+            controller: 'ContentSessionController'
         })
 
     /*$locationProvider.html5Mode({

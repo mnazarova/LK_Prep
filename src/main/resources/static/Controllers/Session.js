@@ -1,11 +1,7 @@
-app.controller("SubjectController", function($stateParams, $scope, $state, $http) {
+app.controller("SessionController", function($stateParams, $scope, $state, $http) {
 
-    getGroupsByAttestationIdAndTeacherIdAndGroupId();
+    /*getGroupsByAttestationIdAndTeacherIdAndGroupId();
     function getGroupsByAttestationIdAndTeacherIdAndGroupId() {
-        /*$http.patch('/getGroupsByAttestationAndByTeacher',{params: {'id': 146/!*$stateParams.id*!/}})
-            .then(function  (response) {
-                $scope.groups = response.data;
-        });*/
         $http({
             method: 'PATCH',
             url: '/getGroupsByAttestationIdAndTeacherIdAndGroupId',
@@ -62,7 +58,7 @@ app.controller("SubjectController", function($stateParams, $scope, $state, $http
     };
 
 
-    /* Для зав. каф.*/
+    /!* Для зав. каф.*!/
     getGroupsForHeadOfDepartment();
     function getGroupsForHeadOfDepartment() {
         $http({
@@ -88,10 +84,10 @@ app.controller("SubjectController", function($stateParams, $scope, $state, $http
                 }
             },
             function(res) {
-                /*if (res.data === 0)
+                /!*if (res.data === 0)
                     $scope.toasterError('Обратитесь к администратору!');
                 else
-                    $scope.toasterError('В выбранную аттестацию запрещено вносить изменения!');*/
+                    $scope.toasterError('В выбранную аттестацию запрещено вносить изменения!');*!/
             }
         );
     }
@@ -112,6 +108,6 @@ app.controller("SubjectController", function($stateParams, $scope, $state, $http
                 $scope.groupsForHead = res.data;
             }
         );
-    };
+    };*/
 
 });

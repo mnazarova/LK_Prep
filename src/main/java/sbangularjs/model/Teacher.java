@@ -30,6 +30,10 @@ public class Teacher {
 //    @JsonIgnore // сокрытие данных
 //    private String password;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="head_department_id")
+    private Department department;
+
     @JsonIgnore
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PlaceWork> placesWork;
@@ -37,6 +41,14 @@ public class Teacher {
     @JsonIgnore
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AttestationContent> attestationContents;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "setWorksByTeacher", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AttestationContent> attestationContentsSetWorksByTeacher;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "setAttestByTeacher", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AttestationContent> attestationContentsSetAttestByTeacher;
 
     @JsonIgnore
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)

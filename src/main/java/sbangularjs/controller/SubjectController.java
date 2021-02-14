@@ -30,8 +30,8 @@ public class SubjectController {
     private AttestationContentRepository attestationContentRepository;
     private AttestationRepository attestationRepository;
 
-    @PatchMapping("/getGroupsByAttestationIdAndTeacherId")
-    public ResponseEntity getGroupsByAttestationIdAndTeacherId(@AuthenticationPrincipal User user, @RequestParam Long attestationId) {
+    @PatchMapping("/getGroupsByAttestationIdAndTeacherIdAndGroupId")
+    public ResponseEntity getGroupsByAttestationIdAndTeacherIdAndGroupId(@AuthenticationPrincipal User user, @RequestParam Long attestationId, @RequestParam Long groupId) {
         Teacher teacher = teacherRepository.findByUsername(user.getUsername());
         Attestation attestation = attestationRepository.findAttestationById(attestationId);
         if (teacher == null || teacher.getId() == null)
@@ -39,10 +39,10 @@ public class SubjectController {
         if (attestation == null || attestation.getId() == null || attestationRepository.checkAttestationDeadlineDateTimeAfter(new Date(), attestationId) == null)
             return new ResponseEntity<>(1, HttpStatus.CONFLICT);
 
-        return new ResponseEntity<>(getSubjectDTOList(attestationId, teacher.getId(), null), HttpStatus.OK);
+        return new ResponseEntity<>(getSubjectDTOList(attestationId, teacher.getId(), groupId), HttpStatus.OK);
     }
 
-    private List<SubjectDTO> getSubjectDTOList(Long attestationId, Long teacherId, Long groupId) { // groupId == null - все группы
+    private List<SubjectDTO> getSubjectDTOList(Long attestationId, Long teacherId, Long groupId) { // groupId == null - все группы данного преподавателя
         List<Long> certificationAttestationIds = certificationAttestationRepository.findCertificationAttestationIdsByAttestationIdAndTeacherId(attestationId, teacherId);
         if (certificationAttestationIds.size() == 0) return null; // return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         List<SubjectDTO> subjectDTOList;
@@ -51,18 +51,40 @@ public class SubjectController {
         else
             subjectDTOList = certificationAttestationRepository.findAllSubjectsGroupDTOByCAIdsAndGroupId(certificationAttestationIds, groupId);
         for (SubjectDTO sub: subjectDTOList)
-            if (attestationContentRepository.findUnfinishedByCertificationAttestationId(sub.getCertificationAttestationId(), teacherId) == 0) // нет null полей
+            if (attestationContentRepository.findUnfinishedByCertificationAttestationIdAndTeacherId(sub.getCertificationAttestationId(), teacherId) == 0) // нет null полей
                 sub.setFinished(true);
             else
                 sub.setFinished(false);
         return subjectDTOList;
     }
 
-
-    @PatchMapping("/subjectSelectedGroup")
-    public ResponseEntity subjectSelectedGroup(@AuthenticationPrincipal User user, @RequestParam Long groupId, @RequestParam Long attestationId) {
+    @PatchMapping("/getGroupsForHeadOfDepartment")
+    public ResponseEntity getGroupsForHeadOfDepartment(@AuthenticationPrincipal User user, @RequestParam Long attestationId, @RequestParam Long groupId) {
+        // groupId == null - все группы с дисциплинами данной кафедры
         Teacher teacher = teacherRepository.findByUsername(user.getUsername());
-        return new ResponseEntity<>(getSubjectDTOList(attestationId, teacher.getId(), groupId), HttpStatus.OK);
+        Attestation attestation = attestationRepository.findAttestationById(attestationId);
+        if (teacher == null || teacher.getId() == null)
+            return new ResponseEntity<>(0, HttpStatus.CONFLICT);
+        if (teacher.getDepartment() == null || teacher.getDepartment().getId() == null)
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        if (attestation == null || attestation.getId() == null || attestationRepository.checkAttestationDeadlineDateTimeAfter(new Date(), attestationId) == null)
+            return new ResponseEntity<>(1, HttpStatus.CONFLICT);
+
+        List<Long> certificationAttestationIds;
+        if (groupId == null)
+            certificationAttestationIds = certificationAttestationRepository.findCertificationAttestationIdsByAttestationIdAndDepartmentId(attestationId, teacher.getDepartment().getId());
+        else
+            certificationAttestationIds = certificationAttestationRepository.findCertificationAttestationIdsByAttestationIdAndDepartmentIdAngGroupId(
+                    attestationId, teacher.getDepartment().getId(), groupId);
+
+        if (certificationAttestationIds.size() == 0) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        List<SubjectDTO> subjectDTOList = certificationAttestationRepository.findAllSubjectsGroupDTOByCAIds(certificationAttestationIds);
+        for (SubjectDTO sub: subjectDTOList)
+            if (attestationContentRepository.findUnfinishedByCertificationAttestationId(sub.getCertificationAttestationId()) == 0) // нет null полей
+                sub.setFinished(true);
+            else
+                sub.setFinished(false);
+        return new ResponseEntity<>(subjectDTOList, HttpStatus.OK);
     }
 
 }

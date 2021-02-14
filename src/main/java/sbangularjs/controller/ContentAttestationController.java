@@ -31,30 +31,41 @@ public class ContentAttestationController {
     private TeacherRepository teacherRepository;
 
     @PatchMapping("/getContentAttestation")
-    public ResponseEntity getContentAttestation(@AuthenticationPrincipal User user, @RequestParam Long certificationAttestationId, @RequestParam Long attestationId) {
+    public ResponseEntity getContentAttestation(@AuthenticationPrincipal User user, @RequestParam Long certificationAttestationId, @RequestParam Long attestationId, @RequestParam Boolean isHead) {
         CertificationAttestation certificationAttestation = certificationAttestationRepository.findCertificationAttestationById(certificationAttestationId);
         Teacher teacher = teacherRepository.findByUsername(user.getUsername());
         if (teacher == null || teacher.getId() == null)
             return new ResponseEntity<>(0, HttpStatus.CONFLICT);
-        if (certificationAttestation == null || !certificationAttestation.getAttestation().getId().equals(attestationId))
+        if (certificationAttestation == null || certificationAttestation.getAttestation() == null || certificationAttestation.getAttestation().getId() == null
+                                             || !certificationAttestation.getAttestation().getId().equals(attestationId))
             return new ResponseEntity<>(1, HttpStatus.CONFLICT);
+        if (isHead && (teacher.getDepartment() == null || teacher.getDepartment().getId() == null)) // если не зав. каф.
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
-        List<AttestationContent> attestationContents = attestationContentRepository.findAllByCertificationAttestationIdAndTeacherId(certificationAttestationId, teacher.getId());
+        List<AttestationContent> attestationContents;
+        if (isHead) // зав.каф.
+            attestationContents = attestationContentRepository.findAllByCertificationAttestationId(certificationAttestationId);
+        else
+            attestationContents = attestationContentRepository.findAllByCertificationAttestationIdAndTeacherId(certificationAttestationId, teacher.getId());
         return new ResponseEntity<>(attestationContents, HttpStatus.OK);
     }
 
     @Transactional
     @PatchMapping("/saveContentAttestation")
-    public ResponseEntity saveContentAttestation(@RequestBody List<AttestationContent> attestationContents) {
+    public ResponseEntity saveContentAttestation(@AuthenticationPrincipal User user, @RequestBody List<AttestationContent> attestationContents) {
         if(attestationContents == null || attestationContents.size() == 0) return new ResponseEntity(HttpStatus.NO_CONTENT);
 
         for (AttestationContent attestationContent: attestationContents) {
             AttestationContent curOld = attestationContentRepository.findAttestationContentById(attestationContent.getId());
-            if (attestationContent.getAttest() != curOld.getAttest())
+            if (attestationContent.getAttest() != curOld.getAttest()) {
                 attestationContent.setDateAttest(new Date());
+                attestationContent.setSetAttestByTeacher(teacherRepository.findByUsername(user.getUsername()));
+            }
 
-            if (attestationContent.getWorks() != curOld.getWorks())
+            if (attestationContent.getWorks() != curOld.getWorks()) {
                 attestationContent.setDateWorks(new Date());
+                attestationContent.setSetWorksByTeacher(teacherRepository.findByUsername(user.getUsername()));
+            }
         }
         attestationContentRepository.saveAll(attestationContents);
         /*Teacher teacher = teacherRepository.findByUsername(user.getUsername());

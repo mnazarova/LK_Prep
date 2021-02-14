@@ -27,6 +27,15 @@ public interface CertificationAttestationRepository extends JpaRepository<Certif
             "from CertificationAttestation ca where ca.id in :certificationAttestationIds and ca.group.id = :groupId ")
     List<SubjectDTO> findAllSubjectsGroupDTOByCAIdsAndGroupId(List<Long> certificationAttestationIds, Long groupId);
 
+    /* For Head Of Department */
+    @Query("select ca.id from CertificationAttestation ca " +
+            "where ca.attestation.id = :attestationId and ca.syllabusContent.discipline.department.id = :departmentId")
+    List<Long> findCertificationAttestationIdsByAttestationIdAndDepartmentId(Long attestationId, Long departmentId);
+
+    @Query("select ca.id from CertificationAttestation ca where ca.attestation.id = :attestationId " +
+            "and ca.syllabusContent.discipline.department.id = :departmentId and ca.group.id = :groupId")
+    List<Long> findCertificationAttestationIdsByAttestationIdAndDepartmentIdAngGroupId(Long attestationId, Long departmentId, Long groupId);
+
     /* SECRETARY */
     CertificationAttestation findCertificationAttestationBySyllabusContentIdAndGroupIdAndAttestationId(Long syllabusContentId, Long groupId, Long attestationId);
 

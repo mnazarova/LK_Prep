@@ -37,6 +37,14 @@ public class AttestationContent { // Содержание аттестации
     @JoinColumn(name="teacher_id")
     private Teacher teacher;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="set_works_by_teacher")
+    private Teacher setWorksByTeacher; // какой преподаватель установил поле "Работает"
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="set_attest_by_teacher")
+    private Teacher setAttestByTeacher; // какой преподаватель установил поле "Аттестован"
+
     public AttestationContent() {
 //        works = false;
 //        attest = false;

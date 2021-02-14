@@ -1,6 +1,10 @@
 .view {
     /*background: url(/Images/youtube.png) 0 0 repeat;*/
-    background: url(/Images/simple.jpg) no-repeat center / cover;
+    /*background: url(/Images/simple.jpg) no-repeat center / cover;*/
+
+    background: linear-gradient(135deg, #FFFFFF, #F3F8FD);
+
+
     padding: 10px;
     /*width: 100vw;*/
     min-height: calc(100vh - 314px) !important; /*331*/

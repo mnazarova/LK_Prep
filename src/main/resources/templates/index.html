@@ -195,7 +195,9 @@
                 <li class="list-inline-item ng-hide" ng-show="ur == 'SECRETARY'"><a ui-sref-active="active" ui-sref="linkAttestation">Аттестация</a></li>
                 <li class="list-inline-item ng-hide" ng-show="ur == 'SECRETARY'"><a ui-sref-active="active" ui-sref="linkSession">Сессия</a></li>
 
-                <li class="list-inline-item ng-hide" ng-show="ur == 'TEACHER'"><a ui-sref-active="active" ui-sref="attestation">Заполнение ведомостей</a></li>
+<!--                <li class="list-inline-item ng-hide" ng-show="ur == 'TEACHER'"><a ui-sref-active="active" ui-sref="attestation">Заполнение ведомостей</a></li>-->
+                <li class="list-inline-item ng-hide" ng-show="ur == 'TEACHER'"><a ui-sref-active="active" ui-sref="attestation">Аттестация</a></li>
+                <li class="list-inline-item ng-hide" ng-show="ur == 'TEACHER'"><a ui-sref-active="active" ui-sref="session">Сессия</a></li>
                 <!--<li class="list-inline-item"><a ui-sref-active="active" ui-sref="privateAccount">Личный кабинет</a></li>-->
                 <li class="list-inline-item"><a ui-sref-active="active" ui-sref="help">Справка</a></li>
                 <li class="list-inline-item"><a href="logout">Выйти</a></li>
@@ -247,6 +249,8 @@
     <script src="Controllers/Attestation.js"></script>
     <script src="Controllers/Subject.js"></script>
     <script src="Controllers/ContentAttestation.js"></script>
+    <script src="Controllers/Session.js"></script>
+    <script src="Controllers/ContentSession.js"></script>
 
 </body>
 </html>
