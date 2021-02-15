@@ -54,5 +54,9 @@ public class Teacher {
     @OneToMany(mappedBy = "teacher", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SessionSheetContent> sessionSheetContents;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "setEvaluationByTeacher", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SessionSheetContent> sessionSheetContentsSetEvaluationByTeacher;
+
     public Teacher() {}
 }

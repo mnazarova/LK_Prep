@@ -33,6 +33,10 @@ public class SessionSheetContent { // Содержание сессионной 
     private Teacher teacher;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="set_evaluation_by_teacher")
+    private Teacher setEvaluationByTeacher; // какой преподаватель установил поле "Оценивание"
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="student_id")
     private Student student;
 

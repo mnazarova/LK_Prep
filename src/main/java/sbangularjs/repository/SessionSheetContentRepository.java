@@ -1,6 +1,7 @@
 package sbangularjs.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import sbangularjs.model.SessionSheetContent;
 
 import java.util.List;
@@ -10,4 +11,14 @@ public interface SessionSheetContentRepository extends JpaRepository<SessionShee
     List<SessionSheetContent> findAll();
     SessionSheetContent findSessionSheetContentById(Long sessionSheetContentId);
     SessionSheetContent findSessionSheetContentBySessionSheetIdAndStudentId(Long sessionSheetId, Long studentId);
+
+    /*TEACHER*/
+    @Query("select count(ssc) from SessionSheetContent ssc where " +
+    "ssc.sessionSheet.id= :sessionSheetId and ssc.teacher.id = :teacherId and ssc.evaluation = null")
+    Integer findUnfinishedBySessionSheetIdAndTeacherId(Long sessionSheetId, Long teacherId);
+
+    List<SessionSheetContent> findAllBySessionSheetIdAndTeacherId(Long sessionSheetId, Long teacherId);
+
+    /* For Head Of Department */
+    List<SessionSheetContent> findAllBySessionSheetId(Long sessionSheetId);
 }

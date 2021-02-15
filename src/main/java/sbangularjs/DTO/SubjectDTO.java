@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class SubjectDTO {
+public class SubjectDTO { // For Attestation
 
     private Long certificationAttestationId;
 //    private Teacher teacher;

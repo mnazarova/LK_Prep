@@ -1,16 +1,16 @@
 <div ng-show="ur == 'TEACHER'">
 
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a ui-sref="attestation">Список действующих аттестаций</a></li>
-        <li class="breadcrumb-item"><a ui-sref="subject({id: attestationId})">Список групп</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Редактирование ведомости</li>
+        <li class="breadcrumb-item"><a ui-sref="session">Список групп</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Редактирование сессионной ведомости</li>
     </ol>
 
     <div class="my-3 pt-5 card col-md-10 mx-auto">
 
         <div class="font-weight-bold h3 text-center" ng-show="attestation || disciplineName">
-            <pre ng-show="attestation">Аттестация:<div class="badge bg-aqua-gradient">"{{attestation.name}}" (до {{attestation.deadline | date: 'dd.MM.yyyy'}})</div></pre>
             <pre ng-show="disciplineName">Дисциплина: <div class="badge bg-aqua-gradient">{{disciplineName}}</div></pre>
+            <pre ng-show="splitAttestationFormName">Форма аттестации:<div class="badge bg-aqua-gradient">{{splitAttestationFormName}}</div></pre>
+            <pre ng-show="deadlineDiscipline">Крайний срок внесения изменений в ведомость: <div class="badge bg-aqua-gradient">{{deadlineDiscipline | date: 'dd.MM.yyyy'}}</div></pre>
             <hr>
         </div>
 
@@ -21,36 +21,13 @@
             </span>
         </div>
 
-        <!--<div class="mt-4 row mx-2">
-            <div class="font-weight-bold h4 text-center col-md-9">
-                Список студентов
-            </div>
-
-            <div class="btn-group btn-group-justified mx-auto">
-                <button class="btn btn-warning text-white"
-                        type="button"
-                        title="Отменить изменения"
-                        ng-click="replyAll()">
-                    <i class=" fa fa-reply-all"></i>
-                    Отменить
-                </button>
-                <button class="btn btn-info text-white"
-                        type="button"
-                        title="Сохранить изменения"
-                        ng-click="saveContentAttestation()">
-                    <i class="fa fa-floppy-o"></i>
-                    Сохранить
-                </button>
-            </div>
-        </div>-->
-
-        <div ng-if="contentAttestation.length">
+        <div ng-if="contentSession.length">
             <div class="text-right mb-4">
                 <button class="btn btn-md btn-info text-white"
                         ng-class="{'btn-warning': changes, 'btn-info': !changes}"
                         type="button"
                         title="Сохранить изменения"
-                        ng-click="saveContentAttestation()">
+                        ng-click="saveContentSession()">
                     <i class="fa fa-floppy-o"></i>
                     Сохранить
                 </button>
@@ -68,72 +45,56 @@
                     </tr>
                 </thead>
                 <tbody class="bg-aqua-gradient">
-                    <tr ng-repeat="ca in contentAttestation | orderBy:'student.surname' track by $index">
-                        <td class="text-center">{{ca.student.surname}}</td>
-                        <td class="text-center">{{ca.student.name}}</td>
-                        <td class="text-center">{{ca.student.patronymic}}</td>
-                        <td class="text-center">{{ca.student.numberRecordBook}}</td>
+                    <tr ng-repeat="cs in contentSession | orderBy:'student.surname' track by $index">
+                        <td class="text-center">{{cs.student.surname}}</td>
+                        <td class="text-center">{{cs.student.name}}</td>
+                        <td class="text-center">{{cs.student.patronymic}}</td>
+                        <td class="text-center">{{cs.student.numberRecordBook}}</td>
                         <td class="text-center px-3">
-<!--                            <div class="row">-->
-                            <!--data-toggle="tooltip" data-placement="top"
-                                    title="{{ ca.dateWorks ? 'Последние изменения внесены': '' }} {{ca.dateWorks | date: 'dd.MM.yyyy в hh:mm'}}
-                                    {{ ca.setWorksByTeacher ? '(' + ca.setWorksByTeacher.surname + ' ' + ca.setWorksByTeacher.initials + ')' : 'Внесите и сохраните изменения'}} "
-                                    -->
-                            <!-- ng-class="{'col-md-8': ca.dateWorks, 'col-md-10 ml-md-3': !ca.dateWorks}" -->
-                            <!-- ng-class="{'col-md-8': ca.dateAttest, 'col-md-10 ml-md-3': !ca.dateAttest}" -->
-                            <i class="fa fa-info-circle text-info col-md-1" id="tooltipWorks[$index]" ng-show="ca.dateWorks" data-toggle="tooltip" data-placement="top"
-                               title="Последние изменения внесены {{ca.dateWorks | date: 'dd.MM.yyyy в HH:mm'}} ({{ca.setWorksByTeacher.surname + ' ' + ca.setWorksByTeacher.initials}})">
+                            <i class="fa fa-info-circle text-info col-md-1" id="tooltipWorks[$index]" ng-show="cs.dateWorks" data-toggle="tooltip" data-placement="top"
+                               title="Последние изменения внесены {{cs.dateWorks | date: 'dd.MM.yyyy в HH:mm'}} ({{cs.setWorksByTeacher.surname + ' ' + cs.setWorksByTeacher.initials}})">
                             </i>
-                            <i class="fa fa-info-circle text-warning col-md-1" ng-show="!ca.dateWorks"></i>
+                            <i class="fa fa-info-circle text-warning col-md-1" ng-show="!cs.dateWorks"></i>
                             <select class="custom-select form-control col-md-8"
                                     ng-click="checkChanges()"
-                                    name="ca.works"
-                                    ng-model="ca.works"
+                                    name="cs.works"
+                                    ng-model="cs.works"
                                     ng-options="item.key as item.value for item in selected">
 
                             </select>
-<!--                            </div>-->
                         </td>
                         <td class="text-center px-3">
-                            <i class="fa fa-info-circle text-info col-md-1" id="tooltipAttest[$index]" ng-show="ca.dateAttest" data-toggle="tooltip" data-placement="top"
-                               title="Последние изменения внесены {{ca.dateAttest | date: 'dd.MM.yyyy в HH:mm'}} ({{ca.setAttestByTeacher.surname + ' ' + ca.setAttestByTeacher.initials}})">
+                            <i class="fa fa-info-circle text-info col-md-1" id="tooltipAttest[$index]" ng-show="cs.dateAttest" data-toggle="tooltip" data-placement="top"
+                               title="Последние изменения внесены {{cs.dateAttest | date: 'dd.MM.yyyy в HH:mm'}} ({{cs.setAttestByTeacher.surname + ' ' + cs.setAttestByTeacher.initials}})">
                             </i>
-                            <i class="fa fa-info-circle text-warning col-md-1" ng-show="!ca.dateAttest"></i>
+                            <i class="fa fa-info-circle text-warning col-md-1" ng-show="!cs.dateAttest"></i>
                             <select class="custom-select form-control col-md-8"
                                     ng-click="checkChanges()"
-                                    name="ca.attest"
-                                    ng-model="ca.attest"
+                                    name="cs.attest"
+                                    ng-model="cs.attest"
                                     ng-options="item.key as item.value for item in selected">
                             </select>
-                            <!--<input type="checkbox" ng-model="ca.attest">-->
                         </td>
                         <td class="text-center pt-2 ng-hide" ng-show="isHead">
-                            {{ca.teacher ? ca.teacher.surname + ' ' + ca.teacher.name + ' ' + ca.teacher.patronymic : '-'}}
+                            {{cs.teacher ? cs.teacher.surname + ' ' + cs.teacher.name + ' ' + cs.teacher.patronymic : '-'}}
                         </td>
                     </tr>
                 </tbody>
             </table>
             <hr>
             <div class="text-right my-4">
-                <!--<button class="btn btn-warning text-white"
-                        type="button"
-                        title="Отменить изменения"
-                        ng-click="replyAll()">
-                    <i class=" fa fa-reply-all"></i>
-                    Отменить
-                </button>-->
                 <button class="btn btn-md text-white"
                         ng-class="{'btn-warning': changes, 'btn-info': !changes}"
                         type="button"
                         title="Сохранить изменения"
-                        ng-click="saveContentAttestation()">
+                        ng-click="saveContentSession()">
                     <i class="fa fa-floppy-o"></i>
                     Сохранить
                 </button>
             </div>
         </div>
 
-        <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!contentAttestation.length">
+        <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!contentSession.length">
             Список студентов пуст
         </div>
     </div>

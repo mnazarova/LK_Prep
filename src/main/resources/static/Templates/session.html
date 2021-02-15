@@ -1,6 +1,6 @@
 <div ng-show="ur == 'TEACHER'">
 
-    <div class="my-3 pb-3 card col-md-10 mx-auto border-info p-0">
+    <div class="my-5 pb-3 card col-md-10 mx-auto border-info p-0">
         <form class="simple-form" name="subjectForm">
 
             <div class="font-weight-bold h4 text-center my-4">
@@ -30,6 +30,12 @@
                         <th class="text-center"></th>
                         <th class="text-center">Номер группы</th>
                         <th class="text-center">Предмет</th>
+                        <th class="text-center">Форма аттестации</th>
+                        <th class="text-center">Крайний срок внесения изменений
+                            <i class="fa fa-info-circle text-info" data-toggle="tooltip" data-placement="top"
+                               title="До этой даты (не включая) имеется возможность вносить изменения в ведомости">
+                            </i>
+                        </th>
                         <th class="text-center"></th>
                     </tr>
                     </thead>
@@ -42,10 +48,12 @@
                         </td>
                         <td class="text-center border-info">{{group.groupNumber}}</td>
                         <td class="text-center border-info">{{group.disciplineName}}</td>
+                        <td class="text-center border-info">{{group.splitAttestationFormName}}</td>
+                        <td class="text-center border-info">{{group.deadlineDiscipline | date: 'dd.MM.yyyy'}}</td>
                         <td class="text-center border-info">
                             <button class="btn btn-md btn-info text-white"
                                     type="button"
-                                    ui-sref="contentAttestation({id: group.certificationAttestationId, attestationId: group.attestationId, isHead: false})"
+                                    ui-sref="contentSession({isHead: false, id: group.sessionSheetId})"
                                     title="Редактировать ведомость группы">
                                 <i class="fa fa-share-square-o"></i>
                             </button>
@@ -90,6 +98,12 @@
                             <th class="text-center"></th>
                             <th class="text-center">Номер группы</th>
                             <th class="text-center">Предмет</th>
+                            <th class="text-center">Форма аттестации</th>
+                            <th class="text-center">Крайний срок внесения изменений
+                                <i class="fa fa-info-circle text-info" data-toggle="tooltip" data-placement="top"
+                                   title="До этой даты (не включая) имеется возможность вносить изменения в ведомости">
+                                </i>
+                            </th>
                             <th class="text-center"></th>
                         </tr>
                         </thead>
@@ -102,10 +116,12 @@
                             </td>
                             <td class="text-center border-info">{{groupForHead.groupNumber}}</td>
                             <td class="text-center border-info">{{groupForHead.disciplineName}}</td>
+                            <td class="text-center border-info">{{groupForHead.splitAttestationFormName}}</td>
+                            <td class="text-center border-info">{{groupForHead.deadlineDiscipline | date: 'dd.MM.yyyy'}}</td>
                             <td class="text-center border-info">
                                 <button class="btn btn-md btn-info text-white"
                                         type="button"
-                                        ui-sref="contentAttestation({id: groupForHead.certificationAttestationId, attestationId: groupForHead.attestationId, isHead: true})"
+                                        ui-sref="contentSession({isHead: true, id: groupForHead.sessionSheetId})"
                                         title="Редактировать ведомость группы">
                                     <i class="fa fa-share-square-o"></i>
                                 </button>

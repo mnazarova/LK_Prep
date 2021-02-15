@@ -1,17 +1,13 @@
 app.controller("SessionController", function($stateParams, $scope, $state, $http) {
 
-    /*getGroupsByAttestationIdAndTeacherIdAndGroupId();
-    function getGroupsByAttestationIdAndTeacherIdAndGroupId() {
+    getSessionDTOGroupsByTeacherIdAndGroupId();
+    function getSessionDTOGroupsByTeacherIdAndGroupId() {
         $http({
             method: 'PATCH',
-            url: '/getGroupsByAttestationIdAndTeacherIdAndGroupId',
-            params: {
-                attestationId: $stateParams.id,
-                groupId: ''
-            }
-            // transformRequest: angular.identity,
+            url: '/getSessionDTOGroupsByTeacherIdAndGroupId',
+            params: { groupId: '' }
         }).then(
-            function(res) { // success
+            function(res) {
                 $scope.groups = res.data;
                 $scope.arrayGroupId = [];
                 $scope.groupList = [];
@@ -24,31 +20,24 @@ app.controller("SessionController", function($stateParams, $scope, $state, $http
                         $scope.groupList.push(groupListElement);
                     }
                 }
+                console.log($scope.groups)
                 // console.log($scope.groupList)
             },
-            function(res) { // error
+            function(res) {
                 // console.log(res.data)
                 if (res.data === 0)
-                    $scope.toasterError('Обратитесь к администратору!');
-                else {
-                    $scope.toasterError('В выбранную аттестацию запрещено вносить изменения!');
-                    $state.go('attestation');
-                }
+                    $scope.toasterError('Проблема с учётной записью. Обратитесь к администратору!');
             }
         );
     }
 
     $scope.subjectSelectedGroup = function () {
-        // console.log($scope.subjectForm.group.$modelValue.groupId)
         if(!$scope.subjectForm.group.$modelValue.groupId)
             return;
         $http({
             method: 'PATCH',
-            url: '/getGroupsByAttestationIdAndTeacherIdAndGroupId',
-            params: {
-                groupId: $scope.subjectForm.group.$modelValue.groupId,
-                attestationId: $stateParams.id
-            }
+            url: '/getSessionDTOGroupsByTeacherIdAndGroupId',
+            params: {  groupId: $scope.subjectForm.group.$modelValue.groupId }
         }).then(
             function(res) {
                 $scope.groups = res.data;
@@ -58,8 +47,8 @@ app.controller("SessionController", function($stateParams, $scope, $state, $http
     };
 
 
-    /!* Для зав. каф.*!/
-    getGroupsForHeadOfDepartment();
+    /* Для зав. каф.*/
+    /*getGroupsForHeadOfDepartment();
     function getGroupsForHeadOfDepartment() {
         $http({
             method: 'PATCH',
