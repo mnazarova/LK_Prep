@@ -39,9 +39,9 @@
                         <th class="text-center">Имя</th>
                         <th class="text-center">Отчество</th>
                         <th class="text-center">Номер зачётной книжки</th>
-                        <th class="text-center" style="min-width: 10em">Работает</th>
-                        <th class="text-center" style="min-width: 10em">Аттестован</th>
+                        <th class="text-center" style="min-width: 15em">Оценивание</th>
                         <th class="text-center ng-hide" ng-show="isHead">Назначенный преподаватель</th>
+                        <th class="text-center">Последние изменения</th>
                     </tr>
                 </thead>
                 <tbody class="bg-aqua-gradient">
@@ -51,32 +51,26 @@
                         <td class="text-center">{{cs.student.patronymic}}</td>
                         <td class="text-center">{{cs.student.numberRecordBook}}</td>
                         <td class="text-center px-3">
-                            <i class="fa fa-info-circle text-info col-md-1" id="tooltipWorks[$index]" ng-show="cs.dateWorks" data-toggle="tooltip" data-placement="top"
+                           <!-- <i class="fa fa-info-circle text-info col-md-1" id="tooltipWorks[$index]" ng-show="cs.dateWorks" data-toggle="tooltip" data-placement="top"
                                title="Последние изменения внесены {{cs.dateWorks | date: 'dd.MM.yyyy в HH:mm'}} ({{cs.setWorksByTeacher.surname + ' ' + cs.setWorksByTeacher.initials}})">
                             </i>
-                            <i class="fa fa-info-circle text-warning col-md-1" ng-show="!cs.dateWorks"></i>
+                            <i class="fa fa-info-circle text-warning col-md-1" ng-show="!cs.dateWorks"></i>-->
                             <select class="custom-select form-control col-md-8"
                                     ng-click="checkChanges()"
-                                    name="cs.works"
-                                    ng-model="cs.works"
-                                    ng-options="item.key as item.value for item in selected">
-
-                            </select>
-                        </td>
-                        <td class="text-center px-3">
-                            <i class="fa fa-info-circle text-info col-md-1" id="tooltipAttest[$index]" ng-show="cs.dateAttest" data-toggle="tooltip" data-placement="top"
-                               title="Последние изменения внесены {{cs.dateAttest | date: 'dd.MM.yyyy в HH:mm'}} ({{cs.setAttestByTeacher.surname + ' ' + cs.setAttestByTeacher.initials}})">
-                            </i>
-                            <i class="fa fa-info-circle text-warning col-md-1" ng-show="!cs.dateAttest"></i>
-                            <select class="custom-select form-control col-md-8"
-                                    ng-click="checkChanges()"
-                                    name="cs.attest"
-                                    ng-model="cs.attest"
-                                    ng-options="item.key as item.value for item in selected">
+                                    name="cs.evaluation.id"
+                                    ng-model="cs.evaluation.id"
+                                    ng-options="item.id as item.name for item in selected">
                             </select>
                         </td>
                         <td class="text-center pt-2 ng-hide" ng-show="isHead">
                             {{cs.teacher ? cs.teacher.surname + ' ' + cs.teacher.name + ' ' + cs.teacher.patronymic : '-'}}
+                        </td>
+                        <td class="text-center">
+                            <div ng-show="cs.date">
+                                {{cs.setEvaluationByTeacher.surname + ' ' + cs.setEvaluationByTeacher.name + ' ' + cs.setEvaluationByTeacher.patronymic}}
+                                <br>({{cs.date | date: 'dd.MM.yyyy в HH:mm'}})
+                            </div>
+                            <div ng-show="!cs.date">-</div>
                         </td>
                     </tr>
                 </tbody>

@@ -58,7 +58,6 @@ app.controller("ContentAttestationController", function($scope, $state, $statePa
             $scope.toasterWarning('Изменения отсутствуют');
             return;
         }
-        // $scope.changeHard = true;
         $http({
             method: 'PATCH',
             url: '/saveContentAttestation',
@@ -68,16 +67,17 @@ app.controller("ContentAttestationController", function($scope, $state, $statePa
             }
         }).then(
             function(res) {
-                console.log(res.data);
+                $state.reload();
+                /*$scope.toasterSuccess('', 'Данные успешно сохранены');
+                $scope.contentAttestation = angular.copy(res.data);
+                $scope.contentAttestationCopy = angular.copy($scope.contentAttestation);
+                $scope.checkChanges();*/
+
+
+                // console.log(res.data);
                 // console.log($scope.changeHard);
                 // $scope.changeHard = false;
                 // $scope.contentAttestation = {}; // не помогает прорисовать заново tooltip
-
-                $scope.toasterSuccess('', 'Данные успешно сохранены');
-                $scope.contentAttestation = angular.copy(res.data);
-                $scope.contentAttestationCopy = angular.copy($scope.contentAttestation);
-                $scope.checkChanges();
-
 
                 /*$scope.contentAttestation.forEach(function (el, index) {
                     var value = el.certificationAttestation;
@@ -103,10 +103,10 @@ app.controller("ContentAttestationController", function($scope, $state, $statePa
                         });*/
                     // }
                 // });
-            },
+            }/*,
             function(res) {
                 $scope.toasterError('', 'Данные не были сохранены');
-            }
+            }*/
         );
     };
 

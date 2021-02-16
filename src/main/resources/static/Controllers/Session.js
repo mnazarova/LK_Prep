@@ -31,13 +31,13 @@ app.controller("SessionController", function($stateParams, $scope, $state, $http
         );
     }
 
-    $scope.subjectSelectedGroup = function () {
-        if(!$scope.subjectForm.group.$modelValue.groupId)
+    $scope.selectedSessionDTOGroup = function () {
+        if(!$scope.sessionDTOForm.group.$modelValue.groupId)
             return;
         $http({
             method: 'PATCH',
             url: '/getSessionDTOGroupsByTeacherIdAndGroupId',
-            params: {  groupId: $scope.subjectForm.group.$modelValue.groupId }
+            params: {  groupId: $scope.sessionDTOForm.group.$modelValue.groupId }
         }).then(
             function(res) {
                 $scope.groups = res.data;
@@ -48,15 +48,12 @@ app.controller("SessionController", function($stateParams, $scope, $state, $http
 
 
     /* Для зав. каф.*/
-    /*getGroupsForHeadOfDepartment();
-    function getGroupsForHeadOfDepartment() {
+    getSessionDTOGroupsForHeadOfDepartment();
+    function getSessionDTOGroupsForHeadOfDepartment() {
         $http({
             method: 'PATCH',
-            url: '/getGroupsForHeadOfDepartment',
-            params: {
-                attestationId: $stateParams.id,
-                groupId: ''
-            }
+            url: '/getSessionDTOGroupsForHeadOfDepartment',
+            params: { groupId: '' }
         }).then(
             function(res) {
                 $scope.groupsForHead = res.data;
@@ -73,30 +70,27 @@ app.controller("SessionController", function($stateParams, $scope, $state, $http
                 }
             },
             function(res) {
-                /!*if (res.data === 0)
+                /*if (res.data === 0)
                     $scope.toasterError('Обратитесь к администратору!');
                 else
-                    $scope.toasterError('В выбранную аттестацию запрещено вносить изменения!');*!/
+                    $scope.toasterError('В выбранную аттестацию запрещено вносить изменения!');*/
             }
         );
     }
 
-    $scope.subjectSelectedGroupForHead = function () {
-        // console.log($scope.subjectForm)
-        if(!$scope.subjectForm.groupForHead.$modelValue.groupId)
+    $scope.selectedSessionDTOGroupForHead = function () {
+        // console.log($scope.sessionDTOForm)
+        if(!$scope.sessionDTOForm.groupForHead.$modelValue.groupId)
             return;
         $http({
             method: 'PATCH',
-            url: '/getGroupsForHeadOfDepartment',
-            params: {
-                attestationId: $stateParams.id,
-                groupId: $scope.subjectForm.groupForHead.$modelValue.groupId
-            }
+            url: '/getSessionDTOGroupsForHeadOfDepartment',
+            params: { groupId: $scope.sessionDTOForm.groupForHead.$modelValue.groupId }
         }).then(
             function(res) {
                 $scope.groupsForHead = res.data;
             }
         );
-    };*/
+    };
 
 });

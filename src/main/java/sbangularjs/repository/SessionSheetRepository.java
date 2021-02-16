@@ -30,12 +30,19 @@ public interface SessionSheetRepository extends JpaRepository<SessionSheet, Long
             "from SessionSheet ss where ss.id in :sessionSheetIds")
     List<SessionDTO> findAllSessionDTOBySessionSheetIds(List<Long> sessionSheetIds);
 
-
     @Query(value = "select new sbangularjs.DTO.SessionDTO(ss.id, ss.group.id, ss.group.number, " +
             "ss.syllabusContent.discipline.id, ss.syllabusContent.discipline.name, ss.syllabusContent.deadline, " +
             "ss.splitAttestationForm.id, ss.splitAttestationForm.name) " +
             "from SessionSheet ss where ss.id in :sessionSheetIds and ss.group.id = :groupId")
     List<SessionDTO> findAllSessionDTOBySessionSheetIdsAndGroupId(List<Long> sessionSheetIds, Long groupId);
 
+    /* For Head Of Department */
+    @Query("select ss.id from SessionSheet ss where " +
+            "ss.syllabusContent.discipline.department.id = :departmentId and ss.syllabusContent.deadline > :deadline")
+    List<Long> findSessionSheetIdsByDepartmentIdAndDeadline(Long departmentId, Date deadline);
+
+    @Query("select ss.id from SessionSheet ss where ss.syllabusContent.discipline.department.id = :departmentId " +
+            "and ss.syllabusContent.deadline > :deadline and ss.group.id = :groupId")
+    List<Long> findSessionSheetIdsDepartmentIdAndDeadlineAngGroupId(Long departmentId, Date deadline, Long groupId);
 
 }

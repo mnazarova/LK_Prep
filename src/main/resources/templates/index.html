@@ -77,6 +77,12 @@
                             </button>
                         </li>-->
                         <li class="nav-item ng-hide" ng-show="ur == 'DEANERY'">
+                            <a class="nav-link" ui-sref-active="active" ui-sref="assignment">
+                                <i class="fa fa-hand-o-right"></i>
+                                Назначение
+                            </a>
+                        </li>
+                        <li class="nav-item ng-hide" ng-show="ur == 'DEANERY'">
                             <a class="nav-link" ui-sref-active="active" ui-sref="statements">
                                 <i class="fa fa-list-alt"></i>
                                 Ведомости
@@ -85,7 +91,7 @@
                         <li class="nav-item ng-hide" ng-show="ur == 'DEANERY'">
                             <a class="nav-link" ui-sref-active="active" ui-sref="students">
                                 <i class="fa fa-users"></i>
-                                Студенты
+                                Студенты <!-- Группы -->
                             </a>
                         </li>
 
@@ -144,15 +150,6 @@
                                 Выйти
                             </a>
                         </li>
-                        <!--<li class="nav-item">
-                            <a class="nav-link" ui-sref-active="active" ui-sref="privateAccount">Личный кабинет</a>
-                        </li>
-                        <li class="nav-item ng-hide" ng-show="ur == 'USER'">
-                            <a class="nav-link" ui-sref-active="active" href="basket">
-                                Корзина
-                                <span class="badge badge-light">{{medicines.length}}</span>
-                            </a>
-                        </li>-->
                     </ul>
                 </div>
             </div>

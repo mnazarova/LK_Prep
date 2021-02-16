@@ -14,6 +14,7 @@ import sbangularjs.model.*;
 import sbangularjs.repository.*;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -21,11 +22,10 @@ import java.util.List;
 @PreAuthorize("hasAuthority('TEACHER')")
 @AllArgsConstructor(onConstructor = @_(@Autowired))
 public class ContentSessionController {
-    private AttestationContentRepository attestationContentRepository;
-    private CertificationAttestationRepository certificationAttestationRepository;
+    private TeacherRepository teacherRepository;
+    private EvaluationRepository evaluationRepository;
     private SessionSheetRepository sessionSheetRepository;
     private SessionSheetContentRepository sessionSheetContentRepository;
-    private TeacherRepository teacherRepository;
 
     @PatchMapping("/getContentSession")
     public ResponseEntity getContentSession(@AuthenticationPrincipal User user, @RequestParam Long sessionSheetId, @RequestParam Boolean isHead) {
@@ -41,31 +41,58 @@ public class ContentSessionController {
 
         List<SessionSheetContent> sessionSheetContents;
         if (isHead) // зав.каф.
-            sessionSheetContents = sessionSheetContentRepository.findAllBySessionSheetId(sessionSheetId);
+            sessionSheetContents = sessionSheetContentRepository.findAllBySessionSheetIdAndActiveIsTrue(sessionSheetId);
         else
-            sessionSheetContents = sessionSheetContentRepository.findAllBySessionSheetIdAndTeacherId(sessionSheetId, teacher.getId());
+            sessionSheetContents = sessionSheetContentRepository.findAllBySessionSheetIdAndTeacherIdAndActiveIsTrue(sessionSheetId, teacher.getId());
         return new ResponseEntity<>(sessionSheetContents, HttpStatus.OK);
     }
 
-    /*@Transactional
-    @PatchMapping("/saveContentSession")
-    public ResponseEntity saveContentSession(@AuthenticationPrincipal User user, @RequestBody List<AttestationContent> attestationContents) {
-        if(attestationContents == null || attestationContents.size() == 0) return new ResponseEntity(HttpStatus.NO_CONTENT);
+    @PatchMapping("/getSelected")
+    public ResponseEntity getSelected(@RequestParam Long sessionSheetId) {
+        SessionSheet sessionSheet = sessionSheetRepository.findSessionSheetById(sessionSheetId);
+        if (sessionSheet == null || sessionSheet.getSplitAttestationForm() == null || sessionSheet.getSplitAttestationForm().getId() == null)
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
-        for (AttestationContent attestationContent: attestationContents) {
-            AttestationContent curOld = attestationContentRepository.findAttestationContentById(attestationContent.getId());
-            if (attestationContent.getAttest() != curOld.getAttest()) {
-                attestationContent.setDateAttest(new Date());
-                attestationContent.setSetAttestByTeacher(teacherRepository.findByUsername(user.getUsername()));
-            }
-
-            if (attestationContent.getWorks() != curOld.getWorks()) {
-                attestationContent.setDateWorks(new Date());
-                attestationContent.setSetWorksByTeacher(teacherRepository.findByUsername(user.getUsername()));
-            }
+        List<Evaluation> evaluations = new ArrayList<>();
+        if (sessionSheet.getSplitAttestationForm().getId() == 3) { // Зачет
+            evaluations.add(evaluationRepository.findEvaluationById(1L));
+            evaluations.add(evaluationRepository.findEvaluationById(2L));
         }
-        attestationContentRepository.saveAll(attestationContents);
-        return new ResponseEntity<>(attestationContents, HttpStatus.OK);
-    }*/
+        if (sessionSheet.getSplitAttestationForm().getId() == 2) // Дифф. зачет
+            for (long i = 2; i <= 5; i++)
+                evaluations.add(evaluationRepository.findEvaluationById(i));
+        if (sessionSheet.getSplitAttestationForm().getId() == 4 || sessionSheet.getSplitAttestationForm().getId() == 5) // КР или КП
+            for (long i = 11; i <= 14; i++)
+                evaluations.add(evaluationRepository.findEvaluationById(i));
+
+        if (sessionSheet.getSplitAttestationForm().getId() == 6) { // Допуск
+            evaluations.add(evaluationRepository.findEvaluationById(6L));
+            evaluations.add(evaluationRepository.findEvaluationById(7L));
+        }
+        if (sessionSheet.getSplitAttestationForm().getId() == 1) // Экзамен
+            for (long i = 8; i <= 13; i++)
+                evaluations.add(evaluationRepository.findEvaluationById(i));
+
+        return new ResponseEntity<>(evaluations, HttpStatus.OK);
+    }
+
+    @Transactional
+    @PatchMapping("/saveContentSession")
+    public ResponseEntity saveContentSession(@AuthenticationPrincipal User user, @RequestBody List<SessionSheetContent> sessionSheetContents) {
+        if(sessionSheetContents.size() == 0)
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+
+        for (SessionSheetContent sessionSheetContent: sessionSheetContents) {
+            SessionSheetContent curOld = sessionSheetContentRepository.findSessionSheetContentById(sessionSheetContent.getId());
+
+            if (sessionSheetContent.getEvaluation() != null && sessionSheetContent.getEvaluation().getId() != null)
+                if (curOld.getEvaluation() == null || !sessionSheetContent.getEvaluation().getId().equals(curOld.getEvaluation().getId())) {
+                    sessionSheetContent.setDate(new Date());
+                    sessionSheetContent.setSetEvaluationByTeacher(teacherRepository.findByUsername(user.getUsername()));
+                }
+        }
+        sessionSheetContentRepository.saveAll(sessionSheetContents);
+        return new ResponseEntity<>(sessionSheetContents, HttpStatus.OK);
+    }
 
 }

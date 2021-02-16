@@ -56,7 +56,7 @@ public class LinkSessionController {
             }
             if (students.isEmpty()) {
                 gr.setBlank(null);
-                break;
+                continue;
             }
 
             gr.setBlank(checkAllSyllabusContentAndStudents(syllabusContents, students, gr.getId())); // true - exist blank field

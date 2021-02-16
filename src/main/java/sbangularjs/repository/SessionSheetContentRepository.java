@@ -17,8 +17,12 @@ public interface SessionSheetContentRepository extends JpaRepository<SessionShee
     "ssc.sessionSheet.id= :sessionSheetId and ssc.teacher.id = :teacherId and ssc.evaluation = null")
     Integer findUnfinishedBySessionSheetIdAndTeacherId(Long sessionSheetId, Long teacherId);
 
-    List<SessionSheetContent> findAllBySessionSheetIdAndTeacherId(Long sessionSheetId, Long teacherId);
+    @Query("select count(ssc) from SessionSheetContent ssc where " +
+    "ssc.sessionSheet.id= :sessionSheetId and ssc.evaluation = null")
+    Integer findUnfinishedBySessionSheetId(Long sessionSheetId);
+
+    List<SessionSheetContent> findAllBySessionSheetIdAndTeacherIdAndActiveIsTrue(Long sessionSheetId, Long teacherId);
 
     /* For Head Of Department */
-    List<SessionSheetContent> findAllBySessionSheetId(Long sessionSheetId);
+    List<SessionSheetContent> findAllBySessionSheetIdAndActiveIsTrue(Long sessionSheetId);
 }

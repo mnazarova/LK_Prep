@@ -10,9 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import sbangularjs.DTO.SessionDTO;
-import sbangularjs.DTO.SubjectDTO;
-import sbangularjs.model.Attestation;
-import sbangularjs.model.SessionSheet;
 import sbangularjs.model.Teacher;
 import sbangularjs.model.User;
 import sbangularjs.repository.*;
@@ -53,33 +50,28 @@ public class SessionController {
         return sessionDTOList;
     }
 
-    /*@PatchMapping("/getGroupsForHeadOfDepartment")
-    public ResponseEntity getGroupsForHeadOfDepartment(@AuthenticationPrincipal User user, @RequestParam Long attestationId, @RequestParam Long groupId) {
-        // groupId == null - все группы с дисциплинами данной кафедры
+    @PatchMapping("/getSessionDTOGroupsForHeadOfDepartment")
+    public ResponseEntity getSessionDTOGroupsForHeadOfDepartment(@AuthenticationPrincipal User user, @RequestParam Long groupId) { // groupId == null - все группы с дисциплинами данной кафедры
         Teacher teacher = teacherRepository.findByUsername(user.getUsername());
-        Attestation attestation = attestationRepository.findAttestationById(attestationId);
         if (teacher == null || teacher.getId() == null)
             return new ResponseEntity<>(0, HttpStatus.CONFLICT);
         if (teacher.getDepartment() == null || teacher.getDepartment().getId() == null)
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        if (attestation == null || attestation.getId() == null || attestationRepository.checkAttestationDeadlineDateTimeAfter(new Date(), attestationId) == null)
-            return new ResponseEntity<>(1, HttpStatus.CONFLICT);
 
-        List<Long> certificationAttestationIds;
+        List<Long> sessionSheetIds;
         if (groupId == null)
-            certificationAttestationIds = certificationAttestationRepository.findCertificationAttestationIdsByAttestationIdAndDepartmentId(attestationId, teacher.getDepartment().getId());
+            sessionSheetIds = sessionSheetRepository.findSessionSheetIdsByDepartmentIdAndDeadline(teacher.getDepartment().getId(), new Date());
         else
-            certificationAttestationIds = certificationAttestationRepository.findCertificationAttestationIdsByAttestationIdAndDepartmentIdAngGroupId(
-                    attestationId, teacher.getDepartment().getId(), groupId);
+            sessionSheetIds = sessionSheetRepository.findSessionSheetIdsDepartmentIdAndDeadlineAngGroupId(teacher.getDepartment().getId(), new Date(), groupId);
 
-        if (certificationAttestationIds.size() == 0) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        List<SubjectDTO> subjectDTOList = certificationAttestationRepository.findAllSubjectsGroupDTOByCAIds(certificationAttestationIds);
-        for (SubjectDTO sub: subjectDTOList)
-            if (attestationContentRepository.findUnfinishedByCertificationAttestationId(sub.getCertificationAttestationId()) == 0) // нет null полей
-                sub.setFinished(true);
+        if (sessionSheetIds.size() == 0) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        List<SessionDTO> sessionDTOList = sessionSheetRepository.findAllSessionDTOBySessionSheetIds(sessionSheetIds);
+        for (SessionDTO sessionDTO: sessionDTOList)
+            if (sessionSheetContentRepository.findUnfinishedBySessionSheetId(sessionDTO.getSessionSheetId()) == 0) // нет null полей
+                sessionDTO.setFinished(true);
             else
-                sub.setFinished(false);
-        return new ResponseEntity<>(subjectDTOList, HttpStatus.OK);
-    }*/
+                sessionDTO.setFinished(false);
+        return new ResponseEntity<>(sessionDTOList, HttpStatus.OK);
+    }
 
 }
