@@ -5,10 +5,64 @@
         <li class="breadcrumb-item active" aria-current="page">Добавление аттестации</li>
     </ol>
 
-
-    <div class="my-3 col-md-10 card bg-light mx-auto">
+    <div class="my-3 col-lg-5 card bg-light mx-auto border-info">
         <form class="simple-form" name="arrangeCertificationForm">
 
+            <div class="mx-5 mt-4 h5">
+                <div class="col-md-12 p-0">
+                    <label for="labelName">Название аттестации</label>
+                    <input type="text"
+                           class="form-control"
+                           ng-class="{'is-invalid': arrangeCertificationForm.name.$dirty && arrangeCertificationForm.name.$invalid,
+                                      'is-valid': arrangeCertificationForm.name.$dirty}"
+                           ng-model="name"
+                           name="name"
+                           id="labelName"
+                           placeholder="введите название аттестации"
+                           required>
+                    <div class="invalid-tooltip py-0"> <!--invalid-feedback-->
+                        Необходимо заполнить поле "Название аттестации"
+                    </div>
+                </div>
+                <!--<i class="fa fa-info-circle text-info" title="Нажмите для вывода справки" ng-click="toasterInfo('Справка!',-->
+                <!--'Крайний срок внесения изменений (преподаватель сможет вносить изменения до 01.00 мск)')"></i>-->
+                <div class="col-md-12 p-0">
+                    <label for="labelDeadline" class="mt-4">Крайний срок</label>
+                    <i class="fa fa-info-circle text-info" data-toggle="tooltip" data-placement="top"
+                       title="До этой даты (не включая) преподаватели смогут вносить изменения в ведомости">
+                    </i>
+                    <input type="date"
+                           class="form-control"
+                           ng-class="{'is-invalid': arrangeCertificationForm.deadline.$dirty && arrangeCertificationForm.deadline.$invalid,
+                                      'is-valid': arrangeCertificationForm.deadline.$dirty}"
+                           ng-model="deadline"
+                           min="{{minDate | date:'yyyy-MM-dd'}}"
+                           max="{{minDate | date:'2055-MM-dd'}}"
+                           name="deadline"
+                           id="labelDeadline"
+                           required>
+                    <div class="invalid-tooltip py-0">
+                        Необходимо выбрать дату (мин. значение: {{minDate | date:'dd-MM-yyyy'}})
+                    </div>
+                </div>
+
+                <hr>
+                <div class="text-right mb-3">
+                    <button class="btn btn-md btn-info text-white"
+                            type="button"
+                            title="Добавить аттестацию"
+                            ng-click="createCertification()">
+                        <i class="fa fa-plus"></i>
+                        Добавить
+                    </button>
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+
+</div>
             <!--<div class="form-row">
                 <div class="col-md-4 mb-3">
                     <label for="validationServer013">First name</label>
@@ -78,55 +132,3 @@
                     You must agree before submitting.
                 </div>
             </div>-->
-
-            <div class="my-5 ml-5">
-                <div class="col-md-8 mx-auto pl-1">
-                    <label for="labelName">Название аттестации</label>
-                    <input type="text"
-                           class="form-control"
-                           ng-class="{'is-invalid': arrangeCertificationForm.name.$dirty && arrangeCertificationForm.name.$invalid,
-                                      'is-valid': arrangeCertificationForm.name.$dirty}"
-                           ng-model="name"
-                           name="name"
-                           id="labelName"
-                           placeholder="введите название аттестации"
-                           required>
-                    <div class="invalid-tooltip py-0"> <!--invalid-feedback-->
-                        Необходимо заполнить поле "Название аттестации"
-                    </div>
-                </div>
-                <div class="col-md-8 mx-auto pl-1 mt-4">
-                    <label for="labelDeadline">Крайний срок</label>
-                    <!--<i class="fa fa-info-circle text-info" title="Нажмите для вывода справки" ng-click="toasterInfo('Справка!',-->
-                    <!--'Крайний срок внесения изменений (преподаватель сможет вносить изменения до 01.00 мск)')"></i>-->
-                    <i class="fa fa-info-circle text-info" data-toggle="tooltip" data-placement="top"
-                       title="До этой даты (не включая) преподаватели смогут вносить изменения в ведомости">
-                    </i>
-                    <div class="input-group mb-3">
-                        <input type="date"
-                               class="form-control"
-                               ng-class="{'is-invalid': arrangeCertificationForm.deadline.$dirty && arrangeCertificationForm.deadline.$invalid,
-                                          'is-valid': arrangeCertificationForm.deadline.$dirty}"
-                               ng-model="deadline"
-                               min="{{minDate | date:'yyyy-MM-dd'}}"
-                               name="deadline"
-                               id="labelDeadline"
-                               required>
-                        <div class="invalid-tooltip py-0">
-                            Необходимо выбрать дату
-                        </div>
-
-                        <div class="input-group-append">
-                            <a class="btn btn-info px-4 text-white"
-                               ng-click="createCertification()">
-                                Добавить аттестацию
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </form>
-    </div>
-
-</div>

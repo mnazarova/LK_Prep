@@ -1,7 +1,10 @@
 app.controller("ArrangeCertificationController", function($scope, $http, $state) {
 
-    $scope.minDate = new Date().setDate((new Date().getDate())+1);
+    $scope.minDate = new Date().setDate(new Date().getDate()+1);
     $scope.deadline = new Date(new Date($scope.minDate).toISOString().split("T")[0]);
+    $scope.deadline.setDate($scope.deadline.getDate()+1);
+    $scope.deadline.setHours(0);
+    // console.log($scope.deadline)
 
     $scope.createCertification = function() {
         if(!$scope.name) {
@@ -12,8 +15,6 @@ app.controller("ArrangeCertificationController", function($scope, $http, $state)
             $scope.toasterWarning('Введите корректную дату');//('Форма заполнена некорректно');
             return;
         }
-        // console.log($scope.arrangeCertificationForm);
-
         $scope.arrangeCertificationDTO = {
             name: $scope.name,
             deadline: $scope.deadline
@@ -31,6 +32,7 @@ app.controller("ArrangeCertificationController", function($scope, $http, $state)
                 $state.go('statements');
             },
             function(res) {
+                $scope.toasterError('Аттестация не была создана');
                 // console.log("Error: " + res.status + " : " + res.data);
             }
         );

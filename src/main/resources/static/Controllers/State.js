@@ -22,6 +22,12 @@ app.controller("StateController", function($scope, $state, $stateParams, $http) 
         }).then(
             function(res) { // success
                 $scope.contentAttestation = res.data;
+
+                if (!$scope.contentAttestation.length) // == 0
+                    return;
+                $scope.groupNumber = $scope.contentAttestation[0].certificationAttestation.group.number;
+                $scope.attestation = $scope.contentAttestation[0].certificationAttestation.attestation;
+                $scope.disciplineName = $scope.contentAttestation[0].certificationAttestation.syllabusContent.discipline.name;
                 // $scope.contentAttestation[0].dateWorks = $scope.deadline;
                 // console.log($scope.contentAttestation);
             },

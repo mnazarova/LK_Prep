@@ -1,75 +1,61 @@
 <div ng-show="ur == 'DEANERY'">
 
-    <div class="my-5 card col-md-10 mx-auto border-info">
+    <div class="my-5 p-0 pt-5 card col-md-10 mx-auto border-info">
 
-        <br>
-        <div class="">
-            <!--<button class="btn btn-md btn-info text-white mt-3"
-                    type="button"
+        <!--<button class="btn btn-md btn-info text-white mt-3"
+                type="button"
+                ui-sref="arrangeCertification"
+                title="Добавить аттестацию">
+            <i class="fa fa-plus-circle"></i>
+            Добавить аттестацию
+        </button>-->
+        <div class="font-weight-bold h4 text-center">
+            <span data-toggle="tooltip" data-placement="top"
+                 title="Чтобы добавить аттестацию, нажмите на '+'">
+                Список всех аттестаций (действующие: {{numberAttestation}})
+            </span>
+
+            <button class="btn bg-white text-info p-0"
                     ui-sref="arrangeCertification"
                     title="Добавить аттестацию">
-                <i class="fa fa-plus-circle"></i>
-                Добавить аттестацию
-            </button>-->
-            <div class="font-weight-bold h4 text-center">
-                <span data-toggle="tooltip" data-placement="top"
-                     title="Чтобы добавить аттестацию, нажмите на '+'">
-                    Список всех аттестаций (действующие: {{attestations.length}})
-                </span>
-
-                <button class="btn bg-white text-info p-0"
-                        ui-sref="arrangeCertification"
-                        title="Добавить аттестацию">
-                    <i class="fa fa-2x fa-plus-circle"></i>
-                </button>
-            </div>
+                <i class="fa fa-2x fa-plus-circle"></i>
+            </button>
         </div>
 
-        <div>
-            <table class="ng-hide table table-hover table-responsive-lg table-striped my-2" ng-show="allAttestations.length">
-                <thead>
-                    <tr>
-                        <th class="text-center border-white"></th>
-                        <th class="text-center border-white w-50">Название</th>
-                        <th class="text-center border-white w-25">Крайний срок сдачи
-                            <!--<br>(не включая)-->
-                            <!--<i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top"
-                               title="Внимание! Если дедлайн поставлен на 02.09.2020, то изменения можно внести до 03.00 мск 02.09.2020"></i>-->
-                            <!--<i class="fa fa-info-circle text-info" data-toggle="tooltip" data-placement="top"
-                               title="не включая. Нажмите для вывода справки" ng-click="toasterInfo('Справка!',
-                            'Если дедлайн поставлен на 02.09.2020, то изменения можно вносить до 01.00 мск 02.09.2020')">
-                            </i>-->
-                            <i class="fa fa-info-circle text-info" data-toggle="tooltip" data-placement="top"
-                               title="До этой даты (не включая) имеется возможность у преподавателей вносить изменения в ведомости">
-                            </i>
-                        </th>
-                        <th class="border-white w-25"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="attestation in allAttestations" class="border-top">
-                        <td class="text-center border-info">
-                            <i class="text-info fa fa-2x fa-check-square-o px-3" data-toggle="tooltip" data-placement="top"
-                               title="Действующая аттестация" ng-if="attestation.active">
-                            </i>
-                        </td>
-                        <td class="text-center border-info">{{attestation.name}}</td>
-                        <td class="text-center border-info">
-                            {{attestation.deadline | date: 'dd.MM.yyyy'}}
-                        </td>
-                        <td class="text-center border-info py-3">
-                            <a class="btn btn-info text-white"
-                               type="button"
-                               ng-click="transitionToStatementId(attestation.id)"
-                               title="Перейти в карточку аттестации">
-                                <i class="fa fa-share-square"></i>
-                                Перейти
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <table class="table table-hover table-responsive-sm table-striped m-0" ng-show="allAttestations.length">
+            <thead>
+                <tr>
+                    <th class="text-center border-white"></th>
+                    <th class="text-center border-white">Название</th>
+                    <th class="text-center border-white">Крайний срок сдачи
+                        <i class="fa fa-info-circle text-info" data-toggle="tooltip" data-placement="top"
+                           title="До этой даты (не включая) имеется возможность у преподавателей вносить изменения в ведомости">
+                        </i>
+                    </th>
+                    <th class="border-white"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="attestation in allAttestations">
+                    <td class="text-center border-info">
+                        <i class="text-info fa fa-2x fa-check-square-o px-3" data-toggle="tooltip" data-placement="top"
+                           title="Действующая аттестация" ng-if="attestation.active">
+                        </i>
+                    </td>
+                    <td class="text-center border-info">{{attestation.name}}</td>
+                    <td class="text-center border-info">{{attestation.deadline | date: 'dd.MM.yyyy'}}</td>
+                    <td class="text-center border-info">
+                        <a class="btn btn-info text-white"
+                           type="button"
+                           ng-click="transitionToStatementId(attestation.id)"
+                           title="Перейти к списку групп">
+                            <i class="fa fa-share-square"></i>
+                            Перейти
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
         <div class="ng-hide" ng-show="!allAttestations.length">
             <br>
@@ -78,7 +64,6 @@
             </div>
             <br>
         </div>
-
 
     </div>
 

@@ -2,34 +2,36 @@
 
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a ui-sref="statements">Список аттестаций</a></li>
-        <li class="breadcrumb-item"><a ui-sref="statementId({id: statementsId})">Список групп и подгрупп</a></li>
+        <li class="breadcrumb-item"><a ui-sref="statementId({id: statementsId})">Список групп</a></li>
         <li class="breadcrumb-item active" aria-current="page">Просмотр ведомости</li>
     </ol>
 
-    <div class="my-3 card col-md-10 mx-auto border-info">
+    <div class="my-3 pt-3 card col-md-10 mx-auto border-info">
 
-        <div class="font-weight-bold h4 text-center mt-4">
+        <div class="font-weight-bold h3 text-center" ng-show="attestation || disciplineName">
+            <pre ng-show="attestation">Аттестация:<div class="badge bg-aqua-gradient">"{{attestation.name}}" (до {{attestation.deadline | date: 'dd.MM.yyyy'}})</div></pre>
+            <pre ng-show="disciplineName">Дисциплина: <div class="badge bg-aqua-gradient">{{disciplineName}}</div></pre>
+            <hr>
+        </div>
+
+        <div class="font-weight-bold h4 text-center">
             Список студентов
+            <span ng-show="groupNumber">
+                группы <div class="badge bg-aqua-gradient">"{{groupNumber}}"</div>
+            </span>
         </div>
 
         <div ng-if="contentAttestation.length">
-            <table class="table table-hover table-striped table-sm table-responsive-lg my-3">
+            <table class="table table-hover table-striped table-sm table-responsive-xl my-3">
                 <thead>
                     <tr>
                         <th class="text-center">Фамилия</th>
                         <th class="text-center">Имя</th>
                         <th class="text-center">Отчество</th>
                         <th class="text-center">Номер зачётной книжки</th>
-                        <th class="text-center">Работает</th>
-                        <th class="text-center" data-toggle="tooltip" data-placement="top"
-                            title="Дата изменения преподавателем">
-                            Дата
-                        </th>
-                        <th class="text-center">Аттестован</th>
-                        <th class="text-center" data-toggle="tooltip" data-placement="top"
-                            title="Дата изменения преподавателем">
-                            Дата
-                        </th>
+                        <th class="text-center" style="min-width: 10em">Работает</th>
+                        <th class="text-center" style="min-width: 10em">Аттестован</th>
+                        <th class="text-center">Назначенный преподаватель</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -38,29 +40,30 @@
                         <td class="text-center">{{ca.student.name}}</td>
                         <td class="text-center">{{ca.student.patronymic}}</td>
                         <td class="text-center">{{ca.student.numberRecordBook}}</td>
-                        <td class="text-center">
-                            <!--<input type="checkbox" disabled="true" ng-model="ca.works">-->
-                            <select class="custom-select form-control"
+                        <td class="text-center px-3">
+                            <i class="fa fa-info-circle text-info col-md-1" ng-show="ca.dateWorks" data-toggle="tooltip" data-placement="top"
+                               title="Последние изменения внесены {{ca.dateWorks | date: 'dd.MM.yyyy в HH:mm'}} ({{ca.setWorksByTeacher.surname + ' ' + ca.setWorksByTeacher.initials}})">
+                            </i>
+                            <i class="fa fa-info-circle text-warning col-md-1" ng-show="!ca.dateWorks"></i>
+                            <select class="custom-select form-control col-md-8"
                                     disabled="true"
                                     ng-model="ca.works"
                                     ng-options="item.key as item.value for item in selected">
                             </select>
                         </td>
-                        <td class="text-center pt-2">
-                            {{ca.dateWorks?ca.dateWorks:'-' | date: 'dd.MM.yyyy'}}
-                            <!--<input type="date" disabled="true" ng-model="ca.dateWorks">-->
-                        </td>
                         <td class="text-center px-3">
-                            <!--<input type="checkbox" disabled="true" ng-model="ca.attest">-->
-                            <select class="custom-select form-control"
+                            <i class="fa fa-info-circle text-info col-md-1" ng-show="ca.dateAttest" data-toggle="tooltip" data-placement="top"
+                               title="Последние изменения внесены {{ca.dateAttest | date: 'dd.MM.yyyy в HH:mm'}} ({{ca.setAttestByTeacher.surname + ' ' + ca.setAttestByTeacher.initials}})">
+                            </i>
+                            <i class="fa fa-info-circle text-warning col-md-1" ng-show="!ca.dateAttest"></i>
+                            <select class="custom-select form-control col-md-8"
                                     disabled="true"
                                     ng-model="ca.attest"
                                     ng-options="item.key as item.value for item in selected">
                             </select>
                         </td>
                         <td class="text-center pt-2">
-                            {{ca.dateAttest?ca.dateAttest:'-' | date: 'dd.MM.yyyy'}}
-                            <!--<input type="date" disabled="true" ng-model="ca.dateAttest">-->
+                            {{ca.teacher ? ca.teacher.surname + ' ' + ca.teacher.name + ' ' + ca.teacher.patronymic : '-'}}
                         </td>
                     </tr>
                 </tbody>

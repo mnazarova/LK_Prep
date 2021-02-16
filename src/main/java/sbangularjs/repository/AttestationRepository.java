@@ -17,6 +17,9 @@ public interface AttestationRepository extends JpaRepository<Attestation, Long> 
     @Query("select a from Attestation a where a.deadline > :deadlineDateTime")
     List<Attestation> findAllWithDeadlineDateTimeAfter(@Param("deadlineDateTime") Date deadlineDateTime);
 
+    @Query("select a from Attestation a where a.deadline <= :today and a.active = true")
+    List<Attestation> findAllOverdueAttestationsWithActiveTrue(@Param("today") Date today); //  просроченные аттестации
+
     @Query("select a from Attestation a where a.deadline > :deadlineDateTime and a.id = :attestationId")
     Attestation checkAttestationDeadlineDateTimeAfter(@Param("deadlineDateTime") Date deadlineDateTime, Long attestationId);
 
