@@ -15,10 +15,14 @@
                            theme="select2" title="Выберите аттестацию"
                            required>
                     <ui-select-match placeholder="Выберите аттестацию...">
-                        {{$select.selected.name}}
+                        {{$select.selected.name}} (Факультет {{$select.selected.faculty.shortName}})
                     </ui-select-match>
                     <ui-select-choices repeat="attestation in attestations | propsFilter: {name: $select.search} | orderBy:'name'">
                         <div ng-bind-html="attestation.name | highlight: $select.search"></div>
+                        <small>
+                            Факультет: {{attestation.faculty.shortName}} ({{attestation.faculty.fullName}})
+                            <br>Дедлайн: {{attestation.deadline | date: 'dd.MM.yyyy'}}
+                        </small>
                     </ui-select-choices>
                 </ui-select>
                 <div class="text-center my-2 font-weight-bold">

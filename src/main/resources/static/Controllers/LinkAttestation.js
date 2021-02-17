@@ -36,7 +36,6 @@ app.controller("LinkAttestationController", function($scope, $http) {
     };
 
     $scope.changeAttestationSelected = function () {
-        // console.log($scope.attestation.selected.id)
         if(!$scope.attestation.selected.id)
             return;
         $http({

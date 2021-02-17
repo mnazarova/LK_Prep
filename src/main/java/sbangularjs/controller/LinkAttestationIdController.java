@@ -70,8 +70,10 @@ public class LinkAttestationIdController {
             return new ResponseEntity<>(0, HttpStatus.CONFLICT);
         if (attestation == null || attestation.getId() == null || attestationRepository.checkAttestationDeadlineDateTimeAfter(new Date(), attestationId) == null)
             return new ResponseEntity<>(2, HttpStatus.CONFLICT);
-        if (curSecretary == null || curSecretary.getDepartment() == null || group.getSyllabus() == null)
+        if (curSecretary == null || curSecretary.getDepartment() == null)
             return new ResponseEntity<>(1, HttpStatus.CONFLICT);
+        if (group.getSyllabus() == null || !group.getSyllabus().getDepartment().getFaculty().getId().equals(attestation.getFaculty().getId()))
+            return new ResponseEntity<>(3, HttpStatus.CONFLICT);
 
         List<SyllabusContent> syllabusContents = syllabusContentRepository.findSyllabusContentsBySyllabusIdAndDepartmentIdAndCurSemester(
                 group.getSyllabus().getId(), curSecretary.getDepartment().getId(), group.getCurSemester());

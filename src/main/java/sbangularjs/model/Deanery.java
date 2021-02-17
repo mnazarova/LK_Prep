@@ -17,9 +17,8 @@ public class Deanery {
     private Long id;
 
     private boolean active;
+    private boolean isDeputyDean; // Заместитель декана
 
-    @JsonIgnore // сокрытие данных
-    private String email;
     @JsonIgnore // сокрытие данных
     private String username;
 

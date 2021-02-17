@@ -28,7 +28,7 @@ public class LinkSessionController {
 
     @PatchMapping("/sessionGetGroupListByActiveIsTrue")
     public ResponseEntity sessionGetGroupListByActiveIsTrue(@AuthenticationPrincipal User user) {
-        List<Group> groupList = groupRepository.getGroupListByActiveIsTrue();
+        List<Group> groupList = groupRepository.getGroupListByActiveIsTrueAndCurSemesterIsNotNull();
         if (groupList.isEmpty())
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); // You many decide to return HttpStatus.NOT_FOUND
         return new ResponseEntity<>(setBlankForGroups(user, groupList), HttpStatus.OK);

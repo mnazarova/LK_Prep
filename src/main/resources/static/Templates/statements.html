@@ -14,12 +14,13 @@
                  title="Чтобы добавить аттестацию, нажмите на '+'">
                 Список всех аттестаций (действующие: {{numberAttestation}})
             </span>
-
-            <button class="btn bg-white text-info p-0"
-                    ui-sref="arrangeCertification"
-                    title="Добавить аттестацию">
-                <i class="fa fa-2x fa-plus-circle"></i>
-            </button>
+            <a class="btn btn-md btn-outline-info ml-3"
+               type="button"
+               ui-sref="arrangeCertification"
+               title="Добавить аттестацию">
+                <i class="fa fa-plus-circle"></i>
+                Добавить аттестацию
+            </a>
         </div>
 
         <table class="table table-hover table-responsive-sm table-striped m-0" ng-show="allAttestations.length">
@@ -60,7 +61,7 @@
         <div class="ng-hide" ng-show="!allAttestations.length">
             <br>
             <div class="font-weight-bold text-center m-2 p-2 alert-warning">
-                На данный момент нет ни одной аттестации.
+                На данный момент на Вашем факультете нет ни одной аттестации.
             </div>
             <br>
         </div>

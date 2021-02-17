@@ -18,11 +18,14 @@ public class Attestation {
     private Long id;
 
     private String name;
-
     private Boolean active;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date deadline;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="faculty_id")
+    private Faculty faculty;
 
     @JsonIgnore
     @OneToMany(mappedBy = "attestation", cascade = CascadeType.ALL, orphanRemoval = true)
