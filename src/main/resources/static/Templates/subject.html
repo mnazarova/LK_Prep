@@ -14,7 +14,7 @@
             <div class="font-weight-bold h4 text-center my-4">
                 Список дисциплин
             </div>
-            <div class="col-lg-2 col-sm-3 mx-auto mb-4">
+            <div class="col-lg-3 col-sm-3 mx-auto mb-4">
                 <ui-select ng-model="group.selected"
                            ng-change="subjectSelectedGroup()"
                            ng-disabled="!groupList.length"
@@ -65,7 +65,7 @@
 
             <div class="ng-hide font-weight-bold text-center p-2 alert-warning" ng-show="!groups.length">
                 <!--На данный момент группы, в которых Вы преподаёте, отсутствуют-->
-                На данный момент ведомости групп отсутствуют
+                На данный момент ведомости, назначенные Вам, отсутствуют
             </div>
 
 
@@ -74,7 +74,7 @@
                 <div class="font-weight-bold h4 text-center my-4">
                     Все ведомости кафедры
                 </div>
-                <div class="col-lg-2 col-sm-3 mx-auto mb-4">
+                <div class="col-lg-3 col-sm-3 mx-auto mb-4">
                     <ui-select ng-model="groupForHead.selected"
                                ng-change="subjectSelectedGroupForHead()"
                                ng-disabled="!groupForHeadList.length"
