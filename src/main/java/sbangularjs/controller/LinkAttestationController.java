@@ -77,7 +77,7 @@ public class LinkAttestationController {
             }
             if (students.isEmpty()) {
                 gr.setBlank(null);
-                break;
+                continue;
             }
 
             gr.setBlank(checkAllSyllabusContentAndStudents(syllabusContents, students, gr.getId(), attestationId)); // true - exist blank field

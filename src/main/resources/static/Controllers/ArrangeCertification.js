@@ -2,7 +2,7 @@ app.controller("ArrangeCertificationController", function($scope, $http, $state)
 
     $scope.minDate = new Date().setDate(new Date().getDate()+1);
     $scope.deadline = new Date(new Date($scope.minDate).toISOString().split("T")[0]);
-    $scope.deadline.setDate($scope.deadline.getDate()+1);
+    // $scope.deadline.setDate($scope.deadline.getDate()+1);
     $scope.deadline.setHours(0);
     // console.log($scope.deadline)
 
