@@ -57,10 +57,13 @@ app.controller("LinkAttestationIdController", function($scope, $http, $statePara
                 if (res.data === 0)
                     $scope.toasterError('Отсутствует номер текущего семестра группы.');
                 else
-                    if (res.data === 2)
-                        $scope.toasterError('В выбранную аттестацию запрещено вносить изменения!');
-                    else
+                    if (res.data === 1)
                         $scope.toasterError('Обратитесь к администратору!');
+                    else
+                        if (res.data === 2)
+                            $scope.toasterError('В выбранную аттестацию запрещено вносить изменения!');
+                        else
+                            $scope.toasterError('Нельзя вносить изменения в данную группу по выбранной аттестации!');
             }
         );
     }

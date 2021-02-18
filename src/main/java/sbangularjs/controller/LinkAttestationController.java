@@ -49,7 +49,10 @@ public class LinkAttestationController {
 
     @PatchMapping("/changeAttestationSelected")
     public ResponseEntity changeAttestationSelected(@AuthenticationPrincipal User user, Long attestationId) {
-        List<Group> groupList = groupRepository.getGroupListByActiveIsTrue();
+        Attestation attestation = attestationRepository.findAttestationById(attestationId);
+        if (attestation == null || attestation.getFaculty() == null)
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        List<Group> groupList = groupRepository.findGroupsByActiveIsTrueAndFacultyIdAndCurSemesterNotNull(attestation.getFaculty().getId());
         if (groupList.isEmpty())
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); // You many decide to return HttpStatus.NOT_FOUND
         return new ResponseEntity<>(setBlankForGroups(user, groupList, attestationId), HttpStatus.OK);

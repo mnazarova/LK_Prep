@@ -20,9 +20,13 @@ public class Faculty { // Факультет
 
     private String fullName;
 
-    @OneToMany(mappedBy = "faculty", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
+    @OneToMany(mappedBy = "faculty", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Department> departments;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "faculty", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Attestation> attestations;
 
     public Faculty() {}
 }
