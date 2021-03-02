@@ -1,0 +1,68 @@
+<div ng-show="ur == 'DEANERY'">
+
+    <div class="p-0 mt-4 card col-md-10 mx-auto border-info">
+
+        <div class="font-weight-bold h4 text-center mt-4">
+            <nav class="nav nav-pills nav-justified mx-3">
+                <a class="nav-item nav-link active">Назначение зав. каф.</a>
+                <a class="nav-item nav-link" href="#">Назначение зам. декана</a>
+            </nav>
+        </div>
+
+        <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!departments.length">
+            Кафедры отсутствуют
+        </div>
+
+        <div class="ng-hide my-5" ng-show="departments.length">
+            <table class="table table-hover table-striped table-responsive-xl">
+                <thead>
+                <tr>
+                    <th class="text-center">Кафедра</th>
+                    <th class="text-center">Полное название</th>
+                    <th class="text-center w-25">Зав. каф.</th>
+                    <th class="text-center"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="department in departments">
+                    <td class="text-center border-info">{{department.shortName}}</td>
+                    <td class="text-center border-info">{{department.fullName}}</td>
+                    <td class="text-center border-info">
+                        <ui-select ng-model="department.headDepartment"
+                                   ng-disabled="!teachers[$index]"
+                                   ng-change="selectedHeadDepartment($index)"
+                                   name="headDepartment"
+                                   class="col-md-12 pt-1"
+                                   theme="select2" title="Назначить зав. каф.">
+                            <ui-select-match placeholder="Назначить зав. каф.">
+                                {{$select.selected.surname + ' ' + $select.selected.name + ' ' + $select.selected.patronymic}}
+                            </ui-select-match>
+                            <ui-select-choices repeat="teacher in teachers[$index] | propsFilter: {surname: $select.search, name: $select.search} | orderBy:'surname'">
+                                <div ng-bind-html="teacher.surname | highlight: $select.search"></div>
+                                <small>
+                                    {{teacher.name}}
+                                    <span ng-bind-html="teacher.patronymic | highlight: $select.search"></span>
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </td>
+                    <!-- Сохранить -->
+                    <td class="text-center border-info">
+                        <button class="btn btn-md text-white"
+                                ng-class="{'btn-warning': changes[$index],
+                                      'btn-info': !changes[$index]}"
+                                type="button"
+                                data-ng-click="saveHeadDepartment($index)"
+                                title="Сохранить изменения">
+                            <i class="fa fa-save"></i>
+                            Сохранить
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>

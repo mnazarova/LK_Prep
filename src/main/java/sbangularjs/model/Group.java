@@ -27,16 +27,22 @@ public class Group {
     private Syllabus syllabus;
 
     @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="deanery_id")
+    private Deanery deanery;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="deputy_dean_id")
+    private DeputyDean deputyDean;
+
+    @JsonIgnore
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Student> students;
 
     @JsonIgnore
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CertificationAttestation> certificationsAttestation;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DeaneryGroup> deaneryGroupList;
 
     @JsonIgnore
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)

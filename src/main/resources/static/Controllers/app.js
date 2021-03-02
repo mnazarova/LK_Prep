@@ -428,6 +428,11 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $sce
             templateUrl: 'Templates/help.html',
             controller: 'HelpController'
         })
+        .state('assignment', {
+            url: '/assignment',
+            templateUrl: 'Templates/assignment.html',
+            controller: 'AssignmentController'
+        })
         .state('arrangeCertification', {
             url: '/arrangeCertification',
             templateUrl: 'Templates/arrangeCertification.html',

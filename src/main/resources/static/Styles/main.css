@@ -70,6 +70,17 @@
     background: rgb(223, 240, 254);
     background: linear-gradient(135deg, rgb(223, 240, 254), rgb(240, 247, 253));
 }
+
+/* tab */
+.nav-pills>a {
+    color: #17A2B8 !important;
+}
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    background-color: #17A2B8 !important;
+    color: #fff !important;
+}
+/* tab */
+
 /* Чтобы работали модалки в Bootstrap 4  либо добавить стили, либо замена в исходниках*/
 /* изменено modal-in-class in на show */
 /*.fade.in {

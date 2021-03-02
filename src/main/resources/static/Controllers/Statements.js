@@ -1,10 +1,10 @@
 app.controller("StatementsController", function($scope, $http, $state) {
 
-    getAllAttestation();
-    function getAllAttestation() {
+    getActiveAttestationByFacultyId();
+    function getActiveAttestationByFacultyId() {
         $http({
             method: 'GET',
-            url: '/getAllAttestation'
+            url: '/getActiveAttestationByFacultyId'
         }).then(
             function(res) { // success
                 $scope.allAttestations = res.data;

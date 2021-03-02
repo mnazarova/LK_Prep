@@ -30,7 +30,8 @@ public class Teacher {
 //    @JsonIgnore // сокрытие данных
 //    private String password;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonIgnore
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="head_department_id")
     private Department department;
 

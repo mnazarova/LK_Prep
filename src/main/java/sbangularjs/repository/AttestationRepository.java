@@ -1,5 +1,6 @@
 package sbangularjs.repository;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,6 +11,7 @@ import java.util.List;
 
 public interface AttestationRepository extends JpaRepository<Attestation, Long> {
     List<Attestation> findByActiveTrue();
+    List<Attestation> findByFacultyId(Long facultyId, Sort sort);
     Attestation findAttestationById(Long attestationId);
 //    List<Attestation> findByDeadline_Month(Long groupId);
 //    List<Attestation> findByDeadlineIsBefore();

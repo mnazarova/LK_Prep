@@ -28,5 +28,9 @@ public class Faculty { // Факультет
     @OneToMany(mappedBy = "faculty", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Attestation> attestations;
 
+    @JsonIgnore
+    @OneToOne(mappedBy = "faculty", cascade = CascadeType.ALL)
+    private Deanery deanery;
+
     public Faculty() {}
 }

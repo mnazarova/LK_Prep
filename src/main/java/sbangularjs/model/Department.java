@@ -41,9 +41,9 @@ public class Department { // Кафедра
     @OneToOne(mappedBy = "department", cascade = CascadeType.ALL)
     private Secretary secretary;
 
-    @JsonIgnore
+//    @JsonIgnore
     @OneToOne(mappedBy = "department", cascade = CascadeType.ALL)
-    private Teacher teacher;
+    private Teacher headDepartment; // need
 
     public Department() {}
 }
