@@ -448,14 +448,19 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $sce
             templateUrl: 'Templates/statementId.html',
             controller: 'StatementIdController'
         })
-        .state('state', { // просмотр ведомости представителем деканата
-            url: '/statements/:statementsId/:id',
+        .state('state', { // просмотр аттестационной ведомости представителем деканата
+            url: '/statements/:attestationId/:certificationAttestationId',
             /*params: {
                 id: null,
-                statementsId: null
+                attestationId: null
             },*/
             templateUrl: 'Templates/state.html',
             controller: 'StateController'
+        })
+        .state('sessionStatement', { // просмотр сессионной ведомости представителем деканата
+            url: '/sessionStatement/:sessionSheetId',
+            templateUrl: 'Templates/sessionStatement.html',
+            controller: 'SessionStatementController'
         })
         .state('students', {
             url: '/students',

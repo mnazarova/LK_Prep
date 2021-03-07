@@ -1,7 +1,8 @@
 app.controller("StateController", function($scope, $state, $stateParams, $http) {
 
     // $('input:disabled').css('background-color', 'red');
-    $scope.statementsId = $stateParams.statementsId;
+    // console.log($stateParams)
+    $scope.attestationId = $stateParams.attestationId;
     $scope.selected = [
         { key: true, value: '+' },
         { key: false, value: '-' }
@@ -18,7 +19,10 @@ app.controller("StateController", function($scope, $state, $stateParams, $http) 
         $http({
             method: 'PATCH',
             url: '/getContentAttestationForDeanery',
-            params: { id: $stateParams.id }
+            params: {
+                id: $stateParams.certificationAttestationId,
+                attestationId: $stateParams.attestationId
+            }
         }).then(
             function(res) { // success
                 $scope.contentAttestation = res.data;
@@ -32,6 +36,16 @@ app.controller("StateController", function($scope, $state, $stateParams, $http) 
                 // console.log($scope.contentAttestation);
             },
             function(res) { // error
+                if (res.data === 0)
+                    $scope.toasterError('Проблема с Вашей учётной записью. Пожалуйста, обратитесь к администратору!');
+                else
+                    if (res.data === 1) {
+                        $scope.toasterError('Выбранная ведомость не доступна для просмотра!');
+                        $state.go('statementId', {id: $scope.attestationId});
+                    }
+                    else
+                        if (res.data === 2)
+                            $scope.toasterError('Выбранная ведомость не относится к текущей аттестации!');
                 // console.log("Error: " + res.status + " : " + res.data);
                 // $state.go("attestation");
             }

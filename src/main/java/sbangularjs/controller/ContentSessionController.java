@@ -2,6 +2,7 @@ package sbangularjs.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -41,9 +42,27 @@ public class ContentSessionController {
 
         List<SessionSheetContent> sessionSheetContents;
         if (isHead) // зав.каф.
-            sessionSheetContents = sessionSheetContentRepository.findAllBySessionSheetIdAndActiveIsTrue(sessionSheetId);
+            sessionSheetContents = sessionSheetContentRepository.findAllBySessionSheetIdAndActiveIsTrue(
+                    sessionSheetId, Sort.by(Sort.Direction.ASC, "student.surname"));
         else
-            sessionSheetContents = sessionSheetContentRepository.findAllBySessionSheetIdAndTeacherIdAndActiveIsTrue(sessionSheetId, teacher.getId());
+            sessionSheetContents = sessionSheetContentRepository.findAllBySessionSheetIdAndTeacherIdAndActiveIsTrue(
+                    sessionSheetId, teacher.getId(), Sort.by(Sort.Direction.ASC, "student.surname"));
+
+        /* Установка Допуска, если Экзамен */
+        if (sessionSheet.getSplitAttestationForm().getId() == 1) {
+            SessionSheet ss = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormId(
+                    sessionSheet.getSyllabusContent().getId(), sessionSheet.getGroup().getId(), 6L);
+            if (ss != null && ss.getId() != null) {
+                for (SessionSheetContent sessionSheetContent : sessionSheetContents) {
+                    SessionSheetContent ssc = sessionSheetContentRepository.findSessionSheetContentBySessionSheetIdAndStudentId(
+                            ss.getId(), sessionSheetContent.getStudent().getId());
+                    if (ssc == null || ssc.getEvaluation() == null)
+                        continue;
+                    sessionSheetContent.setAdmittance(ssc.getEvaluation());
+                }
+            }
+        }
+
         return new ResponseEntity<>(sessionSheetContents, HttpStatus.OK);
     }
 
@@ -78,18 +97,56 @@ public class ContentSessionController {
 
     @Transactional
     @PatchMapping("/saveContentSession")
-    public ResponseEntity saveContentSession(@AuthenticationPrincipal User user, @RequestBody List<SessionSheetContent> sessionSheetContents) {
+    public ResponseEntity saveContentSession(@AuthenticationPrincipal User user, @RequestParam Long sessionSheetId, @RequestBody List<SessionSheetContent> sessionSheetContents) {
         if(sessionSheetContents.size() == 0)
             return new ResponseEntity(HttpStatus.NO_CONTENT);
+
+        SessionSheet sessionSheet = sessionSheetRepository.findSessionSheetById(sessionSheetId);
 
         for (SessionSheetContent sessionSheetContent: sessionSheetContents) {
             SessionSheetContent curOld = sessionSheetContentRepository.findSessionSheetContentById(sessionSheetContent.getId());
 
-            if (sessionSheetContent.getEvaluation() != null && sessionSheetContent.getEvaluation().getId() != null)
+            if (sessionSheetContent.getEvaluation() != null && sessionSheetContent.getEvaluation().getId() != null) {
                 if (curOld.getEvaluation() == null || !sessionSheetContent.getEvaluation().getId().equals(curOld.getEvaluation().getId())) {
                     sessionSheetContent.setDate(new Date());
                     sessionSheetContent.setSetEvaluationByTeacher(teacherRepository.findByUsername(user.getUsername()));
                 }
+            }
+
+            if (sessionSheet.getSplitAttestationForm().getId() == 1) { // Ведомость "Экзамен"
+                SessionSheet ss = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormId(
+                        sessionSheet.getSyllabusContent().getId(), sessionSheet.getGroup().getId(), 6L); // Допуск
+                if (ss != null && ss.getId() != null && sessionSheetContent.getStudent() != null && sessionSheetContent.getStudent().getId() != null) {
+                    SessionSheetContent ssc = sessionSheetContentRepository.findSessionSheetContentBySessionSheetIdAndStudentId(
+                            ss.getId(), sessionSheetContent.getStudent().getId());
+                    if (ssc != null && sessionSheetContent.getAdmittance() != null && sessionSheetContent.getAdmittance().getId() != null) {
+                        if (ssc.getEvaluation() == null || !sessionSheetContent.getAdmittance().getId().equals(ssc.getEvaluation().getId())) {
+                            ssc.setEvaluation(sessionSheetContent.getAdmittance()); // Установка "допуска" в ведомости "Экзамен"
+                            ssc.setDate(new Date());
+                            ssc.setSetEvaluationByTeacher(teacherRepository.findByUsername(user.getUsername()));
+                            sessionSheetContentRepository.save(ssc);
+                        }
+                    }
+                }
+            }
+
+            if (sessionSheet.getSplitAttestationForm().getId() == 6) { // Ведомость "Допуск"
+                SessionSheet ss = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormId(
+                        sessionSheet.getSyllabusContent().getId(), sessionSheet.getGroup().getId(), 1L); // Экзамен
+                if (ss != null && ss.getId() != null && sessionSheetContent.getStudent() != null && sessionSheetContent.getStudent().getId() != null) {
+                    SessionSheetContent ssc = sessionSheetContentRepository.findSessionSheetContentBySessionSheetIdAndStudentId(
+                            ss.getId(), sessionSheetContent.getStudent().getId());
+                    if (ssc != null && sessionSheetContent.getEvaluation() != null && sessionSheetContent.getEvaluation().getId() != null) { // изменилось значение "допуска"
+                        if (curOld.getEvaluation() == null || !sessionSheetContent.getEvaluation().getId().equals(curOld.getEvaluation().getId())) {
+                            ssc.setEvaluation(null); // Обнуление оценки по экзамену, если из ведомости допуска изменили значение поля
+                            ssc.setSetEvaluationByTeacher(null);
+                            ssc.setDate(null);
+                            sessionSheetContentRepository.save(ssc);
+                        }
+                    }
+                }
+            }
+
         }
         sessionSheetContentRepository.saveAll(sessionSheetContents);
         return new ResponseEntity<>(sessionSheetContents, HttpStatus.OK);

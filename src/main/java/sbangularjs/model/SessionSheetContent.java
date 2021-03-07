@@ -20,6 +20,9 @@ public class SessionSheetContent { // Содержание сессионной 
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
+    @Transient
+    private Evaluation admittance; // Допуск
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="evaluation_id")
     private Evaluation evaluation; // Оценивание

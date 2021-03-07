@@ -72,14 +72,36 @@
 }
 
 /* tab */
-.nav-pills>a {
+/*.nav-pills>a {
     color: #17A2B8 !important;
 }
 .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
     background-color: #17A2B8 !important;
     color: #fff !important;
+}*/
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    color: #fff !important;
+    background-color: #17A2B8 !important;
+    /*border-color: #dee2e6 #dee2e6 #fff;*/
+    /*border-width: 5px 5px 0 0; !* top/right/bottom/left *!*/
+}
+.nav-tabs .nav-link {
+    border-bottom: 0 solid #17A2B8 !important;
+}
+.nav-tabs>a {
+    color: #17A2B8 !important;
 }
 /* tab */
+
+/* select */
+.custom-select.no-image {
+    padding: .375rem .75rem .375rem .75rem !important;
+    background-image: none !important;
+    color: black !important;
+    background-color: white !important;
+    /*style="color: black !important; background: white"*/
+}
+/* select */
 
 /* Чтобы работали модалки в Bootstrap 4  либо добавить стили, либо замена в исходниках*/
 /* изменено modal-in-class in на show */

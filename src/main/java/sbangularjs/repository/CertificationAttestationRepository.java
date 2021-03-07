@@ -11,16 +11,17 @@ public interface CertificationAttestationRepository extends JpaRepository<Certif
     List<CertificationAttestation> findAll();
     CertificationAttestation findCertificationAttestationById(Long certificationAttestationId);
 
+    /* TEACHER AND DEANERY */
+    @Query(value = "select new sbangularjs.DTO.SubjectDTO(ca.id, ca.attestation.id, " +
+            "ca.syllabusContent.discipline.id, ca.syllabusContent.discipline.name, ca.group.id, ca.group.number) " +
+            "from CertificationAttestation ca where ca.id in :certificationAttestationIds ")
+    List<SubjectDTO> findAllSubjectsGroupDTOByCAIds(List<Long> certificationAttestationIds);
+
     /* TEACHER */
     @Query("select ca.id from AttestationContent at " +
             "join CertificationAttestation ca on ca.id = at.certificationAttestation.id " +
             "and ca.attestation.id = :attestationId and at.teacher.id = :teacherId")
     List<Long> findCertificationAttestationIdsByAttestationIdAndTeacherId(Long attestationId, Long teacherId);
-
-    @Query(value = "select new sbangularjs.DTO.SubjectDTO(ca.id, ca.attestation.id, " +
-            "ca.syllabusContent.discipline.id, ca.syllabusContent.discipline.name, ca.group.id, ca.group.number) " +
-            "from CertificationAttestation ca where ca.id in :certificationAttestationIds ")
-    List<SubjectDTO> findAllSubjectsGroupDTOByCAIds(List<Long> certificationAttestationIds);
 
     @Query(value = "select new sbangularjs.DTO.SubjectDTO(ca.id, ca.attestation.id, " +
             "ca.syllabusContent.discipline.id, ca.syllabusContent.discipline.name, ca.group.id, ca.group.number) " +
@@ -44,9 +45,8 @@ public interface CertificationAttestationRepository extends JpaRepository<Certif
     List<CertificationAttestation> findCAsByAttestationIdAndGroupIdAndDepId(Long attestationId, Long groupId, Long departmentId);*/
 
     /* DEANERY */
-
     @Query("select ca.id from CertificationAttestation ca where ca.attestation.id = :attestationId " +
-            " and ca.group.id in :groupIds")
+           "and ca.group.id in :groupIds")
     List<Long> findAllByAttestationIdAndGroupIds(Long attestationId, List<Long> groupIds);
 
 }
