@@ -25,11 +25,11 @@ public class ArrangeCertificationController {
 
     @PatchMapping("/createCertification")
     public ResponseEntity createCertification(@RequestBody Attestation attestation, @AuthenticationPrincipal User user) {
-        try { // только dekanat_ может создавать ведомости
+        try {
             Deanery deanery = deaneryRepository.findByUsername(user.getUsername());
-            if (deanery == null || deanery.getDeaneryGroupList() == null || deanery.getDeaneryGroupList().size() == 0 || deanery.isDeputyDean() != false) // null or true
-                return new ResponseEntity(HttpStatus.CONFLICT);
-            attestation.setFaculty(deanery.getDeaneryGroupList().get(0).getGroup().getSyllabus().getDepartment().getFaculty());
+            if (deanery == null) return new ResponseEntity(HttpStatus.CONFLICT);
+
+            attestation.setFaculty(deanery.getFaculty());
             attestation.setActive(true);
             attestationRepository.save(attestation);
             return new ResponseEntity(HttpStatus.OK);

@@ -1,14 +1,19 @@
 app.controller("ContentSessionController", function($scope, $state, $stateParams, $http) {
 
     $scope.isHead = $stateParams.isHead === 'true';
-    /*$scope.selected = [
-        { key: true, value: '+' },
-        { key: false, value: '-' }
-    ];*/
+
+
+    $scope.contentSession = [];
+    $scope.selected = [];
     $scope.selected = {
         id: '',
         name: ''
     };
+
+    $scope.selectedAdmittance = [
+        { id: 6, name: 'Сдано' },
+        { id: 7, name: 'Не сдано' }
+    ];
 
     getSelected();
     function getSelected() {
@@ -19,8 +24,10 @@ app.controller("ContentSessionController", function($scope, $state, $stateParams
         }).then(
             function(res) {
                 $scope.selected = res.data;
-                // console.log(res.data);
+                $scope.allSelectedForExams = angular.copy(res.data);
                 // console.log($scope.selected);
+
+                getContentSession();
             }/*,
             function(res) { // error
                 $scope.toasterError('', 'Данные не были сохранены');
@@ -28,7 +35,6 @@ app.controller("ContentSessionController", function($scope, $state, $stateParams
         );
     }
 
-    getContentSession();
     function getContentSession() {
         $http({
             method: 'PATCH',
@@ -45,8 +51,26 @@ app.controller("ContentSessionController", function($scope, $state, $stateParams
                     return;
                 $scope.groupNumber = $scope.contentSession[0].sessionSheet.group.number;
                 $scope.disciplineName = $scope.contentSession[0].sessionSheet.syllabusContent.discipline.name;
-                $scope.splitAttestationFormName = $scope.contentSession[0].sessionSheet.splitAttestationForm.name;
+                $scope.splitAttestationForm = $scope.contentSession[0].sessionSheet.splitAttestationForm;
                 $scope.deadlineDiscipline = $scope.contentSession[0].sessionSheet.syllabusContent.deadline;
+
+                $scope.contentSession.forEach(function(item, index) {
+                    // console.log(item);
+                    if (item.admittance) {
+                        // console.log(item.admittance)
+                        if (item.admittance.id === 7) { // не сдано
+                            $scope.selected[index] = [];
+                            $scope.selected[index].push($scope.allSelectedForExams[0]);
+                        }
+                        if (item.admittance.id === 6) { // сдано
+                            $scope.selected[index] = angular.copy($scope.allSelectedForExams);
+                            $scope.selected[index].splice(0, 1);
+                        }
+                    }
+                    else
+                        $scope.selected[index] = angular.copy($scope.allSelectedForExams);
+                });
+
                 // console.log($scope.contentSession);
             },
             function(res) { // error
@@ -64,6 +88,21 @@ app.controller("ContentSessionController", function($scope, $state, $stateParams
         $scope.changes = !angular.equals($scope.contentSessionCopy, $scope.contentSession); // true если равны
     };
 
+    $scope.checkChangesAdmittance = function (item, index) {
+        if (item === 7) { // не сдано
+            $scope.selected[index] = [];
+            $scope.selected[index].push($scope.allSelectedForExams[0]);
+        }
+        if (item === 6) { // сдано
+            $scope.selected[index] = angular.copy($scope.allSelectedForExams);
+            $scope.selected[index].splice(0, 1);
+        }
+        $scope.contentSession[index].evaluation = $scope.selected[index][0];
+        console.log($scope.contentSession[index])
+        console.log($scope.selected)
+        $scope.changes = !angular.equals($scope.contentSessionCopy, $scope.contentSession); // true если равны
+    };
+
     $scope.saveContentSession = function() {
         // console.log($scope.contentSession)
         if (!$scope.changes) {
@@ -73,6 +112,7 @@ app.controller("ContentSessionController", function($scope, $state, $stateParams
         $http({
             method: 'PATCH',
             url: '/saveContentSession',
+            params: { sessionSheetId: $stateParams.id },
             data: angular.toJson($scope.contentSession),
             headers: {
                 'Content-Type': 'application/json'

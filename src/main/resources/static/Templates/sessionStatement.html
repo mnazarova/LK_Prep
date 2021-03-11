@@ -1,0 +1,109 @@
+<div ng-show="ur == 'DEANERY'">
+
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a ui-sref="statements">Список ведомостей. Сессионные ведомости</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Просмотр ведомости</li>
+    </ol>
+
+    <div class="my-3 pt-3 card col-md-10 mx-auto border-info">
+
+        <div class="font-weight-bold h3 text-center" ng-show="disciplineName || splitAttestationForm || deadlineDiscipline">
+            <pre ng-show="disciplineName">Дисциплина:<div class="badge bg-aqua-gradient">{{disciplineName}}</div></pre>
+            <pre ng-show="splitAttestationForm">Форма аттестации:<div class="badge bg-aqua-gradient">{{splitAttestationForm.name}}</div></pre>
+            <pre ng-show="deadlineDiscipline">Дедлайн:<div class="badge bg-aqua-gradient">{{deadlineDiscipline | date: 'dd.MM.yyyy'}}</div></pre>
+            <hr>
+        </div>
+
+        <div class="font-weight-bold h4 text-center">
+            Список студентов
+            <span ng-show="groupNumber">
+                группы <div class="badge bg-aqua-gradient">"{{groupNumber}}"</div>
+            </span>
+        </div>
+
+        <div ng-if="contentSession.length">
+            <table class="table table-hover table-striped table-sm table-responsive-xl my-3">
+                <thead>
+                    <tr>
+                        <th class="text-center">Фамилия</th>
+                        <th class="text-center">Имя</th>
+                        <th class="text-center">Отчество</th>
+                        <th class="text-center">Номер зачётной книжки</th>
+                        <th class="text-center" ng-if="splitAttestationForm && splitAttestationForm.id === 1" style="min-width: 8em">Допуск</th>
+                        <th class="text-center" style="min-width: 10em">Оценивание</th>
+                        <th class="text-center">Последние изменения</th>
+                        <th class="text-center">Назначенный преподаватель</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="cs in contentSession track by $index">
+                        <td class="text-center">{{cs.student.surname}}</td>
+                        <td class="text-center">{{cs.student.name}}</td>
+                        <td class="text-center">{{cs.student.patronymic}}</td>
+                        <td class="text-center">{{cs.student.numberRecordBook}}</td>
+                        <td class="text-center" ng-if="splitAttestationForm && splitAttestationForm.id === 1">
+                            <select class="custom-select no-image col-md-12"
+                                    disabled="true"
+                                    name="cs.admittance.id"
+                                    ng-model="cs.admittance.id"
+                                    ng-options="item.id as item.name for item in selectedAdmittance">
+                            </select>
+                        </td>
+                        <td class="text-center px-3">
+                            <select class="custom-select no-image col-md-12 bold"
+                                    disabled="true"
+                                    name="cs.evaluation.id"
+                                    ng-model="cs.evaluation.id"
+                                    ng-options="item.id as item.name for item in selected">
+                            </select>
+                        </td>
+                        <td class="text-center">
+                            <div ng-show="cs.date">
+                                {{cs.setEvaluationByTeacher.surname + ' ' + cs.setEvaluationByTeacher.name + ' ' + cs.setEvaluationByTeacher.patronymic}}
+                                <br>({{cs.date | date: 'dd.MM.yyyy в HH:mm'}})
+                            </div>
+                            <div ng-show="!cs.date">-</div>
+                        </td>
+                        <td class="text-center pt-2">
+                            {{cs.teacher ? cs.teacher.surname + ' ' + cs.teacher.name + ' ' + cs.teacher.patronymic : '-'}}
+                        </td>
+                        <!--<td class="text-center px-3">
+                            <i class="fa fa-info-circle text-info col-md-1" ng-show="css.dateWorks" data-toggle="tooltip" data-placement="top"
+                               title="Последние изменения внесены {{css.dateWorks | date: 'dd.MM.yyyy в HH:mm'}} ({{css.setWorksByTeacher.surname +
+                               ' ' + css.setWorksByTeacher.name + ' ' + css.setWorksByTeacher.patronymic}})">
+                            </i>
+                            <i class="fa fa-info-circle text-warning col-md-1" ng-show="!css.dateWorks"></i>
+                            <select class="custom-select no-image col-md-6"
+                                    ng-class="{'border-info': css.dateWorks, 'border-warning': !css.dateWorks}"
+                                    disabled="true"
+                                    ng-model="css.works"
+                                    ng-options="item.key as item.value for item in selected">
+                            </select>
+                        </td>
+                        <td class="text-center px-3">
+                            <i class="fa fa-info-circle text-info col-md-1" ng-show="css.dateAttest" data-toggle="tooltip" data-placement="top"
+                               title="Последние изменения внесены {{css.dateAttest | date: 'dd.MM.yyyy в HH:mm'}} ({{css.setAttestByTeacher.surname +
+                               ' ' + css.setAttestByTeacher.name + ' ' + css.setAttestByTeacher.patronymic}})">
+                            </i>
+                            <i class="fa fa-info-circle text-warning col-md-1" ng-show="!css.dateAttest"></i>
+                            <select class="custom-select no-image col-md-6"
+                                    ng-class="{'border-info': css.dateAttest, 'border-warning': !css.dateAttest}"
+                                    disabled="true"
+                                    ng-model="css.attest"
+                                    ng-options="item.key as item.value for item in selected">
+                            </select>
+                        </td>
+                        <td class="text-center pt-2">
+                            {{css.teacher ? css.teacher.surname + ' ' + css.teacher.name + ' ' + css.teacher.patronymic : '-'}}
+                        </td>-->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!contentSession.length">
+            Список студентов пуст
+        </div>
+    </div>
+
+</div>

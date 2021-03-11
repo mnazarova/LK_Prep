@@ -18,17 +18,19 @@ public interface SessionSheetRepository extends JpaRepository<SessionSheet, Long
             "where ca.attestation.id = :attestationId and ca.group.id = :groupId and ca.syllabusContent.discipline.department.id = :departmentId")
     List<CertificationAttestation> findCAsByAttestationIdAndGroupIdAndDepId(Long attestationId, Long groupId, Long departmentId);*/
 
+    /* TEACHER AND DEANERY */
+    @Query(value = "select new sbangularjs.DTO.SessionDTO(ss.id, ss.group.id, ss.group.number, " +
+            "ss.syllabusContent.discipline.id, ss.syllabusContent.discipline.name, ss.syllabusContent.deadline, " +
+            "ss.splitAttestationForm.id, ss.splitAttestationForm.name) " +
+            "from SessionSheet ss where ss.id in :sessionSheetIds")
+    List<SessionDTO> findAllSessionDTOBySessionSheetIds(List<Long> sessionSheetIds);
+
     /* TEACHER */
     @Query("select ss.id from SessionSheetContent ssc " +
             "join SessionSheet ss on ss.id = ssc.sessionSheet.id " +
             "and ssc.teacher.id = :teacherId where ss.syllabusContent.deadline > :deadline")
     List<Long> findSessionSheetIdsByTeacherIdAndDeadline(Long teacherId, Date deadline);
 
-    @Query(value = "select new sbangularjs.DTO.SessionDTO(ss.id, ss.group.id, ss.group.number, " +
-            "ss.syllabusContent.discipline.id, ss.syllabusContent.discipline.name, ss.syllabusContent.deadline, " +
-            "ss.splitAttestationForm.id, ss.splitAttestationForm.name) " +
-            "from SessionSheet ss where ss.id in :sessionSheetIds")
-    List<SessionDTO> findAllSessionDTOBySessionSheetIds(List<Long> sessionSheetIds);
 
     @Query(value = "select new sbangularjs.DTO.SessionDTO(ss.id, ss.group.id, ss.group.number, " +
             "ss.syllabusContent.discipline.id, ss.syllabusContent.discipline.name, ss.syllabusContent.deadline, " +
@@ -44,5 +46,9 @@ public interface SessionSheetRepository extends JpaRepository<SessionSheet, Long
     @Query("select ss.id from SessionSheet ss where ss.syllabusContent.discipline.department.id = :departmentId " +
             "and ss.syllabusContent.deadline > :deadline and ss.group.id = :groupId")
     List<Long> findSessionSheetIdsDepartmentIdAndDeadlineAngGroupId(Long departmentId, Date deadline, Long groupId);
+
+    /* DEANERY */
+    @Query("select ss.id from SessionSheet ss where ss.syllabusContent.deadline > :deadline and ss.group.id in :groupIds")
+    List<Long> findSessionSheetIdsByDeadlineAndGroupIds(Date deadline, List<Long> groupIds);
 
 }

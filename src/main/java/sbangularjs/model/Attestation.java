@@ -1,6 +1,7 @@
 package sbangularjs.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,7 +24,8 @@ public class Attestation {
     @Temporal(TemporalType.TIMESTAMP)
     private Date deadline;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @ManyToOne(fetch = FetchType.EAGER) // need
     @JoinColumn(name="faculty_id")
     private Faculty faculty;
 

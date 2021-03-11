@@ -6,11 +6,11 @@
         <li class="breadcrumb-item active" aria-current="page">Редактирование аттестационной ведомости</li>
     </ol>
 
-    <div class="my-3 pt-5 card col-md-10 mx-auto">
+    <div class="my-3 pt-5 card col-md-10 mx-auto border-info">
 
         <div class="font-weight-bold h3 text-center" ng-show="attestation || disciplineName">
             <pre ng-show="attestation">Аттестация:<div class="badge bg-aqua-gradient">"{{attestation.name}}" (до {{attestation.deadline | date: 'dd.MM.yyyy'}})</div></pre>
-            <pre ng-show="disciplineName">Дисциплина: <div class="badge bg-aqua-gradient">{{disciplineName}}</div></pre>
+            <pre ng-show="disciplineName">Дисциплина:<div class="badge bg-aqua-gradient">{{disciplineName}}</div></pre>
             <hr>
         </div>
 

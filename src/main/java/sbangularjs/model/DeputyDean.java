@@ -10,11 +10,16 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public class Deanery { // Деканат
+public class DeputyDean { // Зам. декана
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name = "deanery_id")
+//    @GeneratedValue(strategy= GenerationType.AUTO)
+    @Column(name = "deputy_dean_id")
     private Long id;
+
+    private String surname;
+    private String name;
+    private String initials;
+    private String patronymic;
 
     private boolean active;
 
@@ -22,13 +27,8 @@ public class Deanery { // Деканат
     private String username;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "deanery", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "deputyDean", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Group> groups;
 
-    @JsonIgnore
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name="faculty_id")
-    private Faculty faculty;
-
-    public Deanery() {}
+    public DeputyDean() {}
 }

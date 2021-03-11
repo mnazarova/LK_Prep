@@ -1,0 +1,175 @@
+<div ng-show="ur == 'DEANERY'">
+
+    <div class="p-0 col-md-10 mx-auto">
+        <div class="mt-5">
+            <div class="font-weight-bold h4 text-center m-0">
+                <nav class="nav nav-tabs nav-justified">
+                    <a class="nav-item nav-link active" data-toggle="tab" data-target="#head-department" role="tab" aria-controls="head-department" aria-selected="true">
+                        Назначение зав. каф.
+                    </a>
+                    <a class="nav-item nav-link" data-toggle="tab" data-target="#deputy-dean" role="tab" aria-controls="deputy-dean" aria-selected="true">
+                        Назначение зам. декана
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <div class="tab-content">
+
+            <div class="tab-pane fade show active" id="head-department" role="tabpanel" aria-labelledby="head-department-tab">
+                <div class="card border-info">
+                    <div class="ng-hide font-weight-bold text-center m-3 p-2 alert-warning" ng-show="!departments.length">
+                        Кафедры отсутствуют
+                    </div>
+
+                    <table class="my-5 table table-hover table-striped table-responsive-xl" ng-show="departments.length">
+                        <thead>
+                        <tr>
+                            <th class="text-center border-white">Кафедра</th>
+                            <th class="text-center border-white">Полное название</th>
+                            <th class="text-center border-white w-25">Зав. каф.</th>
+                            <th class="text-center border-white"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="department in departments">
+                            <td class="text-center border-info">{{department.shortName}}</td>
+                            <td class="text-center border-info">{{department.fullName}}</td>
+                            <td class="text-center border-info">
+                                <ui-select ng-model="department.headDepartment"
+                                           ng-disabled="!teachers[$index]"
+                                           ng-change="selectedHeadDepartment($index)"
+                                           name="headDepartment"
+                                           class="col-md-12 pt-1"
+                                           theme="select2" title="Назначить зав. каф.">
+                                    <ui-select-match placeholder="Назначить зав. каф.">
+                                        {{$select.selected.surname + ' ' + $select.selected.name + ' ' + $select.selected.patronymic}}
+                                    </ui-select-match>
+                                    <ui-select-choices repeat="teacher in teachers[$index] | propsFilter: {surname: $select.search, name: $select.search} | orderBy:'surname'">
+                                        <div ng-bind-html="teacher.surname | highlight: $select.search"></div>
+                                        <small>
+                                            {{teacher.name}}
+                                            <span ng-bind-html="teacher.patronymic | highlight: $select.search"></span>
+                                        </small>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </td>
+                            <!-- Сохранить -->
+                            <td class="text-center border-info">
+                                <button class="btn btn-md text-white"
+                                        ng-class="{'btn-warning': changes[$index],
+                                          'btn-info': !changes[$index]}"
+                                        type="button"
+                                        data-ng-click="saveHeadDepartment($index)"
+                                        title="Сохранить изменения">
+                                    <i class="fa fa-save"></i>
+                                    Сохранить
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="deputy-dean" role="tabpanel" aria-labelledby="deputy-dean-tab">
+                <div class="card border-info">
+                    <div class="ng-hide font-weight-bold text-center m-3 p-2 alert-warning" ng-show="!departmentsWithGroups.length">
+                        Кафедры отсутствуют
+                    </div>
+
+                    <div class="ng-hide my-5" ng-show="departmentsWithGroups.length">
+                        <form class="simple-form" name="DepartmentWithGroupsList">
+                            <table class="table table-hover table-striped table-responsive-xl">
+                                <thead>
+                                <tr>
+                                    <th class="text-center border-white">Кафедра</th>
+                                    <th class="text-center border-white">Полное название</th>
+                                    <th class="text-center border-white w-25">Зам. декана</th>
+                                    <th class="text-center border-white"></th>
+                                </tr>
+                                </thead>
+                                <tbody data-ng-repeat="departmentWithGroups in departmentsWithGroups track by $index" ng-init="$parentIndex=$index" data-ng-switch on="true">
+                                <tr class="bg-white bg-aqua-gradient">
+                                    <td class="text-center border-info">{{departmentWithGroups.shortName}}</td>
+                                    <td class="text-center border-info">{{departmentWithGroups.fullName}}</td>
+                                    <td class="text-center border-info">
+                                        <ui-select ng-model="departmentWithGroups.deputyDean"
+                                                   ng-disabled="!teachers[$index] || !departmentWithGroups.groupsAssignmentDeputyDean.length"
+                                                   ng-change="selectedDeputyDean($index)"
+                                                   name="deputyDean"
+                                                   class="col-md-12 pt-1"
+                                                   theme="select2" title="Назначить зам. декана">
+                                            <ui-select-match placeholder="Назначить зам. декана">
+                                                {{$select.selected.surname + ' ' + $select.selected.name + ' ' + $select.selected.patronymic}}
+                                            </ui-select-match>
+                                            <ui-select-choices repeat="teacher in teachers[$index] | propsFilter: {surname: $select.search, name: $select.search} | orderBy:'surname'">
+                                                <div ng-bind-html="teacher.surname | highlight: $select.search"></div>
+                                                <small>
+                                                    {{teacher.name}}
+                                                    <span ng-bind-html="teacher.patronymic | highlight: $select.search"></span>
+                                                </small>
+                                            </ui-select-choices>
+                                        </ui-select>
+                                    </td>
+                                    <!-- Сохранить -->
+                                    <td class="text-center border-info">
+                                        <button class="btn btn-md text-white"
+                                                ng-class="{'btn-warning': changesDeputyDean[$index],
+                                                'btn-info': !changesDeputyDean[$index]}"
+                                                type="button"
+                                                data-ng-click="saveDeputyDean($index)"
+                                                title="Сохранить изменения">
+                                            <i class="fa fa-save"></i>
+                                            Сохранить
+                                        </button>
+                                    </td>
+                                </tr>
+                                <!-- Группы -->
+                                <!--<tr ng-show="departmentWithGroups.groupsAssignmentDeputyDean.length">
+                                    <th class="text-center border-info"></th>
+                                    <th class="text-center border-info">Группа (текущий семестр)</th>
+                                    <th class="text-center border-info w-25"></th>
+                                    <th class="text-center border-info"></th>
+                                </tr>-->
+                                <tr data-ng-switch-when="true" ng-repeat="groupAssignmentDeputyDean in departmentWithGroups.groupsAssignmentDeputyDean | orderBy:'curSemester' track by $index">
+                                    <td class="text-center border-info"></td>
+                                    <td class="text-center border-info">Группа <span class="font-weight-bold">{{groupAssignmentDeputyDean.number}}</span>
+                                        (семестр: <span class="font-weight-bold">{{groupAssignmentDeputyDean.curSemester?groupAssignmentDeputyDean.curSemester:'?'}}</span>)
+                                    </td>
+                                    <td class="text-center border-info">
+                                        <ui-select ng-model="groupAssignmentDeputyDean.deputyDean"
+                                                   ng-disabled="!teachers[$parentIndex]"
+                                                   ng-change="selectedDeputyDeanByGroup($parentIndex)"
+                                                   name="groupAssignmentDeputyDean.deputyDean"
+                                                   class="col-md-12 pt-1"
+                                                   theme="select2" title="Назначить зам. декана"
+                                                   required>
+                                            <ui-select-match placeholder="Назначить зам. декана">
+                                                {{$select.selected.surname + ' ' + $select.selected.name + ' ' + $select.selected.patronymic}}
+                                            </ui-select-match>
+                                            <ui-select-choices repeat="teacher in teachers[$parentIndex] | propsFilter: {surname: $select.search, name: $select.search} | orderBy:'surname'">
+                                                <div ng-bind-html="teacher.surname | highlight: $select.search"></div>
+                                                <small>
+                                                    {{teacher.name}}
+                                                    <span ng-bind-html="teacher.patronymic | highlight: $select.search"></span>
+                                                </small>
+                                            </ui-select-choices>
+                                        </ui-select>
+                                    </td>
+                                    <td class="text-center border-info"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
