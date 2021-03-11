@@ -1,6 +1,7 @@
 package sbangularjs.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,6 +11,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Department { // Кафедра
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -44,6 +46,9 @@ public class Department { // Кафедра
 //    @JsonIgnore
     @OneToOne(mappedBy = "department", cascade = CascadeType.ALL)
     private Teacher headDepartment; // need
+
+    @Transient
+    private List<Group> groupsAssignmentDeputyDean;
 
     public Department() {}
 }

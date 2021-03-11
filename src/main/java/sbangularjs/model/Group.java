@@ -31,8 +31,7 @@ public class Group {
     @JoinColumn(name="deanery_id")
     private Deanery deanery;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="deputy_dean_id")
     private DeputyDean deputyDean;
 

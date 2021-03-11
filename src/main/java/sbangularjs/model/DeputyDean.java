@@ -12,9 +12,14 @@ import java.util.List;
 @Setter
 public class DeputyDean { // Зам. декана
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+//    @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name = "deputy_dean_id")
     private Long id;
+
+    private String surname;
+    private String name;
+    private String initials;
+    private String patronymic;
 
     private boolean active;
 

@@ -6,4 +6,5 @@ import sbangularjs.model.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByUsername(String username, Sort sort);
+    User findByUsername(String username);
 }

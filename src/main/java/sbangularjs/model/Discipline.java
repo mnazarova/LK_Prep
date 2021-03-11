@@ -22,7 +22,7 @@ public class Discipline { // Дисциплина
 // если сериализация происходит до того, как загрузится сущность, то либо
 // (@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})), либо закомментировать (fetch = FetchType.EAGER)
 //   @JsonIgnore
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+//    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @ManyToOne//(fetch = FetchType.EAGER)
     @JoinColumn(name="department_id")
     private Department department;
