@@ -18,8 +18,8 @@ public class DeputyDean { // Зам. декана
 
     private String surname;
     private String name;
-    private String initials;
     private String patronymic;
+    private String initials;
 
     private boolean active;
 

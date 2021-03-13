@@ -462,8 +462,13 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $sce
             templateUrl: 'Templates/sessionStatement.html',
             controller: 'SessionStatementController'
         })
+        .state('groups', {
+            url: '/groups',
+            templateUrl: 'Templates/groups.html',
+            controller: 'GroupsController'
+        })
         .state('students', {
-            url: '/students',
+            url: '/groups/:groupId',
             templateUrl: 'Templates/students.html',
             controller: 'StudentsController'
         })
