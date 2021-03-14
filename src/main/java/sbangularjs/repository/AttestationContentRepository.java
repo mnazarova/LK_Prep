@@ -14,7 +14,7 @@ public interface AttestationContentRepository extends JpaRepository<AttestationC
     AttestationContent findAttestationContentByCertificationAttestationIdAndStudentId(Long certificationAttestationId, Long studentId);
 
     /* TEACHER */
-    List<AttestationContent> findAllByCertificationAttestationIdAndTeacherId(Long certificationAttestationId, Long teacherId);
+    List<AttestationContent> findAllByCertificationAttestationIdAndTeacherIdAndActiveTrue(Long certificationAttestationId, Long teacherId);
 
     @Query("select count(ac) from AttestationContent ac " +
             "where ac.certificationAttestation.id= :certificationAttestationId and ac.teacher.id = :teacherId " +
@@ -26,6 +26,6 @@ public interface AttestationContentRepository extends JpaRepository<AttestationC
     Integer findUnfinishedByCertificationAttestationId(Long certificationAttestationId);
 
     /* For Head Of Department AND DEANERY */
-    List<AttestationContent> findAllByCertificationAttestationId(Long certificationAttestationId);
+    List<AttestationContent> findAllByCertificationAttestationIdAndActiveTrue(Long certificationAttestationId);
 
 }

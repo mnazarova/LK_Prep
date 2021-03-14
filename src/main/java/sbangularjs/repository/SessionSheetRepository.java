@@ -13,6 +13,7 @@ public interface SessionSheetRepository extends JpaRepository<SessionSheet, Long
     List<SessionSheet> findAll();
     SessionSheet findSessionSheetById(Long sessionSheetId);
     SessionSheet findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormId(Long syllabusContentId, Long groupId, Long splitAttestationFormId);
+    List<SessionSheet> findSessionSheetBySyllabusContentIdAndGroupId(Long syllabusContentId, Long groupId);
 
     /*@Query("select ca from CertificationAttestation ca " +
             "where ca.attestation.id = :attestationId and ca.group.id = :groupId and ca.syllabusContent.discipline.department.id = :departmentId")

@@ -2,7 +2,6 @@ package sbangularjs.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,6 +14,7 @@ import sbangularjs.model.*;
 import sbangularjs.repository.DeaneryRepository;
 import sbangularjs.repository.GroupRepository;
 import sbangularjs.repository.SyllabusContentRepository;
+import sbangularjs.repository.SyllabusRepository;
 
 import javax.transaction.Transactional;
 import java.util.*;
@@ -25,39 +25,49 @@ import java.util.*;
 public class GroupsController {
     private DeaneryRepository deaneryRepository;
     private GroupRepository groupRepository;
+    private SyllabusRepository syllabusRepository;
     private SyllabusContentRepository syllabusContentRepository;
 
-    @PatchMapping("/getGroupsByDeaneryId")
-    public ResponseEntity getGroupsByDeaneryId(@AuthenticationPrincipal User user) {
+    @PatchMapping("/getSyllabusesByDeaneryId")
+    public ResponseEntity getSyllabusesByDeaneryId(@AuthenticationPrincipal User user) {
         Deanery curDeanery = deaneryRepository.findByUsername(user.getUsername());
         if (curDeanery == null || curDeanery.getId() == null) return new ResponseEntity(HttpStatus.CONFLICT);
-        List<Group> groups = groupRepository.findGroupsByDeaneryId(curDeanery.getId(),
-                Sort.by(Sort.Direction.DESC, "active").and(Sort.by("curSemester")));
-        if (groups.isEmpty()) return new ResponseEntity(HttpStatus.NO_CONTENT);
-        for (Group group: groups) {
-            List<SyllabusContent> sc = syllabusContentRepository
-                    .findBySyllabusIdAndSemesterNumber(group.getSyllabus().getId(), group.getCurSemester());
-            if (sc.size() == 0) continue;
-            group.setDeadline(sc.get(0).getDeadline());
+        Set<Syllabus> syllabuses = syllabusRepository.findSyllabusesByDeaneryId(curDeanery.getId()/*, Sort.by("group.curSemester")*/);
+        if (syllabuses.isEmpty()) return new ResponseEntity(HttpStatus.NO_CONTENT);
+        for (Syllabus syllabus: syllabuses) {
+            if (syllabus.getGroups().size() != 0) { // set Deadline
+                List<SyllabusContent> sc = syllabusContentRepository
+                        .findBySyllabusIdAndSemesterNumber(syllabus.getId(), syllabus.getGroups().get(0).getCurSemester());
+                if (sc.size() == 0) continue;
+                syllabus.setDeadline(sc.get(0).getDeadline());
+            }
+            /* ???
+            List<Group> groups = new ArrayList<>();
+            for (Group group : syllabus.getGroups()) {
+                if (groupRepository.findByDeaneryIdAndId(curDeanery.getId(), group.getId()) != null)
+                    groups.add(group);
+            }
+            syllabus.setGroups(groups);*/
+
         }
-        return new ResponseEntity<>(groups, HttpStatus.OK);
+        return new ResponseEntity<>(syllabuses, HttpStatus.OK);
     }
 
     @PatchMapping("/getSemesterNumberSetByGroupId")
-    public ResponseEntity getSemesterNumberSetByGroupId(@RequestParam Long groupId) {
+    public ResponseEntity getSemesterNumberSetByGroupId(@RequestParam Long syllabusId) {
 
-        Set<Integer> semesterNumberSet = syllabusContentRepository.findSemesterNumberSetByGroupId(groupId);
+        Set<Integer> semesterNumberSet = syllabusContentRepository.findSemesterNumberSetBySyllabusId(syllabusId);
         /*if (semesterNumberSet.contains(0)) */semesterNumberSet.remove(0);
 
         return new ResponseEntity<>(semesterNumberSet, HttpStatus.OK);
     }
 
     @PatchMapping("/getEstimatedCurSemesterNumber")
-    public ResponseEntity getEstimatedCurSemesterNumber(@RequestParam Long groupId) {
-        Group group = groupRepository.findGroupById(groupId);
-        if (group.getSyllabus() == null) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+    public ResponseEntity getEstimatedCurSemesterNumber(@RequestParam Long syllabusId) {
+        Syllabus syllabus = syllabusRepository.findSyllabusByIdOrderByGroupsIdAsc(syllabusId);
+        if (syllabus == null) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
 
-        int startYear = group.getSyllabus().getYear();
+        int startYear = syllabus.getYear();
         Date date = new Date();
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(date);
@@ -74,9 +84,9 @@ public class GroupsController {
         // с какого семестра начинается счёт
         // бакалавр и специалист с нуля, магистр (Инженер) с 9, аспирант с 13?
         int start = 0;
-        if (group.getSyllabus().getQualification().getId() == 2) // Магистратура
+        if (syllabus.getQualification().getId() == 2) // Магистратура
             start = 9;
-        else if (group.getSyllabus().getQualification().getId() == 4) // Аспирантура
+        else if (syllabus.getQualification().getId() == 4) // Аспирантура
             start = 13;
 
         int estimatedCurSemesterNumber = start + diff * 2 + add;
@@ -102,33 +112,46 @@ public class GroupsController {
 
 
     @Transactional
-    @PatchMapping("/saveGroup")
-    public ResponseEntity saveGroup(/*@AuthenticationPrincipal User user, */@RequestBody Group updatingGroup) {
-        if (updatingGroup == null || updatingGroup.getId() == null) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+    @PatchMapping("/saveSyllabus")
+    public ResponseEntity saveSyllabus(@AuthenticationPrincipal User user, @RequestBody Syllabus updatingSyllabus) {
+        if (updatingSyllabus == null || updatingSyllabus.getId() == null) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
 
-        Group group = groupRepository.findGroupById(updatingGroup.getId());
-        if (group == null) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        group.setActive(updatingGroup.getActive());
-        group.setCurSemester(updatingGroup.getCurSemester());
-        if (updatingGroup.getDeadline() != null && updatingGroup.getCurSemester() != null) {
-            List<SyllabusContent> syllabusContentList = syllabusContentRepository
-                    .findBySyllabusIdAndSemesterNumber(group.getSyllabus().getId(), updatingGroup.getCurSemester());
-            for (SyllabusContent syllabusContent: syllabusContentList)
-                syllabusContent.setDeadline(updatingGroup.getDeadline());
-            syllabusContentRepository.saveAll(syllabusContentList);
+        List<Group> savingGroupList = new ArrayList<>();
+        for (Group updatingGroup: updatingSyllabus.getGroups()) {
+            Group oldGroup = groupRepository.findGroupById(updatingGroup.getId());
+            oldGroup.setActive(updatingGroup.getActive());
+            oldGroup.setCurSemester(updatingGroup.getCurSemester());
+            savingGroupList.add(oldGroup);
         }
-        groupRepository.save(group);
+        groupRepository.saveAll(savingGroupList);
 
-        List<SyllabusContent> sc = syllabusContentRepository.findBySyllabusIdAndSemesterNumber(group.getSyllabus().getId(), group.getCurSemester());
-        if (sc.size() != 0)
-            group.setDeadline(sc.get(0).getDeadline());
+        if (updatingSyllabus.getDeadline() != null && updatingSyllabus.getGroups().size() != 0
+                && updatingSyllabus.getGroups().get(0).getCurSemester() != null) {
+            List<SyllabusContent> syllabusContentList = syllabusContentRepository
+                    .findBySyllabusIdAndSemesterNumber(updatingSyllabus.getId(), updatingSyllabus.getGroups().get(0).getCurSemester());
+            if (syllabusContentList.size() != 0 && !updatingSyllabus.getDeadline().equals(syllabusContentList.get(0).getDeadline())) {
+                for (SyllabusContent syllabusContent : syllabusContentList)
+                    syllabusContent.setDeadline(updatingSyllabus.getDeadline());
+                syllabusContentRepository.saveAll(syllabusContentList);
+            }
+        }
 
-//        List<Group> groups = groupRepository.findGroupsByDeaneryId(deaneryRepository.findByUsername(user.getUsername()).getId(),
-//                Sort.by(Sort.Direction.DESC, "active").and(Sort.by("curSemester")));
+        Syllabus syllabus = syllabusRepository.findSyllabusByIdOrderByGroupsIdAsc(updatingSyllabus.getId());
+        if (syllabus == null) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        if (syllabus.getGroups().size() != 0) {
+            List<SyllabusContent> sc = syllabusContentRepository
+                    .findBySyllabusIdAndSemesterNumber(syllabus.getId(), syllabus.getGroups().get(0).getCurSemester());
+            if (sc.size() != 0)
+                syllabus.setDeadline(sc.get(0).getDeadline());
+        }
+        /*List<Group> groups = new ArrayList<>();
+        for (Group group : syllabus.getGroups()) {
+            if (groupRepository.findByDeaneryIdAndId(deaneryRepository.findByUsername(user.getUsername()).getId(), group.getId()) != null)
+                groups.add(group);
+        }
+        syllabus.setGroups(groups);*/
 
-//        Group checkGroup = groupRepository.findGroupById(group.getId());
-
-        return new ResponseEntity<>(group, HttpStatus.OK);
+        return new ResponseEntity<>(syllabus, HttpStatus.OK);
     }
 
 }

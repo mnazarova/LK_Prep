@@ -18,7 +18,7 @@ public interface SyllabusContentRepository extends JpaRepository<SyllabusContent
             "where sc.syllabus.id = :syllabusId and sc.semesterNumber = :curSemester")
     List<SyllabusContent> findSyllabusContentsBySyllabusIdAndDepartmentIdAndCurSemester(Long syllabusId, Long departmentId, Integer curSemester);
 
-    @Query(value = "select sc.semesterNumber from SyllabusContent sc join Group gr " +
-                   "on gr.id = :groupId where sc.syllabus.id = gr.syllabus.id order by sc.semesterNumber")
-    Set<Integer> findSemesterNumberSetByGroupId(Long groupId);
+    @Query(value = "select sc.semesterNumber from SyllabusContent sc " +
+                   "where sc.syllabus.id = :syllabusId order by sc.semesterNumber")
+    Set<Integer> findSemesterNumberSetBySyllabusId(Long syllabusId);
 }

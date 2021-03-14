@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -22,7 +21,7 @@ public class Group {
     private Boolean active;
     private Integer curSemester;
 
-    @JsonIgnore
+    @JsonIgnore // need
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="syllabus_id")
     private Syllabus syllabus;
@@ -50,9 +49,6 @@ public class Group {
 
     @Transient
     private Boolean blank; // for secretaries
-
-    @Transient
-    private Date deadline; // for deanery and deputyDean
 
     public Group() {}
 }

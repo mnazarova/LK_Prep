@@ -48,7 +48,7 @@ public class LinkAttestationController {
 
 
     @PatchMapping("/changeAttestationSelected")
-    public ResponseEntity changeAttestationSelected(@AuthenticationPrincipal User user, Long attestationId) {
+    public ResponseEntity changeAttestationSelected(@AuthenticationPrincipal User user, Long attestationId) { // смена аттестации и вывод списка групп
         Attestation attestation = attestationRepository.findAttestationById(attestationId);
         if (attestation == null || attestation.getFaculty() == null)
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

@@ -9,36 +9,57 @@ app.controller("GroupsController", function($scope, $http, $filter) {
     $scope.estimatedCurSemesterNumber = [];
 
     $scope.changes = [];
-    $scope.groups = {};
-    $scope.oldGroups = {};
+    $scope.syllabuses = {};
+    $scope.oldSyllabuses = {};
 
-    getGroupsByDeaneryId();
-    function getGroupsByDeaneryId() {
+    getSyllabusesByDeaneryId();
+    function getSyllabusesByDeaneryId() {
         $http({
             method: 'PATCH',
-            url: '/getGroupsByDeaneryId'
+            url: '/getSyllabusesByDeaneryId'
         }).then(
             function(res) { // success
-                $scope.groups = res.data;
-                $scope.oldGroups = angular.copy(res.data);
-                console.log($scope.groups)
-                $scope.groups.forEach(function(item, index) {
-                    getSemesterNumberSetByGroupId(item.id, index);
-                    getEstimatedCurSemesterNumber(item.id, index);
-                    // console.log('before', item.deadline)
-                    if (item.deadline)
-                        item.deadline = new Date(item.deadline);
-                    // console.log('after', item.deadline)
-                });
+                $scope.syllabuses = res.data;
+                let lengthSyllabuses = $scope.syllabuses.length;
+                for(let i = 0; i < lengthSyllabuses; i++) {
+                    setGlobalValue(i, $scope.syllabuses);
+                    $scope.oldSyllabuses[i] = angular.copy($scope.syllabuses[i]);
+                    checkChanges(i);
+
+                    getSemesterNumberSetBySyllabusId($scope.syllabuses[i].id, i);
+                    getEstimatedCurSemesterNumber($scope.syllabuses[i].id, i);
+                }
+                // console.log($scope.semesterNumberSet)
+                // console.log($scope.estimatedCurSemesterNumber)
             }
         );
     }
 
-    function getSemesterNumberSetByGroupId(groupId, index) {
+    function setGlobalValue(index, sList) {
+        if (sList[index].groups) sList[index].globalActive = sList[index].groups[0].active;
+        setGlobalCurSemester(index, sList);
+
+        // console.log('before', sList[index].deadline)
+        if (sList[index].deadline) sList[index].deadline = new Date(sList[index].deadline);
+        // console.log('after', sList[index].deadline)
+    }
+    function setGlobalCurSemester(index, sList) {
+        let array = sList[index].groups;
+        let length = array.length;
+        if (length < 1 || !array[0].curSemester)
+            return;
+        let el = array[0].curSemester, i= 1;
+        for(; i < length; i++)
+            if (!array[i].curSemester || el !== array[i].curSemester) break;
+        if (i === length) sList[index].globalCurSemester = array[0].curSemester;
+        else sList[index].globalCurSemester = null;
+    }
+
+    function getSemesterNumberSetBySyllabusId(syllabusId, index) {
         $http({
             method: 'PATCH',
             url: '/getSemesterNumberSetByGroupId',
-            params: { groupId: groupId }
+            params: { syllabusId: syllabusId }
         }).then(
             function(res) {
                 $scope.semesterNumberSet[index] = res.data;
@@ -46,83 +67,66 @@ app.controller("GroupsController", function($scope, $http, $filter) {
         );
     }
 
-    function getEstimatedCurSemesterNumber(groupId, index) {
-        $http({
-            method: 'PATCH',
-            url: '/getEstimatedCurSemesterNumber',
-            params: { groupId: groupId }
-        }).then(
-            function(res) {
-                $scope.estimatedCurSemesterNumber[index] = res.data;
-            }
-        );
+    function getEstimatedCurSemesterNumber(syllabusId, index) {
+        $http({ method: 'PATCH', url: '/getEstimatedCurSemesterNumber', params: { syllabusId: syllabusId }
+        }).then( function(res) { $scope.estimatedCurSemesterNumber[index] = res.data; } );
     }
 
     function checkChanges(index) {
-        $scope.changes[index] = !angular.equals($scope.groups[index], $scope.oldGroups[index]);
-        console.log($scope.groups[index])
-        console.log($scope.oldGroups[index])
+        $scope.changes[index] = !angular.equals($scope.syllabuses[index], $scope.oldSyllabuses[index]);
+        // console.log($scope.syllabuses[index])
+        // console.log($scope.oldSyllabuses[index])
     }
 
-    $scope.changeActive = function (index) {
+    $scope.changeGlobalActive = function (index) {
+        let valueActive = $scope.syllabuses[index].globalActive;
+        $scope.syllabuses[index].groups.forEach(function(item) {
+            item.active = valueActive;
+        });
         checkChanges(index);
     };
 
-    $scope.selectedCurSemester = function (index) {
+    $scope.selectedGlobalCurSemester = function (index) {
+        let valueCurSemester = $scope.syllabuses[index].globalCurSemester;
+        $scope.syllabuses[index].groups.forEach(function(item) {
+            item.curSemester = valueCurSemester;
+        });
         checkChanges(index);
     };
+
+
+
 
     $scope.selectedDeadline = function (index) {
         checkChanges(index);
-        console.log($scope.groupsForm)
+        // console.log($scope.groupsForm)
     };
 
-    $scope.saveGroup = function (index) {
+    $scope.saveSyllabus = function (index) {
         if (!$scope.changes[index]) {
             $scope.toasterWarning('Изменения отсутствуют');
             return;
         }
-        /*if ($scope.groupsForm.deadline[index].$dirty && $scope.groupsForm.deadline[index].$invalid || $scope.groups[index].deadline < $scope.minDate) {
+        if ($scope.groupsForm['deadline_' + index].$error.min || $scope.groupsForm['deadline_' + index].$dirty && $scope.groupsForm['deadline_' + index].$invalid) {
             $scope.toasterWarning('Введена некорректная дата');
+            // $scope.toasterWarning('Введена некорректная дата! Минимально допустимое значение: ' + $scope.minDate);
             return;
-        }*/
+        }
         $http({
             method: 'PATCH',
-            url: '/saveGroup',
-            data: angular.toJson($scope.groups[index]),
+            url: '/saveSyllabus',
+            data: angular.toJson($scope.syllabuses[index]),
             headers: {
                 'Content-Type': 'application/json'
             }
         }).then(
             function(res) {
                 $scope.toasterSuccess('', 'Изменения по выбранной группе успешно сохранены');
-                if (res.data.deadline)
-                    res.data.deadline = new Date(res.data.deadline);
-                $scope.oldGroups[index] = angular.copy(res.data);
+                $scope.oldSyllabuses[index] = angular.copy(res.data);
+                setGlobalValue(index, $scope.oldSyllabuses);
                 checkChanges(index);
             }
         );
     };
-
-    /*$scope.findStudents = function() {
-        if(!$scope.studentsForm.group.$modelValue.id/!*$scope.group*!/) {
-            $scope.toasterWarning('Необходимо выбрать группу');
-            return;
-        }
-        $http({
-            method: 'PATCH',
-            url: '/findStudents',
-            data: angular.toJson($scope.studentsForm.group.$modelValue.id),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(
-            function(res) { // success
-                $scope.students = res.data;
-                $scope.studentsCopy = angular.copy($scope.students);
-                // console.log($scope.students)
-            }
-        );
-    };*/
 
 });
