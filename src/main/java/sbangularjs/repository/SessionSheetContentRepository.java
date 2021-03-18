@@ -26,6 +26,6 @@ public interface SessionSheetContentRepository extends JpaRepository<SessionShee
 
     List<SessionSheetContent> findAllBySessionSheetIdAndTeacherIdAndActiveIsTrue(Long sessionSheetId, Long teacherId, Sort sort);
 
-    /* For Head Of Department AND DEANERY*/
+    /* For Head Of Department AND DEANERY */
     List<SessionSheetContent> findAllBySessionSheetIdAndActiveIsTrue(Long sessionSheetId, Sort sort);
 }

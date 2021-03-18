@@ -21,7 +21,7 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     /* DEANERY */
     @Query(value = "select gr.id from Group gr where gr.deanery.id = :deaneryId")
     List<Long> findGroupIdsByDeaneryId(Long deaneryId);
-    List<Group> findGroupsByDeaneryId(Long deaneryId);
+    List<Group> findGroupsByDeaneryId(Long deaneryId, Sort sort);
     Group findByDeaneryIdAndId(Long deaneryId, Long groupId); // check
 
     @Query(value = "select gr from Group gr " +

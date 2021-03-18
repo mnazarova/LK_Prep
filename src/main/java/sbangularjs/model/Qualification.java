@@ -1,5 +1,6 @@
 package sbangularjs.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +18,7 @@ public class Qualification { // Квалификация
 
     private String name;
 
+    @JsonIgnore // need
     @OneToMany(mappedBy = "qualification", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Syllabus> syllabuses;
 

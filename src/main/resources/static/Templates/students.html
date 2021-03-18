@@ -1,128 +1,69 @@
 <div ng-show="ur == 'DEANERY'">
 
-    <div class="my-3 col-md-10 card mx-auto border-info">
-       <form class="simple-form" name="studentsForm">
-            <div class="col-md-6 mx-auto my-4">
-            <!--<div class="my-3 ml-5">
-                <div class="col-md-8 mx-auto">
-                    &lt;!&ndash;<div class="form-group">&ndash;&gt;
-                    <label for="labelFaculty">Факультет</label>
-                    <select class="custom-select form-control"
-                            name="faculty"
-                            ng-change="getDepartments()"
-                            ng-model="faculty"
-                            ng-options="item.id as item.shortName+'. '+item.fullName for item in faculties"
-                            id="labelFaculty"
-                            required>
-                    </select>
-                </div>
-                <div class="col-md-8 mx-auto mt-3">
-                    <label for="labelDepartment">Кафедра</label>
-                    <select class="custom-select form-control"
-                            ng-disabled="!studentsForm.faculty.$modelValue"
-                            name="department"
-                            ng-change="getGroups()"
-                            ng-model="department"
-                            ng-options="item.id as item.shortName+'. '+item.fullName for item in departments"
-                            id="labelDepartment"
-                            required>
-                    </select>
-                </div>-->
-                <label for="labelGroup">Группа</label>
-                <ui-select ng-model="group.selected"
-                           ng-change="findStudents()"
-                           name="group"
-                           ng-disabled="!groups"
-                           id="labelGroup"
-                           class="col-md-12 p-0"
-                           theme="select2" title="Выберите группу"
-                           required>
-                    <ui-select-match placeholder="Выберите группу...">
-                        {{$select.selected.number}}
-                    </ui-select-match>
-                    <ui-select-choices repeat="gr in groups | propsFilter: {number: $select.search} | orderBy:'number'">
-                        <div ng-bind-html="gr.number | highlight: $select.search"></div>
-                    </ui-select-choices>
-                </ui-select>
-                <!--<div class="col-md-8 mx-auto mt-3">
-                    <label for="labelGroup">Группа</label>
-                    <select class="custom-select form-control"
-                            ng-change="students = null"
-                            ng-disabled="!studentsForm.department.$modelValue"
-                            name="group"
-                            ng-model="group"
-                            ng-options="item.id as item.number for item in groups"
-                            id="labelGroup"
-                            required>
-                    </select>
-                </div>
-                <div class="col-md-8 mx-auto mt-4 text-right">
-                    <button class="btn btn-info px-3 text-white"
-                            ng-disabled="!group"
-                            ng-click="findStudents()"
-                            title="Вывести список группы">
-                        Найти
-                    </button>
-                </div>-->
-            </div>
-        </form>
-    </div>
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a ui-sref="groups">Список групп</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Список студентов</li>
+    </ol>
 
-    <div class="my-3 card col-md-10 mx-auto border-info p-0">
-        <div class="font-weight-bold text-center m-2 p-2 alert-warning" ng-if="!studentsForm.group.$modelValue.id">
-            Выберите группу
+    <div class="my-3 pt-5 card col-md-10 mx-auto border-info">
+        <div class="font-weight-bold h4 text-center">
+            Список студентов
+            <span ng-show="groupNumber">
+                    группы <div class="badge bg-aqua-gradient">"{{groupNumber}}"</div>
+                </span>
         </div>
 
-        <!--<div class="font-weight-bold text-center m-2 p-2 alert-warning"
-             ng-if="studentsForm.group.$modelValue.id && !students.length">
-            Для отображения списка студентов нажмите на кнопку "Найти"
-        </div>-->
-
-        <div class="font-weight-bold text-center m-2 p-2 alert-warning"
-             ng-if="studentsForm.group.$modelValue.id && !students.length">
-            Список студентов выбранной группы пуст. Обратитесь к администратору!
-        </div>
-
-        <div ng-if="studentsForm.group.$modelValue.id && students.length">
-
-            <div class="font-weight-bold h4 text-center mt-4">
-                Список студентов группы
+        <div ng-if="students.length">
+            <div class="text-right mb-4">
+                <button class="btn btn-md btn-info text-white"
+                        ng-class="{'btn-warning': changes, 'btn-info': !changes}"
+                        type="button"
+                        title="Сохранить изменения"
+                        ng-click="saveExpelledStudents()">
+                    <i class="fa fa-floppy-o"></i>
+                    Сохранить
+                </button>
             </div>
-            <table class="table table-hover table-responsive-lg table-striped table-sm my-3">
+            <table class="table table-hover my-3 table-responsive-md">
                 <thead>
-                    <tr>
-                        <th class="text-center">Фамилия</th>
-                        <th class="text-center">Имя</th>
-                        <th class="text-center">Отчество</th>
-                        <th class="text-center">Номер зачётной книжки</th>
-                        <th class="text-center">Отчислен</th>
-                    </tr>
+                <tr>
+                    <th class="text-center">Фамилия</th>
+                    <th class="text-center">Имя</th>
+                    <th class="text-center">Отчество</th>
+                    <th class="text-center">Номер зачётной книжки</th>
+                    <th class="text-center">Отчислен</th>
+                </tr>
                 </thead>
-                <tbody>
-                    <tr ng-repeat="st in students | orderBy:'surname' track by $index" class="border-top m-3 text-info text-bold"
-                        ng-class="{'text-muted': st.expelled}">
-                        <td class="text-center">{{st.surname}}</td>
-                        <td class="text-center">{{st.name}}</td>
-                        <td class="text-center">{{st.patronymic}}</td>
-                        <td class="text-center">{{st.numberRecordBook}}</td>
-                        <td class="text-center">
-                            <input type="checkbox" ng-model="st.expelled">
-                        </td>
-                    </tr>
+                <tbody class="bg-aqua-gradient">
+                <tr ng-repeat="student in students | orderBy:'surname' track by $index">
+                    <td class="text-center">{{student.surname}}</td>
+                    <td class="text-center">{{student.name}}</td>
+                    <td class="text-center">{{student.patronymic}}</td>
+                    <td class="text-center">{{student.numberRecordBook}}</td>
+                    <td class="text-center">
+                        <input type="checkbox"
+                               ng-change="changeExpelled()"
+                               ng-model="student.expelled">
+                    </td>
+                </tr>
                 </tbody>
             </table>
-
             <hr>
-            <div class="text-right m-3">
-                <a class="btn btn-info text-white"
-                   type="button"
-                   ng-click="saveExpelledStudents()">
+            <div class="text-right my-4">
+                <button class="btn btn-md text-white"
+                        ng-class="{'btn-warning': changes, 'btn-info': !changes}"
+                        type="button"
+                        title="Сохранить изменения"
+                        ng-click="saveExpelledStudents()">
                     <i class="fa fa-floppy-o"></i>
-                    Сохранить изменения
-                </a>
+                    Сохранить
+                </button>
             </div>
         </div>
 
+        <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!students.length">
+            Список студентов пуст
+        </div>
     </div>
 
 </div>

@@ -18,8 +18,6 @@ public class Secretary {
     private boolean active;
 
     @JsonIgnore // сокрытие данных
-    private String email;
-    @JsonIgnore // сокрытие данных
     private String username;
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

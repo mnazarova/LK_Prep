@@ -21,7 +21,7 @@ public class Group {
     private Boolean active;
     private Integer curSemester;
 
-    @JsonIgnore
+    @JsonIgnore // need
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="syllabus_id")
     private Syllabus syllabus;

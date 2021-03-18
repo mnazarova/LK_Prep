@@ -1,0 +1,144 @@
+<div ng-show="ur == 'DEANERY'">
+
+    <div class="my-3 card col-md-10 mx-auto border-info">
+
+        <div class="font-weight-bold h4 text-center mt-5">Список групп</div>
+        <div class="ng-hide font-weight-bold text-center m-3 p-2 alert-warning" ng-show="!syllabuses.length">
+            Группы отсутствуют
+        </div>
+
+        <div class="ng-hide my-3" ng-show="syllabuses.length">
+            <form class="simple-form" name="groupsForm">
+
+                <table class="table table-hover table-responsive-xl table-sm">
+                    <thead>
+                    <tr class="bg-white">
+                        <th class="text-center border-white">Учебный план</th>
+                        <th class="text-center border-white">Номер группы</th>
+                        <th class="text-center border-white">Актуальность
+                            <i class="fa fa-info-circle text-info" data-toggle="tooltip" data-placement="top"
+                               title="Группы, которые ещё не выпустились">
+                            </i>
+                        </th>
+                        <th class="text-center border-white"></th>
+                        <th class="text-center border-white" style="min-width: 10em">Текущий семестр
+                            <i class="fa fa-info-circle text-info" data-toggle="tooltip" data-placement="top"
+                               title="При возникновении ошибок в высчитывании (предполагаемого) текущего семестра просьба обратиться к администратору">
+                            </i>
+                        </th>
+                        <th class="text-center border-white" style="min-width: 10em">Конец семестра</th>
+                        <th class="text-center border-white"></th>
+                    </tr>
+                    </thead>
+                    <tbody data-ng-repeat="syllabus in syllabuses track by $index" ng-init="$parentIndex=$index"  data-ng-switch on="true">
+                    <!-- Учебные планы -->
+                    <tr class="bg-white bg-aqua-gradient">
+                        <td class="text-center border-white">
+                            {{syllabus.qualification.name}}.
+                            <br>
+                            {{syllabus.form_of_training.name}} форма обучения.
+                            <br>
+                            Год набора: <span class="font-weight-bold">{{syllabus.year}}</span>
+                        </td>
+                        <td class="text-center border-white"></td>
+                        <td class="text-center border-white pt-4">
+                            <input type="checkbox"
+                                   ng-change="changeGlobalActive($index)"
+                                   name="globalActive"
+                                   ng-model="syllabus.globalActive">
+                        </td>
+                        <td class="text-center border-white pt-4">
+                            <i class="text-warning fa fa-2x fa-exclamation px-2"
+                               ng-if="estimatedCurSemesterNumber[$index] != syllabus.globalCurSemester"
+                               data-toggle="tooltip" data-placement="top"
+                               title="Внимание! Установленный семестр не совпадает с (предполагаемым) текущим семестром">
+                            </i>
+                        </td>
+                        <td class="text-center border-white pt-4">
+                            <select class="custom-select form-control col-sm-6"
+                                    ng-model="syllabus.globalCurSemester"
+                                    ng-disabled="!semesterNumberSet[$index]"
+                                    ng-change="selectedGlobalCurSemester($index)"
+                                    name="globalCurSemester"
+                                    ng-options="item for item in semesterNumberSet[$index]">
+                            </select>
+                        </td>
+                        <td class="text-center border-white pt-4">
+                            <input type="date"
+                                   ng-disabled="!syllabus.globalCurSemester"
+                                   class="form-control"
+                                   ng-class="{'is-invalid': groupsForm['deadline_' + $index].$dirty && groupsForm['deadline_' + $index].$invalid,
+                                              'is-valid': groupsForm['deadline_' + $index].$dirty}"
+                                   ng-model="syllabus.deadline"
+                                   ng-change="selectedDeadline($index)"
+                                   min="{{minDate | date:'yyyy-MM-dd'}}"
+                                   max="{{minDate | date:'2055-MM-dd'}}"
+                                   name="deadline_{{$index}}"
+                                   required>
+<!--                            <div class="invalid-tooltip py-0">-->
+                            <div ng-show="groupsForm['deadline_' + $index].$error.min" class="bg-danger text-white p-0">
+                                мин. значение: {{minDate | date:'dd-MM-yyyy'}}
+                            </div>
+                            <div ng-show="groupsForm['deadline_' + $index].$error.max" class="bg-danger text-white p-0">
+                                макс. значение: {{minDate | date:'dd-MM-2055'}}
+                            </div>
+                        </td>
+                        <td class="text-center border-white pt-4">
+                            <button class="btn btn-md text-white"
+                                    ng-class="{'btn-warning': changes[$index],
+                                              'btn-info': !changes[$index]}"
+                                    type="button"
+                                    data-ng-click="saveSyllabus($index)"
+                                    title="Сохранить изменения">
+                                <i class="fa fa-save"></i>
+                                <!--Сохранить изменения-->
+                                Сохранить
+                            </button>
+                        </td>
+                    </tr>
+                    <!-- Группы -->
+                    <tr ng-repeat="group in syllabus.groups" ng-class="{'bg-light': !group.active}">
+                        <td class="text-center border-info"></td>
+                        <td class="text-center border-info font-weight-bold">{{group.number}}</td>
+                        <td class="text-center border-info">
+                            <input type="checkbox"
+                                   name="group.active"
+                                   ng-model="group.active"
+                                   disabled>
+                        </td>
+                        <td class="text-center border-info">
+                            <!--<i class="text-warning fa fa-2x fa-exclamation px-2"
+                               ng-if="group.active && estimatedCurSemesterNumber[$parentIndex] != group.curSemester"
+                               data-toggle="tooltip" data-placement="top"
+                               title="Внимание! Установленный семестр не совпадает с (предполагаемым) текущим семестром">
+                            </i>-->
+                        </td>
+                        <td class="text-center border-info">
+                            <select class="custom-select no-image col-md-6"
+                                    ng-model="group.curSemester"
+                                    name="curSemester"
+                                    ng-options="item for item in semesterNumberSet[$parentIndex]"
+                                    disabled>
+                            </select>
+                        </td>
+                        <td class="text-center border-info"></td>
+                        <td class="text-center border-info">
+                            <a class="btn btn-md btn-light text-info border-info"
+                               type="button"
+                               ui-sref="students({groupId: group.id})"
+                               title="Перейти к списку студентов группы">
+                                <i class="fa fa-share-square"></i>
+<!--                                Список студентов-->
+                                К списку студентов
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+
+            </form>
+        </div>
+    </div>
+
+</div>

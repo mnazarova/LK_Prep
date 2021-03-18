@@ -1,122 +1,51 @@
-app.controller("StudentsController", function($scope, $http) {
+app.controller("StudentsController", function($scope, $http, $stateParams, $state) {
 
-    /*getAllFaculties();
-    function getAllFaculties() {
-        $http.get('/getAllFaculties')
-            .then(
-        /!*$http({
-            method: 'GET',
-            url: '/getAllFaculties'
-        }).then(*!/
-            function (res) { // success
-                $scope.faculties = res.data;
+    getStudents();
+    function getStudents() {
+        $http({
+            method: 'PATCH',
+            url: '/getStudents',
+            params: { groupId: $stateParams.groupId }
+        }).then(
+            function(res) {
+                $scope.students = res.data;
+                $scope.studentsCopy = angular.copy($scope.students);
+                if (!$scope.students.length) // == 0
+                    return;
+                $scope.groupNumber = $scope.students[0].group.number;
+                $scope.checkChanges();
             },
-            function (res) { // error
-                console.log("Error: " + res.status + " : " + res.data);
+            function(res) { // error
+                if (res.data === 0)
+                    $scope.toasterError('Проблема с Вашей учётной записью. Пожалуйста, обратитесь к администратору!');
+                else
+                    if (res.data === 1) {
+                        $scope.toasterError('Список студентов выбранной группы не доступен для просмотра!');
+                        $state.go('groups');
+                    }
             }
         );
     }
 
-    $scope.getDepartments = function () {
-        $http({
-            method: 'PATCH',
-            url: '/getDepartments',
-            data: angular.toJson($scope.faculty),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(
-            function (res) { // success
-                $scope.departments = res.data;
-                $scope.department = null;
-                $scope.group = null;
-                $scope.studentsForm.group.$modelView = null;
-            },
-            function (res) { // error
-                console.log("Error: " + res.status + " : " + res.data);
-            }
-        );
+    $scope.checkChanges = function () {
+        $scope.changes = !angular.equals($scope.students, $scope.studentsCopy); // true если равны
+        // console.log($scope.students)
+        // console.log($scope.studentsCopy)
     };
 
-    $scope.getGroups = function () {
-        $http({
-            method: 'PATCH',
-            url: '/getGroups',
-            data: angular.toJson($scope.department),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(
-            function (res) { // success
-                $scope.groups = res.data;
-            },
-            function (res) { // error
-                console.log("Error: " + res.status + " : " + res.data);
-            }
-        );
-    };*/
-
-    getGroupListByDeanery();
-    function getGroupListByDeanery() {
-        $http({
-            method: 'PATCH',
-            url: '/getGroupListByDeanery'
-        }).then(
-            function(res) { // success
-                $scope.groups = res.data;
-                // console.log($scope.groupList)
-            }
-        );
-    }
-
-    /*$scope.initChanges = function () {
-        $scope.oldExpelled = angular.copy($scope.expelledArray());
+    $scope.changeExpelled = function () {
         $scope.checkChanges();
     };
 
-    $scope.checkChanges = function () {
-        $scope.changes = angular.equals($scope.oldExpelled, $scope.expelledArray());
-    };
-
-    $scope.expelledArray = function () {
-        var array = [];
-        $scope.students.forEach(function(item, index) {
-            console.log(item, index);
-            // array.push(item.expelled);
-        });
-        console.log(array);
-        return array;
-    };*/
-
-    $scope.findStudents = function() {
-        if(!$scope.studentsForm.group.$modelValue.id/*$scope.group*/) {
-            $scope.toasterWarning('Необходимо выбрать группу');
-            return;
-        }
-        $http({
-            method: 'PATCH',
-            url: '/findStudents',
-            data: angular.toJson($scope.studentsForm.group.$modelValue.id),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(
-            function(res) { // success
-                $scope.students = res.data;
-                $scope.studentsCopy = angular.copy($scope.students);
-                // console.log($scope.students)
-            }
-        );
-    };
-
     $scope.saveExpelledStudents = function() {
-        if (angular.equals($scope.studentsCopy, $scope.students)) {
+        if (!$scope.changes) {
             $scope.toasterWarning('Изменения отсутствуют');
             return;
         }
         $http({
             method: 'PATCH',
             url: '/saveExpelledStudents',
+            params: { groupId: $stateParams.groupId },
             data: angular.toJson($scope.students),
             headers: {
                 'Content-Type': 'application/json'
@@ -124,8 +53,11 @@ app.controller("StudentsController", function($scope, $http) {
         }).then(
             function(res) {
                 $scope.toasterSuccess('', 'Данные успешно сохранены');
-                $scope.studentsCopy = angular.copy($scope.students);
-                // $scope.initChanges();
+                $scope.studentsCopy = angular.copy(res.data);
+                $scope.checkChanges();
+            },
+            function(res) {
+                $scope.toasterError('', 'Данные не были сохранены');
             }
         );
     };

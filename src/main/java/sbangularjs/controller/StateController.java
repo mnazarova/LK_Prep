@@ -41,7 +41,7 @@ public class StateController {
         Group group = groupRepository.findByDeaneryIdAndId(curDeanery.getId(), certificationAttestation.getGroup().getId());
         if (group == null) return new ResponseEntity<>(1, HttpStatus.CONFLICT);
 
-        List<AttestationContent> attestationContents = attestationContentRepository.findAllByCertificationAttestationId(id);
+        List<AttestationContent> attestationContents = attestationContentRepository.findAllByCertificationAttestationIdAndActiveTrue(id);
         if (attestationContents.isEmpty())
             return new ResponseEntity<>(HttpStatus.NO_CONTENT); // You many decide to return HttpStatus.NOT_FOUND
         return new ResponseEntity<>(attestationContents, HttpStatus.OK);

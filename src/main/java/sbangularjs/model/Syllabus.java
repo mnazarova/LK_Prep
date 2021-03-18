@@ -1,15 +1,18 @@
 package sbangularjs.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Syllabus { // Учебный план
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -33,23 +36,24 @@ public class Syllabus { // Учебный план
     @JoinColumn(name="profile_id")
     private Profile profile;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER) // need
     @JoinColumn(name="qualification_id")
     private Qualification qualification;
 
-//    @JsonIgnore
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)  // need
     @JoinColumn(name="form_of_training_id")
     private FormOfTraining form_of_training;
 
-//    @JsonIgnore // когда 500
+//    @JsonIgnore // need
     @OneToMany(mappedBy = "syllabus", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Group> groups;
 
     @JsonIgnore
     @OneToMany(mappedBy = "syllabus", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SyllabusContent> syllabusesContent;
+
+    @Transient
+    private Date deadline; // for deanery and deputyDean
 
     public Syllabus() {}
 }

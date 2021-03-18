@@ -44,9 +44,9 @@ public class ContentAttestationController {
 
         List<AttestationContent> attestationContents;
         if (isHead) // зав.каф.
-            attestationContents = attestationContentRepository.findAllByCertificationAttestationId(certificationAttestationId);
+            attestationContents = attestationContentRepository.findAllByCertificationAttestationIdAndActiveTrue(certificationAttestationId);
         else
-            attestationContents = attestationContentRepository.findAllByCertificationAttestationIdAndTeacherId(certificationAttestationId, teacher.getId());
+            attestationContents = attestationContentRepository.findAllByCertificationAttestationIdAndTeacherIdAndActiveTrue(certificationAttestationId, teacher.getId());
         return new ResponseEntity<>(attestationContents, HttpStatus.OK);
     }
 
