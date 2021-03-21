@@ -1,4 +1,4 @@
-app.controller("SessionStatementController", function($scope, $state, $stateParams, $http) {
+app.controller("SessionStatementDeaneryController", function($scope, $state, $stateParams, $http) {
 
     $scope.selected = {
         id: '',
@@ -50,7 +50,7 @@ app.controller("SessionStatementController", function($scope, $state, $statePara
                 else
                     if (res.data === 1) {
                         $scope.toasterError('Выбранная ведомость не доступна для просмотра!');
-                        $state.go('statements');
+                        $state.go('sessionStatementsDeanery');
                     }
                     /*else
                         if (res.data === 2)

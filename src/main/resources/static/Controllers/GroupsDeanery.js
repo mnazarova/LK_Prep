@@ -1,4 +1,4 @@
-app.controller("GroupsController", function($scope, $http, $filter) {
+app.controller("GroupsDeaneryController", function($scope, $http, $filter) {
 
     $scope.minDate = new Date().setDate(new Date().getDate()+1);
     $scope.deadline = new Date(new Date($scope.minDate).toISOString().split("T")[0]);

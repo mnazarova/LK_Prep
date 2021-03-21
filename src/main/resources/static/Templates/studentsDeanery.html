@@ -1,7 +1,7 @@
 <div ng-show="ur == 'DEANERY'">
 
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a ui-sref="groups">Список групп</a></li>
+        <li class="breadcrumb-item"><a ui-sref="groupsDeanery">Список групп</a></li>
         <li class="breadcrumb-item active" aria-current="page">Список студентов</li>
     </ol>
 
@@ -31,7 +31,8 @@
                     <th class="text-center">Имя</th>
                     <th class="text-center">Отчество</th>
                     <th class="text-center">Номер зачётной книжки</th>
-                    <th class="text-center">Отчислен</th>
+                    <th class="text-center">Отчислен из ВУЗа / <br>Академ. отпуск</th>
+<!--                    <th>Перевод</th>-->
                 </tr>
                 </thead>
                 <tbody class="bg-aqua-gradient">
@@ -45,6 +46,16 @@
                                ng-change="changeExpelled()"
                                ng-model="student.expelled">
                     </td>
+                    <!--<td class="text-center">
+                        <button class="btn btn-md text-white"
+                                ng-class="{'btn-warning': changes, 'btn-info': !changes}"
+                                type="button"
+                                title="Перевести студента"
+                                ng-click="saveExpelledStudents()">
+                            <i class="fa fa-floppy-o"></i>
+                            Перевести
+                        </button>
+                    </td>-->
                 </tr>
                 </tbody>
             </table>

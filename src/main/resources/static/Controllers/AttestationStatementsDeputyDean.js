@@ -1,10 +1,10 @@
-app.controller("StatementIdController", function($stateParams, $scope, $state, $http) {
+app.controller("AttestationStatementsDeputyDeanController", function($stateParams, $scope, $state, $http) {
 
-    getGroupsByAttestationAndByDeanery();
-    function getGroupsByAttestationAndByDeanery() {
+    getGroupsByAttestationAndByDeputyDeanAndByGroupId();
+    function getGroupsByAttestationAndByDeputyDeanAndByGroupId() {
         $http({
             method: 'PATCH',
-            url: '/getGroupsByAttestationAndByDeanery',
+            url: '/getGroupsByAttestationAndByDeputyDeanAndByGroupId',
             params: { id: $stateParams.id, groupIds: '' }
         }).then(
             function(res) { // success
@@ -29,7 +29,7 @@ app.controller("StatementIdController", function($stateParams, $scope, $state, $
                 else
                     if (res.data === 1) {
                         $scope.toasterError('Выбранная аттестация не доступна для просмотра!');
-                        $state.go('statements');
+                        $state.go('viewAttestationsDeputyDean');
                     }
             }
         )
@@ -38,7 +38,7 @@ app.controller("StatementIdController", function($stateParams, $scope, $state, $
     $scope.selectedOnGroupList = function () {
         $http({
             method: 'PATCH',
-            url: '/getGroupsByAttestationAndByDeanery',
+            url: '/getGroupsByAttestationAndByDeputyDeanAndByGroupId',
             params: {
                 id: $stateParams.id,
                 groupIds: $scope.statementForm.group.$modelValue.groupId

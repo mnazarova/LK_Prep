@@ -22,6 +22,7 @@ import java.util.List;
 public class LinkAttestationController {
 
     private GroupRepository groupRepository;
+    private StudentRepository studentRepository;
     private SecretaryRepository secretaryRepository;
     private SyllabusContentRepository syllabusContentRepository;
     private AttestationRepository attestationRepository;
@@ -73,11 +74,7 @@ public class LinkAttestationController {
                 gr.setBlank(false);
                 continue;
             }
-            List<Student> students = gr.getStudents();
-            for(int i=students.size()-1;i>=0;i--) {
-                if(students.get(i).getExpelled() != null && students.get(i).getExpelled()) // Expelled = TRUE, отчислены только тогда, когда true
-                    students.remove(students.get(i));
-            }
+            List<Student> students = studentRepository.findNotExpelledStudentsByGroupId(gr.getId());
             if (students.isEmpty()) {
                 gr.setBlank(null);
                 continue;

@@ -379,6 +379,9 @@ app.controller('AppController',function ($scope, $state, $http, $window, toaster
             else
                 if ($scope.nextRole === 'SECRETARY')
                     $scope.nameNextRole = "Секретарь";
+                else
+                    if ($scope.nextRole === 'DEPUTY_DEAN')
+                        $scope.nameNextRole = "Зам. декана";
     }
 
     $scope.changeRole = function () {
@@ -438,41 +441,46 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $sce
             templateUrl: 'Templates/arrangeCertification.html',
             controller: 'ArrangeCertificationController'
         })
-        .state('statements', {
-            url: '/statements',
-            templateUrl: 'Templates/statements.html',
-            controller: 'StatementsController'
+        .state('viewAttestationsDeanery', { // все аттестации
+            url: '/viewAttestationsDeanery',
+            templateUrl: 'Templates/viewAttestationsDeanery.html',
+            controller: 'ViewAttestationsDeaneryController'
         })
-        .state('statementId', { // выбор группы
-            url: '/statements/:id',
-            templateUrl: 'Templates/statementId.html',
-            controller: 'StatementIdController'
+        .state('attestationStatementsDeanery', {
+            url: '/attestationStatementsDeanery/:id',
+            templateUrl: 'Templates/attestationStatementsDeanery.html',
+            controller: 'AttestationStatementsDeaneryController'
         })
-        .state('state', { // просмотр аттестационной ведомости представителем деканата
-            url: '/statements/:attestationId/:certificationAttestationId',
+        .state('attestationStatementDeanery', { // просмотр аттестационной ведомости представителем деканата
+            url: '/attestationStatementDeanery/:attestationId/:certificationAttestationId',
             /*params: {
                 id: null,
                 attestationId: null
             },*/
-            templateUrl: 'Templates/state.html',
-            controller: 'StateController'
+            templateUrl: 'Templates/attestationStatementDeanery.html',
+            controller: 'AttestationStatementDeaneryController'
         })
-        .state('sessionStatement', { // просмотр сессионной ведомости представителем деканата
-            url: '/sessionStatement/:sessionSheetId',
-            templateUrl: 'Templates/sessionStatement.html',
-            controller: 'SessionStatementController'
+        .state('sessionStatementsDeanery', {
+            url: '/sessionStatementsDeanery',
+            templateUrl: 'Templates/sessionStatementsDeanery.html',
+            controller: 'SessionStatementsDeaneryController'
         })
-        .state('groups', {
-            url: '/groups',
-            templateUrl: 'Templates/groups.html',
-            controller: 'GroupsController'
+        .state('sessionStatementDeanery', { // просмотр сессионной ведомости представителем деканата
+            url: '/sessionStatementDeanery/:sessionSheetId',
+            templateUrl: 'Templates/sessionStatementDeanery.html',
+            controller: 'SessionStatementDeaneryController'
         })
-        .state('students', {
-            url: '/groups/:groupId',
-            templateUrl: 'Templates/students.html',
-            controller: 'StudentsController'
+        .state('groupsDeanery', {
+            url: '/groupsDeanery',
+            templateUrl: 'Templates/groupsDeanery.html',
+            controller: 'GroupsDeaneryController'
         })
-        .state('addSubgroup', {
+        .state('studentsDeanery', {
+            url: '/groupsDeanery/:groupId',
+            templateUrl: 'Templates/studentsDeanery.html',
+            controller: 'StudentsDeaneryController'
+        })
+        /*.state('addSubgroup', {
             url: '/addSubgroup',
             templateUrl: 'Templates/addSubgroup.html',
             controller: 'AddSubgroupController'
@@ -481,6 +489,42 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $sce
             url: '/link',
             templateUrl: 'Templates/link.html',
             controller: 'LinkController'
+        })*/
+        /* DEPUTY_DEAN */
+        .state('viewAttestationsDeputyDean', { // все аттестации
+            url: '/viewAttestationsDeputyDean',
+            templateUrl: 'Templates/viewAttestationsDeputyDean.html',
+            controller: 'ViewAttestationsDeputyDeanController'
+        })
+        .state('attestationStatementsDeputyDean', {
+            url: '/attestationStatementsDeputyDean/:id',
+            templateUrl: 'Templates/attestationStatementsDeputyDean.html',
+            controller: 'AttestationStatementsDeputyDeanController'
+        })
+        .state('attestationStatementDeputyDean', { // просмотр аттестационной ведомости представителем деканата
+            url: '/attestationStatementDeputyDean/:attestationId/:certificationAttestationId',
+           templateUrl: 'Templates/attestationStatementDeputyDean.html',
+            controller: 'AttestationStatementDeputyDeanController'
+        })
+        .state('deputyDeanSessionStatements', {
+            url: '/deputyDeanSessionStatements',
+            templateUrl: 'Templates/deputyDeanSessionStatements.html',
+            controller: 'DeputyDeanSessionStatementsController'
+        })
+        .state('deputyDeanSessionStatement', { // просмотр сессионной ведомости представителем деканата
+            url: '/deputyDeanSessionStatement/:sessionSheetId',
+            templateUrl: 'Templates/deputyDeanSessionStatement.html',
+            controller: 'DeputyDeanSessionStatementController'
+        })
+        .state('groupsDeputyDean', {
+            url: '/groupsDeputyDean',
+            templateUrl: 'Templates/groupsDeputyDean.html',
+            controller: 'GroupsDeputyDeanController'
+        })
+        .state('studentsDeputyDean', {
+            url: '/groupsDeputyDean/:groupId',
+            templateUrl: 'Templates/studentsDeputyDean.html',
+            controller: 'StudentsDeputyDeanController'
         })
         /*SECRETARY*/
         .state('linkSession', {

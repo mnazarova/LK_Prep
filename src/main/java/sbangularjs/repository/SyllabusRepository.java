@@ -9,11 +9,14 @@ import java.util.Set;
 
 public interface SyllabusRepository extends JpaRepository<Syllabus, Long> {
 
-    Syllabus findSyllabusByIdOrderByGroupsIdAsc(Long syllabusId);
+    Syllabus findSyllabusById(Long syllabusId);
     List<Syllabus> findAll();
     List<Syllabus> findByDepartmentId(Long departmentId);
 
-    @Query("SELECT s FROM Syllabus s JOIN Group gr ON gr.syllabus.id = s.id AND gr.deanery.id = :deaneryId ORDER BY gr.id, gr.curSemester")
+    @Query("SELECT s FROM Syllabus s JOIN Group gr ON gr.syllabus.id = s.id AND gr.deanery.id = :deaneryId ORDER BY gr.active DESC, s.year DESC, s.id")
     Set<Syllabus> findSyllabusesByDeaneryId(Long deaneryId/*, Sort sort*/);
+
+    @Query("SELECT s FROM Syllabus s JOIN Group gr ON gr.syllabus.id = s.id AND gr.deputyDean.id = :deputyDeanId ORDER BY gr.active DESC, s.year DESC, s.id")
+    Set<Syllabus> findSyllabusesByDeputyDeanId(Long deputyDeanId);
 
 }

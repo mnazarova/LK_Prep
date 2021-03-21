@@ -29,7 +29,7 @@ public interface SessionSheetRepository extends JpaRepository<SessionSheet, Long
     /* TEACHER */
     @Query("select ss.id from SessionSheetContent ssc " +
             "join SessionSheet ss on ss.id = ssc.sessionSheet.id " +
-            "and ssc.teacher.id = :teacherId where ss.syllabusContent.deadline > :deadline")
+            "and ssc.teacher.id = :teacherId and ssc.active = true where ss.syllabusContent.deadline > :deadline")
     List<Long> findSessionSheetIdsByTeacherIdAndDeadline(Long teacherId, Date deadline);
 
 
@@ -40,8 +40,9 @@ public interface SessionSheetRepository extends JpaRepository<SessionSheet, Long
     List<SessionDTO> findAllSessionDTOBySessionSheetIdsAndGroupId(List<Long> sessionSheetIds, Long groupId);
 
     /* For Head Of Department */
-    @Query("select ss.id from SessionSheet ss where " +
-            "ss.syllabusContent.discipline.department.id = :departmentId and ss.syllabusContent.deadline > :deadline")
+    @Query("select ss.id from SessionSheetContent ssc " +
+            "join SessionSheet ss on ss.id = ssc.sessionSheet.id and ssc.active = true " +
+            "where ss.syllabusContent.discipline.department.id = :departmentId and ss.syllabusContent.deadline > :deadline")
     List<Long> findSessionSheetIdsByDepartmentIdAndDeadline(Long departmentId, Date deadline);
 
     @Query("select ss.id from SessionSheet ss where ss.syllabusContent.discipline.department.id = :departmentId " +

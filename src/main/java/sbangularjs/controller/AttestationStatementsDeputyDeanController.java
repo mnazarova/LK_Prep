@@ -11,36 +11,39 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import sbangularjs.DTO.SubjectDTO;
 import sbangularjs.model.Attestation;
-import sbangularjs.model.Deanery;
+import sbangularjs.model.DeputyDean;
+import sbangularjs.model.Group;
 import sbangularjs.model.User;
 import sbangularjs.repository.AttestationRepository;
 import sbangularjs.repository.CertificationAttestationRepository;
-import sbangularjs.repository.DeaneryRepository;
+import sbangularjs.repository.DeputyDeanRepository;
 import sbangularjs.repository.GroupRepository;
 
 import java.util.List;
 
 @Controller
-@PreAuthorize("hasAuthority('DEANERY')")
+@PreAuthorize("hasAuthority('DEPUTY_DEAN')")
 @AllArgsConstructor(onConstructor = @_(@Autowired))
-public class StatementIdController {
-    private DeaneryRepository deaneryRepository;
+public class AttestationStatementsDeputyDeanController {
+    private DeputyDeanRepository deputyDeanRepository;
     private AttestationRepository attestationRepository;
     private GroupRepository groupRepository;
     private CertificationAttestationRepository certificationAttestationRepository;
 
-    @PatchMapping("/getGroupsByAttestationAndByDeanery")
-    public ResponseEntity getGroupsByAttestationAndByDeaneryAndByGroupId(@AuthenticationPrincipal User user,
+    @PatchMapping("/getGroupsByAttestationAndByDeputyDeanAndByGroupId")
+    public ResponseEntity getGroupsByAttestationAndByDeputyDeanAndByGroupId(@AuthenticationPrincipal User user,
                                 @RequestParam Long id, @RequestParam List<Long> groupIds) { // groupId == null - все группы, иначе одна выбранная пользователем группа
-        Deanery curDeanery = deaneryRepository.findByUsername(user.getUsername());
+        DeputyDean deputyDean = deputyDeanRepository.findByUsername(user.getUsername());
         Attestation attestation = attestationRepository.findAttestationById(id);
-        if (curDeanery == null || curDeanery.getFaculty() == null) return new ResponseEntity<>(0, HttpStatus.CONFLICT);
-
-        if (attestation == null || attestation.getFaculty() == null || !curDeanery.getFaculty().getId().equals(attestation.getFaculty().getId()))
-            return new ResponseEntity<>(1, HttpStatus.CONFLICT);
+        if (deputyDean == null) return new ResponseEntity<>(0, HttpStatus.CONFLICT);
 
         if (groupIds.size() == 0)
-            groupIds = groupRepository.findGroupIdsByDeaneryId(curDeanery.getId());
+            groupIds = groupRepository.findGroupIdsByDeputyDeanId(deputyDean.getId());
+
+        /*Group group = groupRepository.findGroupById(groupIds.get(0));
+        if (attestation == null || attestation.getFaculty() == null || group == null || group.getDeanery() == null ||
+                group.getDeanery().getFaculty() == null || !group.getDeanery().getFaculty().getId().equals(attestation.getFaculty().getId()))
+            return new ResponseEntity<>(1, HttpStatus.CONFLICT);*/
 
         List<Long> certificationAttestationIds = certificationAttestationRepository.findAllByAttestationIdAndGroupIds(id, groupIds);
         if(certificationAttestationIds.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);

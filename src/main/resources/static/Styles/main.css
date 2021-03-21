@@ -91,6 +91,9 @@
 .nav-tabs>a {
     color: #17A2B8 !important;
 }
+.pointer {
+    cursor: pointer;
+}
 /* tab */
 
 /* select */
@@ -163,7 +166,13 @@
 }
 
 /* Меню для мобильной версии*/
-@media (max-width: 1140px) {
+@media (min-width: 1230px) {
+    .menu-popup {
+        display: block!important;
+        transition: all 0s ease 0s!important;
+    }
+}
+@media (max-width: 1230px) {
     nav {
         position: relative;
     }
@@ -235,12 +244,6 @@
 
     .menu-trigger {
         margin: 15px auto!important;
-    }
-}
-@media (min-width: 1140px) {
-    .menu-popup {
-        display: block!important;
-        transition: all 0s ease 0s!important;
     }
 }
 /* Меню для мобильной версии*/

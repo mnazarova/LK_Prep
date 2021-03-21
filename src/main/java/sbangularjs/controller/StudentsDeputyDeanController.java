@@ -19,10 +19,10 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
-@PreAuthorize("hasAuthority('DEANERY')")
+@PreAuthorize("hasAuthority('DEPUTY_DEAN')")
 @AllArgsConstructor(onConstructor = @_(@Autowired))
-public class StudentsController {
-    private DeaneryRepository deaneryRepository;
+public class StudentsDeputyDeanController {
+    private DeputyDeanRepository deputyDeanRepository;
     private GroupRepository groupRepository;
     private StudentRepository studentRepository;
 
@@ -33,11 +33,11 @@ public class StudentsController {
     private SessionSheetRepository sessionSheetRepository;
     private SessionSheetContentRepository sessionSheetContentRepository;
 
-    @PatchMapping("/getStudents")
-    public ResponseEntity getStudents(@AuthenticationPrincipal User user, @RequestParam Long groupId) {
-        Deanery curDeanery = deaneryRepository.findByUsername(user.getUsername());
-        if (curDeanery == null || curDeanery.getId() == null) return new ResponseEntity<>(0, HttpStatus.CONFLICT);
-        Group group = groupRepository.findByDeaneryIdAndId(curDeanery.getId(), groupId);
+    @PatchMapping("/getStudentsForDeputyDean")
+    public ResponseEntity getStudentsForDeputyDean(@AuthenticationPrincipal User user, @RequestParam Long groupId) {
+        DeputyDean deputyDean = deputyDeanRepository.findByUsername(user.getUsername());
+        if (deputyDean == null || deputyDean.getId() == null) return new ResponseEntity<>(0, HttpStatus.CONFLICT);
+        Group group = groupRepository.findByDeputyDeanIdAndId(deputyDean.getId(), groupId);
         if (group == null) return new ResponseEntity<>(1, HttpStatus.CONFLICT);
 
         List<Student> students = studentRepository.findByGroupId(groupId);
@@ -46,38 +46,22 @@ public class StudentsController {
     }
 
     @Transactional
-    @PatchMapping("/saveExpelledStudents")
-    public ResponseEntity saveExpelledStudents(@AuthenticationPrincipal User user, @RequestParam Long groupId, @RequestBody List<Student> students) {
+    @PatchMapping("/saveExpelledStudentsForDeputyDean")
+    public ResponseEntity saveExpelledStudentsForDeputyDean(@RequestParam Long groupId, @RequestBody List<Student> students) {
         List<Student> updatingStudents = new ArrayList<>();
         for(Student curStudent: students) {
             Student student = studentRepository.findStudentById(curStudent.getId());
             if (curStudent.getExpelled() != null && curStudent.getExpelled() != student.getExpelled()) {
                 student.setExpelled(curStudent.getExpelled()); // expelled - true, activeContent - false; RESTORE: expelled - false, activeContent - true;
                 updatingStudents.add(student);
-                changeActiveOfContent(deaneryRepository.findByUsername(user.getUsername()), student, !student.getExpelled()); // проверка всех актуальных ведомостей
+                changeActiveOfContent(groupId, student, !student.getExpelled()); // проверка всех актуальных ведомостей
             }
         }
         studentRepository.saveAll(updatingStudents);
         return new ResponseEntity<>(studentRepository.findByGroupId(groupId), HttpStatus.OK);
     }
 
-    private void changeActiveOfContent(Deanery deanery, Student student, Boolean active) {
-
-        // attestationContent
-        List<Attestation> attestations = attestationRepository.findAllWithDeadlineDateTimeAfter(new Date()); // актуальные аттестации
-        for (Attestation attestation: attestations) {
-            if (!attestation.getFaculty().getId().equals(deanery.getFaculty().getId())) continue;
-            for (CertificationAttestation certificationAttestation: attestation.getCertificationsAttestation()) {
-                if (!certificationAttestation.getGroup().getId().equals(student.getGroup().getId())) continue;
-                AttestationContent attestationContent = attestationContentRepository.findAttestationContentByCertificationAttestationIdAndStudentId(
-                        certificationAttestation.getId(), student.getId());
-                if (attestationContent != null) {
-                    attestationContent.setActive(active);
-                    attestationContentRepository.save(attestationContent);
-                }
-
-            }
-        }
+    private void changeActiveOfContent(Long groupId, Student student, Boolean active) {
 
         // sessionContent
         List<SyllabusContent> syllabusContents = syllabusContentRepository.findBySyllabusIdAndSemesterNumber(
@@ -90,6 +74,26 @@ public class StudentsController {
                     sessionSheetContent.setActive(active);
                     sessionSheetContentRepository.save(sessionSheetContent);
                 }
+            }
+        }
+
+        Group group = groupRepository.findGroupById(groupId);
+        if (group == null || group.getDeanery() == null || group.getDeanery().getFaculty() == null)
+            return;
+
+        // attestationContent
+        List<Attestation> attestations = attestationRepository.findAllWithDeadlineDateTimeAfter(new Date()); // актуальные аттестации
+        for (Attestation attestation: attestations) {
+            if (!attestation.getFaculty().getId().equals(group.getDeanery().getFaculty().getId())) continue;
+            for (CertificationAttestation certificationAttestation: attestation.getCertificationsAttestation()) {
+                if (!certificationAttestation.getGroup().getId().equals(student.getGroup().getId())) continue;
+                AttestationContent attestationContent = attestationContentRepository.findAttestationContentByCertificationAttestationIdAndStudentId(
+                        certificationAttestation.getId(), student.getId());
+                if (attestationContent != null) {
+                    attestationContent.setActive(active);
+                    attestationContentRepository.save(attestationContent);
+                }
+
             }
         }
 

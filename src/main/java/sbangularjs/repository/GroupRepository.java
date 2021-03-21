@@ -29,4 +29,9 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     List<Group> findGroupsByDeaneryIdAndDepartmentIdAndActiveIsTrue(Long deaneryId, Long departmentId, Sort sort);
     List<Group> findGroupsByDeputyDeanId(Long deputyDeanId); // check
 
+    /* DEPUTY_DEAN */
+    @Query(value = "select gr.id from Group gr where gr.deputyDean.id = :deputyDeanId")
+    List<Long> findGroupIdsByDeputyDeanId(Long deputyDeanId);
+    Group findByDeputyDeanIdAndId(Long deputyDeanId, Long groupId); // check
+
 }

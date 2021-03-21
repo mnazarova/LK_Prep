@@ -1,4 +1,4 @@
-app.controller("StateController", function($scope, $state, $stateParams, $http) {
+app.controller("AttestationStatementDeaneryController", function($scope, $state, $stateParams, $http) {
 
     // $('input:disabled').css('background-color', 'red');
     // console.log($stateParams)
@@ -41,7 +41,7 @@ app.controller("StateController", function($scope, $state, $stateParams, $http) 
                 else
                     if (res.data === 1) {
                         $scope.toasterError('Выбранная ведомость не доступна для просмотра!');
-                        $state.go('statementId', {id: $scope.attestationId});
+                        $state.go('attestationStatementsDeanery', {id: $scope.attestationId});
                     }
                     else
                         if (res.data === 2)

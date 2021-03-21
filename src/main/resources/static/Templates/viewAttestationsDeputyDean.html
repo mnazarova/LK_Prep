@@ -1,0 +1,58 @@
+<div ng-show="ur == 'DEPUTY_DEAN'">
+
+    <div class="my-3 card col-md-10 mx-auto border-info">
+
+        <div class="font-weight-bold h4 text-center mt-5">Список всех аттестаций</div>
+
+        <table class="my-5 table table-hover table-responsive-sm table-striped" ng-show="allAttestations.length">
+            <thead>
+                <tr>
+                    <th class="text-center border-white"></th>
+                    <th class="text-center border-white">Название аттестации</th>
+                    <th class="text-center border-white">Крайний срок сдачи
+                        <i class="fa fa-info-circle text-info" data-toggle="tooltip" data-placement="top"
+                           title="До этой даты (не включая) у преподавателей имеется возможность вносить изменения в ведомости">
+                        </i>
+                    </th>
+                    <th class="text-center border-white"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="attestation in allAttestations">
+                    <td class="text-center border-info">
+                        <i class="text-info fa fa-2x fa-check-square-o px-3" data-toggle="tooltip" data-placement="top"
+                           title="Действующая аттестация" ng-if="attestation.active">
+                        </i>
+                    </td>
+                    <td class="text-center border-info">{{attestation.name}}</td>
+                    <td class="text-center border-info">{{attestation.deadline | date: 'dd.MM.yyyy'}}</td>
+                    <td class="text-center border-info">
+                        <a class="btn btn-md btn-info text-white"
+                           type="button"
+                           ui-sref="attestationStatementsDeputyDean({id: attestation.id})"
+                           title="Перейти к списку аттестационных ведомостей">
+                            <i class="fa fa-share-square"></i>
+                            Перейти
+                        </a>
+                        <!--<a class="btn btn-md btn-light text-info border-info"
+                           type="button"
+                           ui-sref="attestationStatementsDeanery({id: attestation.id})"
+                           title="Перейти к списку аттестационных ведомостей">
+                            <i class="fa fa-share-square"></i>
+                            Перейти
+                        </a>-->
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="my-3 ng-hide" ng-show="!allAttestations.length">
+            <div class="font-weight-bold text-center m-2 p-2 alert-warning">
+                На данный момент на Вашем факультете нет ни одной аттестации.
+            </div>
+        </div>
+
+
+    </div>
+
+</div>

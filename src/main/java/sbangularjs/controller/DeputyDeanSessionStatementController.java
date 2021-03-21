@@ -17,17 +17,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@PreAuthorize("hasAuthority('DEANERY')")
+@PreAuthorize("hasAuthority('DEPUTY_DEAN')")
 @AllArgsConstructor(onConstructor = @_(@Autowired))
-public class SessionStatementController {
-    private DeaneryRepository deaneryRepository;
+public class DeputyDeanSessionStatementController {
+    private DeputyDeanRepository deputyDeanRepository;
     private GroupRepository groupRepository;
     private SessionSheetRepository sessionSheetRepository;
     private EvaluationRepository evaluationRepository;
     private SessionSheetContentRepository sessionSheetContentRepository;
 
-    @PatchMapping("/getSelectedContentSessionSheet")
-    public ResponseEntity getSelectedContentSessionSheet(@RequestParam Long sessionSheetId) {
+    @PatchMapping("/getSelectedContentSessionSheetForDeputyDean")
+    public ResponseEntity getSelectedContentSessionSheetForDeputyDean(@RequestParam Long sessionSheetId) {
         SessionSheet sessionSheet = sessionSheetRepository.findSessionSheetById(sessionSheetId);
         if (sessionSheet == null || sessionSheet.getSplitAttestationForm() == null || sessionSheet.getSplitAttestationForm().getId() == null)
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -55,18 +55,18 @@ public class SessionStatementController {
         return new ResponseEntity<>(evaluations, HttpStatus.OK);
     }
 
-    @PatchMapping("/getContentSessionSheetForDeanery")
-    public ResponseEntity getContentSessionSheetForDeanery(@AuthenticationPrincipal User user, @RequestParam Long sessionSheetId) {
-        Deanery curDeanery = deaneryRepository.findByUsername(user.getUsername());
-        if (curDeanery == null) return new ResponseEntity<>(0, HttpStatus.CONFLICT);
+    @PatchMapping("/getContentSessionSheetForDeputyDean")
+    public ResponseEntity getContentSessionSheetForDeputyDean(@AuthenticationPrincipal User user, @RequestParam Long sessionSheetId) {
+        DeputyDean deputyDean = deputyDeanRepository.findByUsername(user.getUsername());
+        if (deputyDean == null) return new ResponseEntity<>(0, HttpStatus.CONFLICT);
 
         SessionSheet sessionSheet = sessionSheetRepository.findSessionSheetById(sessionSheetId);
         if (sessionSheet == null) return new ResponseEntity<>(1, HttpStatus.CONFLICT);
 
 //        if (!certificationAttestation.getAttestation().getId().equals(attestationId)) return new ResponseEntity<>(2, HttpStatus.CONFLICT);
 
-        // если представитель деканата перешёл на страницу группы, не принадлежащей ему, нельзя будет посмотреть данные ведомости!
-        Group group = groupRepository.findByDeaneryIdAndId(curDeanery.getId(), sessionSheet.getGroup().getId());
+        // если зам. декана перешёл на страницу группы, не принадлежащей ему, нельзя будет посмотреть данные ведомости!
+        Group group = groupRepository.findByDeputyDeanIdAndId(deputyDean.getId(), sessionSheet.getGroup().getId());
         if (group == null) return new ResponseEntity<>(1, HttpStatus.CONFLICT);
 
         List<SessionSheetContent> sessionSheetContents = sessionSheetContentRepository.findAllBySessionSheetIdAndActiveIsTrue(sessionSheetId, Sort.by(Sort.Direction.ASC, "student.surname"));
