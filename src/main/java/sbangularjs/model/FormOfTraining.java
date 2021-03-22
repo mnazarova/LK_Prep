@@ -18,7 +18,6 @@ public class FormOfTraining { // Форма обучения
 
     private String name;
 
-    @JsonIgnore // need
     @OneToMany(mappedBy = "form_of_training", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Syllabus> syllabuses;
 

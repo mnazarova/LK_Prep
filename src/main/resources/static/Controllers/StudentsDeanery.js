@@ -1,4 +1,4 @@
-app.controller("StudentsController", function($scope, $http, $stateParams, $state) {
+app.controller("StudentsDeaneryController", function($scope, $http, $stateParams, $state) {
 
     getStudents();
     function getStudents() {

@@ -1,4 +1,4 @@
-app.controller("LinkAttestationIdController", function($scope, $http, $stateParams) {
+app.controller("LinkAttestationIdController", function($scope, $http, $state, $stateParams) {
     $scope.showStudents = [];
     $scope.changes = [];
     $scope.syllabusContentList = {};
@@ -46,8 +46,10 @@ app.controller("LinkAttestationIdController", function($scope, $http, $statePara
             }
         }).then(
             function(res) {
-                if (!res.data)
+                if (!res.data) {
                     $scope.toasterError('В группе отсутствуют студенты. Обратитесь к администратору!');
+                    $state.go('linkAttestation');
+                }
 
                 $scope.syllabusContentList = res.data;
                 initTable();

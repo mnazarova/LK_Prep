@@ -1,0 +1,85 @@
+<div ng-show="ur == 'DEANERY'">
+
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a ui-sref="viewAttestationsDeanery">Список аттестаций</a></li>
+        <li class="breadcrumb-item"><a ui-sref="attestationStatementsDeanery({id: attestationId})">Аттестационные ведомости</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Просмотр аттестационной ведомости</li>
+    </ol>
+
+    <div class="my-3 pt-3 card col-md-10 mx-auto border-info">
+
+        <div class="font-weight-bold h3 text-center" ng-show="attestation || disciplineName">
+            <pre ng-show="attestation">Аттестация:<div class="badge bg-aqua-gradient">"{{attestation.name}}" (до {{attestation.deadline | date: 'dd.MM.yyyy'}})</div></pre>
+            <pre ng-show="disciplineName">Дисциплина:<div class="badge bg-aqua-gradient">{{disciplineName}}</div></pre>
+            <hr>
+        </div>
+
+        <div class="font-weight-bold h4 text-center">
+            Список студентов
+            <span ng-show="groupNumber">
+                группы <div class="badge bg-aqua-gradient">"{{groupNumber}}"</div>
+            </span>
+        </div>
+
+        <div ng-if="contentAttestation.length">
+            <table class="table table-hover table-striped table-sm table-responsive-xl my-3">
+                <thead>
+                    <tr>
+                        <th class="text-center">Фамилия</th>
+                        <th class="text-center">Имя</th>
+                        <th class="text-center">Отчество</th>
+                        <th class="text-center">Номер зачётной книжки</th>
+                        <th class="text-center" style="min-width: 7em">Работает</th>
+                        <th class="text-center" style="min-width: 7em">Аттестован</th>
+                        <th class="text-center">Назначенный преподаватель</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="ca in contentAttestation | orderBy:'student.surname' track by $index">
+                        <td class="text-center">{{ca.student.surname}}</td>
+                        <td class="text-center">{{ca.student.name}}</td>
+                        <td class="text-center">{{ca.student.patronymic}}</td>
+                        <td class="text-center">{{ca.student.numberRecordBook}}</td>
+                        <td class="text-center px-3">
+                            <i class="fa fa-info-circle text-info col-md-1" ng-show="ca.dateWorks" data-toggle="tooltip" data-placement="top"
+                               title="Последние изменения внесены {{ca.dateWorks | date: 'dd.MM.yyyy в HH:mm'}} ({{ca.setWorksByTeacher.surname +
+                               ' ' + ca.setWorksByTeacher.name + ' ' + ca.setWorksByTeacher.patronymic}})">
+                            </i>
+                            <i class="fa fa-info-circle text-warning col-md-1" ng-show="!ca.dateWorks"></i>
+<!--                            <span class="border border-info rounded px-3 py-1" ng-show="ca.works == true">+</span>-->
+<!--                            <span class="border border-info rounded px-3 py-1" ng-show="ca.works == false">-</span>-->
+<!--                            <span class="border border-warning rounded px-3 py-1" ng-show="ca.works == null">&nbsp;&nbsp;</span>-->
+                            <select class="custom-select no-image col-md-6"
+                                    ng-class="{'border-info': ca.dateWorks, 'border-warning': !ca.dateWorks}"
+                                    disabled="true"
+                                    ng-model="ca.works"
+                                    ng-options="item.key as item.value for item in selected">
+                            </select>
+                        </td>
+                        <td class="text-center px-3">
+                            <i class="fa fa-info-circle text-info col-md-1" ng-show="ca.dateAttest" data-toggle="tooltip" data-placement="top"
+                               title="Последние изменения внесены {{ca.dateAttest | date: 'dd.MM.yyyy в HH:mm'}} ({{ca.setAttestByTeacher.surname +
+                               ' ' + ca.setAttestByTeacher.name + ' ' + ca.setAttestByTeacher.patronymic}})">
+                            </i>
+                            <i class="fa fa-info-circle text-warning col-md-1" ng-show="!ca.dateAttest"></i>
+                            <select class="custom-select no-image col-md-6"
+                                    ng-class="{'border-info': ca.dateAttest, 'border-warning': !ca.dateAttest}"
+                                    disabled="true"
+                                    ng-model="ca.attest"
+                                    ng-options="item.key as item.value for item in selected">
+                            </select>
+                        </td>
+                        <td class="text-center pt-2">
+                            {{ca.teacher ? ca.teacher.surname + ' ' + ca.teacher.name + ' ' + ca.teacher.patronymic : '-'}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!contentAttestation.length">
+            Список студентов пуст
+        </div>
+    </div>
+
+</div>

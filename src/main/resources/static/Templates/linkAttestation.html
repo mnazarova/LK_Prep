@@ -17,7 +17,7 @@
                     <ui-select-match placeholder="Выберите аттестацию...">
                         {{$select.selected.name}} (Факультет {{$select.selected.faculty.shortName}})
                     </ui-select-match>
-                    <ui-select-choices repeat="attestation in attestations | propsFilter: {name: $select.search} | orderBy:'name'">
+                    <ui-select-choices repeat="attestation in attestations | propsFilter: {name: $select.search}">
                         <div ng-bind-html="attestation.name | highlight: $select.search"></div>
                         <small>
                             Факультет: {{attestation.faculty.shortName}} ({{attestation.faculty.fullName}})

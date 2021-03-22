@@ -79,10 +79,7 @@ public class LinkAttestationIdController {
                 group.getSyllabus().getId(), curSecretary.getDepartment().getId(), group.getCurSemester());
         if (syllabusContents.isEmpty()) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
 
-        List<Student> students = studentRepository.findByGroupId(groupId);
-        for(int i=students.size()-1;i>=0;i--)
-            if(students.get(i).getExpelled() != null && students.get(i).getExpelled()) // Expelled = TRUE, отчислены только тогда, когда true
-                students.remove(students.get(i));
+        List<Student> students = studentRepository.findNotExpelledStudentsByGroupId(groupId);
         if (students.isEmpty()) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT); // все студенты отчислены, переведены или не добавлены в группу
 
         for (SyllabusContent sc: syllabusContents)
@@ -113,15 +110,6 @@ public class LinkAttestationIdController {
         return connectTeacherStudentDTOList;
     }
 
-    private List<Student> getNotExpelledStudents(Long groupId) { // получить не отчисленных к данному моменту студентов этой группы
-        List<Student> students = studentRepository.findByGroupId(groupId);
-        for(int i=students.size()-1;i>=0;i--) {
-            if(students.get(i).getExpelled() != null && students.get(i).getExpelled()) // Expelled = TRUE, отчислены только тогда, когда true
-                students.remove(students.get(i));
-        }
-        return students;
-    }
-
     @Transactional
     @PatchMapping("/saveAttestationTeachers")
     public ResponseEntity saveAttestationTeachers(@RequestBody SyllabusContent syllabusContent, @RequestParam Long groupId, @RequestParam Long attestationId) {
@@ -149,7 +137,7 @@ public class LinkAttestationIdController {
         certificationAttestationRepository.save(certificationAttestation);
 
         SyllabusContent sc = syllabusContentRepository.findSyllabusContentById(syllabusContent.getId());
-        List<Student> students = getNotExpelledStudents(groupId);
+        List<Student> students = studentRepository.findNotExpelledStudentsByGroupId(groupId);
         if (students.isEmpty()) return new ResponseEntity<>(null, HttpStatus.OK); // все студенты отчислены или переведены
         sc.setConnectTeacherStudentDTOList(setConnectTeacherStudentDTO(students, groupId, sc, attestationId));
 

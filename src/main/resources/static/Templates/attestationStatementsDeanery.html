@@ -1,0 +1,61 @@
+<div ng-show="ur == 'DEANERY'">
+
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a ui-sref="viewAttestationsDeanery">Список аттестаций</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Аттестационные ведомости</li>
+    </ol>
+
+    <div class="py-4 px-0 my-4 card col-md-10 mx-auto border-info">
+        <form class="simple-form" name="statementForm">
+
+            <div class="font-weight-bold h4 text-center my-4">Аттестационные ведомости</div>
+            <div class="col-sm-4 col-lg-3 mx-auto mb-5">
+                <ui-select ng-model="group.selected"
+                           ng-change="selectedOnGroupList()"
+                           ng-disabled="!groupList.length"
+                           name="group"
+                           class="col-md-12 p-0"
+                           theme="select2" title="Поиск группы"
+                           required>
+                    <ui-select-match placeholder="Поиск группы...">
+                        {{$select.selected.groupNumber}}
+                    </ui-select-match>
+                    <ui-select-choices repeat="gr in groupList | propsFilter: {groupNumber: $select.search} | orderBy:'groupNumber'">
+                        <div ng-bind-html="gr.groupNumber | highlight: $select.search"></div>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+
+            <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!statements.length">
+                Ведомости не найдены
+            </div>
+
+            <table class="table table-hover table-striped table-sm table-responsive-sm" ng-if="statements.length">
+                <thead>
+                <tr>
+                    <th class="text-center w-25">Номер группы</th>
+                    <th class="text-center">Дисциплина</th>
+                    <th class="text-center w-25"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="statement in statements | orderBy:'disciplineName' track by $index">
+                    <td class="text-center border-info">{{statement.groupNumber}}</td>
+                    <td class="text-center border-info">{{statement.disciplineName}}</td>
+                    <td class="text-center border-info">
+                        <button class="btn btn-md btn-info text-white"
+                                type="button"
+                                ui-sref="attestationStatementDeanery({attestationId: statement.attestationId, certificationAttestationId: statement.certificationAttestationId})"
+                                title="Просмотр ведомости">
+                            <i class="fa fa-eye"></i>
+                            Просмотр ведомости
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </form>
+    </div>
+
+</div>

@@ -20,7 +20,7 @@ import java.util.List;
 @Controller
 @PreAuthorize("hasAuthority('DEANERY')")
 @AllArgsConstructor(onConstructor = @_(@Autowired))
-public class StateController {
+public class AttestationStatementDeaneryController {
     private DeaneryRepository deaneryRepository;
     private GroupRepository groupRepository;
     private CertificationAttestationRepository certificationAttestationRepository;

@@ -20,7 +20,7 @@ public class Direction { // Направление
 
     private String name;
 
-//    @JsonIgnore
+    @JsonIgnore // need, but it was commented, why?
     @OneToMany(mappedBy = "direction", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Syllabus> syllabuses;
 

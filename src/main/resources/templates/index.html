@@ -67,13 +67,8 @@
                         <!--<li class="nav-item">-->
                             <!--<a class="nav-link" ui-sref-active="active" ui-sref="home">Главное меню</a>-->
                         <!--</li>-->
+
                         <!-- Для деканата -->
-                        <!--<li class="nav-item ng-hide" ng-show="ur == 'DEANERY'">
-                            <a class="nav-link" ui-sref-active="active" ui-sref="arrangeCertification">
-                                <i class="fa fa-exclamation-circle"></i>
-                                Добавить аттестацию
-                            </a>
-                        </li>-->
                         <!--<li class="nav-item ng-hide" ng-show="multipleRoles">
                             <button class="nav-link ng-hide" ng-click="changeRole()" ng-show="multipleRoles">
                                 Интерфейс "{{nameNextRole}}"
@@ -86,34 +81,45 @@
                             </a>
                         </li>
                         <li class="nav-item ng-hide" ng-show="ur == 'DEANERY'">
-                            <a class="nav-link" ui-sref-active="active" ui-sref="statements">
+                            <a class="nav-link" ui-sref-active="active" ui-sref="viewAttestationsDeanery">
                                 <i class="fa fa-list-alt"></i>
-                                Ведомости
+                                Аттестация
                             </a>
                         </li>
                         <li class="nav-item ng-hide" ng-show="ur == 'DEANERY'">
-                            <a class="nav-link" ui-sref-active="active" ui-sref="groups">
+                            <a class="nav-link" ui-sref-active="active" ui-sref="sessionStatementsDeanery">
+                                <i class="fa fa-calendar-check-o"></i>
+                                Сессия
+                            </a>
+                        </li>
+                        <li class="nav-item ng-hide" ng-show="ur == 'DEANERY'">
+                            <a class="nav-link" ui-sref-active="active" ui-sref="groupsDeanery">
+                                <i class="fa fa-users"></i>
+                                Группы
+                            </a>
+                        </li>
+
+                        <!-- Для зам. декана -->
+                        <li class="nav-item ng-hide" ng-show="ur == 'DEPUTY_DEAN'">
+                            <a class="nav-link" ui-sref-active="active" ui-sref="viewAttestationsDeputyDean">
+                                <i class="fa fa-list-alt"></i>
+                                Аттестация
+                            </a>
+                        </li>
+                        <li class="nav-item ng-hide" ng-show="ur == 'DEPUTY_DEAN'">
+                            <a class="nav-link" ui-sref-active="active" ui-sref="deputyDeanSessionStatements">
+                                <i class="fa fa-calendar-check-o"></i>
+                                Сессия
+                            </a>
+                        </li>
+                        <li class="nav-item ng-hide" ng-show="ur == 'DEPUTY_DEAN'">
+                            <a class="nav-link" ui-sref-active="active" ui-sref="groupsDeputyDean">
                                 <i class="fa fa-users"></i>
                                 Группы
                             </a>
                         </li>
 
                         <!-- Для секретаря -->
-                        <!--<li class="nav-item ng-hide" ng-show="ur == 'SECRETARY'">
-                            <a class="nav-link" ui-sref-active="active" ui-sref="addSubgroup">
-                                <i class="fa fa-plus-square"></i>
-                                Добавить подгруппу
-                            </a>
-                        </li>
-
-                        <li class="nav-item ng-hide" ng-show="ur == 'SECRETARY'">
-                            <a class="nav-link" ui-sref-active="active" ui-sref="link">
-                                <i class="fa fa-link"></i>
-                                Настроить списки &lt;!&ndash;Аттестационные, Сессионные&ndash;&gt;
-                                &lt;!&ndash;Связать (под)группу и преподавателя&ndash;&gt;
-                            </a>
-                        </li>-->
-
                         <li class="nav-item ng-hide" ng-show="ur == 'SECRETARY'">
                             <a class="nav-link" ui-sref-active="active" ui-sref="linkAttestation">
                                 <i class="fa fa-list-alt"></i>
@@ -188,8 +194,13 @@
 
                 <!--<li class="list-inline-item ng-hide" ng-show="ur == 'DEANERY'"><a ui-sref-active="active" ui-sref="arrangeCertification">Добавить аттестацию</a></li>-->
                 <li class="list-inline-item ng-hide" ng-show="ur == 'DEANERY'"><a ui-sref-active="active" ui-sref="assignment">Назначение</a></li>
-                <li class="list-inline-item ng-hide" ng-show="ur == 'DEANERY'"><a ui-sref-active="active" ui-sref="statements">Ведомости</a></li>
-                <li class="list-inline-item ng-hide" ng-show="ur == 'DEANERY'"><a ui-sref-active="active" ui-sref="groups">Группы</a></li>
+                <li class="list-inline-item ng-hide" ng-show="ur == 'DEANERY'"><a ui-sref-active="active" ui-sref="viewAttestationsDeanery">Аттестация</a></li>
+                <li class="list-inline-item ng-hide" ng-show="ur == 'DEANERY'"><a ui-sref-active="active" ui-sref="sessionStatementsDeanery">Сессия</a></li>
+                <li class="list-inline-item ng-hide" ng-show="ur == 'DEANERY'"><a ui-sref-active="active" ui-sref="groupsDeanery">Группы</a></li>
+
+                <li class="list-inline-item ng-hide" ng-show="ur == 'DEPUTY_DEAN'"><a ui-sref-active="active" ui-sref="viewAttestationsDeputyDean">Аттестация</a></li>
+                <li class="list-inline-item ng-hide" ng-show="ur == 'DEPUTY_DEAN'"><a ui-sref-active="active" ui-sref="deputyDeanSessionStatements">Сессия</a></li>
+                <li class="list-inline-item ng-hide" ng-show="ur == 'DEPUTY_DEAN'"><a ui-sref-active="active" ui-sref="groupsDeputyDean">Группы</a></li>
 
 <!--                <li class="list-inline-item ng-hide" ng-show="ur == 'SECRETARY'"><a ui-sref-active="active" ui-sref="addSubgroup">Добавить подгруппу</a></li>-->
 <!--                <li class="list-inline-item ng-hide" ng-show="ur == 'SECRETARY'"><a ui-sref-active="active" ui-sref="link">Настроить списки &lt;!&ndash;Связать (под)группу и преподавателя&ndash;&gt;</a></li>-->
@@ -236,12 +247,21 @@
 
     <script src="Controllers/Assignment.js"></script>
     <script src="Controllers/ArrangeCertification.js"></script>
-    <script src="Controllers/Statements.js"></script>
-    <script src="Controllers/StatementId.js"></script>
-    <script src="Controllers/State.js"></script>
-    <script src="Controllers/SessionStatement.js"></script>
-    <script src="Controllers/Groups.js"></script>
-    <script src="Controllers/Students.js"></script>
+    <script src="Controllers/ViewAttestationsDeanery.js"></script>
+    <script src="Controllers/AttestationStatementsDeanery.js"></script>
+    <script src="Controllers/AttestationStatementDeanery.js"></script>
+    <script src="Controllers/SessionStatementsDeanery.js"></script>
+    <script src="Controllers/SessionStatementDeanery.js"></script>
+    <script src="Controllers/GroupsDeanery.js"></script>
+    <script src="Controllers/StudentsDeanery.js"></script>
+
+    <script src="Controllers/ViewAttestationsDeputyDean.js"></script>
+    <script src="Controllers/AttestationStatementsDeputyDean.js"></script>
+    <script src="Controllers/AttestationStatementDeputyDean.js"></script>
+    <script src="Controllers/DeputyDeanSessionStatements.js"></script>
+    <script src="Controllers/DeputyDeanSessionStatement.js"></script>
+    <script src="Controllers/GroupsDeputyDean.js"></script>
+    <script src="Controllers/StudentsDeputyDean.js"></script>
 
 <!--    <script src="Controllers/AddSubgroup.js"></script>-->
 <!--    <script src="Controllers/Link.js"></script>-->

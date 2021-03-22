@@ -18,7 +18,6 @@ public class Qualification { // Квалификация
 
     private String name;
 
-    @JsonIgnore // need
     @OneToMany(mappedBy = "qualification", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Syllabus> syllabuses;
 

@@ -21,6 +21,7 @@ import java.util.List;
 public class LinkSessionController {
 
     private GroupRepository groupRepository;
+    private StudentRepository studentRepository;
     private SecretaryRepository secretaryRepository;
     private SyllabusContentRepository syllabusContentRepository;
     private SessionSheetRepository sessionSheetRepository;
@@ -49,11 +50,7 @@ public class LinkSessionController {
                 gr.setBlank(false);
                 continue;
             }
-            List<Student> students = gr.getStudents();
-            for(int i=students.size()-1;i>=0;i--) {
-                if(students.get(i).getExpelled() != null && students.get(i).getExpelled()) // Expelled = TRUE, отчислены только тогда, когда true
-                    students.remove(students.get(i));
-            }
+            List<Student> students = studentRepository.findNotExpelledStudentsByGroupId(gr.getId());
             if (students.isEmpty()) {
                 gr.setBlank(null);
                 continue;

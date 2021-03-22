@@ -29,7 +29,7 @@ app.controller("ArrangeCertificationController", function($scope, $http, $state)
         }).then(
             function(res) {
                 $scope.toasterSuccess('', 'Аттестация успешно создана');
-                $state.go('statements');
+                $state.go('viewAttestationsDeanery');
             },
             function(res) {
                 $scope.toasterError('Аттестация не была создана');

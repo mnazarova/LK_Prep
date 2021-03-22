@@ -1,0 +1,80 @@
+<div ng-show="ur == 'DEPUTY_DEAN'">
+
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a ui-sref="groupsDeputyDean">Список групп</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Список студентов</li>
+    </ol>
+
+    <div class="my-3 pt-5 card col-md-10 mx-auto border-info">
+        <div class="font-weight-bold h4 text-center">
+            Список студентов
+            <span ng-show="groupNumber">
+                    группы <div class="badge bg-aqua-gradient">"{{groupNumber}}"</div>
+                </span>
+        </div>
+
+        <div ng-if="students.length">
+            <div class="text-right mb-4">
+                <button class="btn btn-md btn-info text-white"
+                        ng-class="{'btn-warning': changes, 'btn-info': !changes}"
+                        type="button"
+                        title="Сохранить изменения"
+                        ng-click="saveExpelledStudentsForDeputyDean()">
+                    <i class="fa fa-floppy-o"></i>
+                    Сохранить
+                </button>
+            </div>
+            <table class="table table-hover my-3 table-responsive-md">
+                <thead>
+                <tr>
+                    <th class="text-center">Фамилия</th>
+                    <th class="text-center">Имя</th>
+                    <th class="text-center">Отчество</th>
+                    <th class="text-center">Номер зачётной книжки</th>
+                    <th class="text-center">Отчислен из ВУЗа / <br>Академ. отпуск</th>
+<!--                    <th>Перевод</th>-->
+                </tr>
+                </thead>
+                <tbody class="bg-aqua-gradient">
+                <tr ng-repeat="student in students | orderBy:'surname' track by $index">
+                    <td class="text-center">{{student.surname}}</td>
+                    <td class="text-center">{{student.name}}</td>
+                    <td class="text-center">{{student.patronymic}}</td>
+                    <td class="text-center">{{student.numberRecordBook}}</td>
+                    <td class="text-center">
+                        <input type="checkbox"
+                               ng-change="changeExpelled()"
+                               ng-model="student.expelled">
+                    </td>
+                    <!--<td class="text-center">
+                        <button class="btn btn-md text-white"
+                                ng-class="{'btn-warning': changes, 'btn-info': !changes}"
+                                type="button"
+                                title="Перевести студента"
+                                ng-click="saveExpelledStudentsForDeputyDean()">
+                            <i class="fa fa-floppy-o"></i>
+                            Перевести
+                        </button>
+                    </td>-->
+                </tr>
+                </tbody>
+            </table>
+            <hr>
+            <div class="text-right my-4">
+                <button class="btn btn-md text-white"
+                        ng-class="{'btn-warning': changes, 'btn-info': !changes}"
+                        type="button"
+                        title="Сохранить изменения"
+                        ng-click="saveExpelledStudentsForDeputyDean()">
+                    <i class="fa fa-floppy-o"></i>
+                    Сохранить
+                </button>
+            </div>
+        </div>
+
+        <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!students.length">
+            Список студентов пуст
+        </div>
+    </div>
+
+</div>

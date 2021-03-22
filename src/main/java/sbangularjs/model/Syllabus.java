@@ -26,7 +26,7 @@ public class Syllabus { // Учебный план
     @JoinColumn(name="department_id")
     private Department department;
 
-    @JsonIgnore
+    //@JsonIgnore // need
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="direction_id")
     private Direction direction;
@@ -36,15 +36,18 @@ public class Syllabus { // Учебный план
     @JoinColumn(name="profile_id")
     private Profile profile;
 
-    @ManyToOne(fetch = FetchType.EAGER) // need
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="qualification_id")
     private Qualification qualification;
 
-    @ManyToOne(fetch = FetchType.EAGER)  // need
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="form_of_training_id")
     private FormOfTraining form_of_training;
 
 //    @JsonIgnore // need
+    @OrderBy("id")
     @OneToMany(mappedBy = "syllabus", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Group> groups;
 

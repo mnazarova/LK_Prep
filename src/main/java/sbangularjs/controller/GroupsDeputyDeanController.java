@@ -11,28 +11,25 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import sbangularjs.model.*;
-import sbangularjs.repository.DeaneryRepository;
-import sbangularjs.repository.GroupRepository;
-import sbangularjs.repository.SyllabusContentRepository;
-import sbangularjs.repository.SyllabusRepository;
+import sbangularjs.repository.*;
 
 import javax.transaction.Transactional;
 import java.util.*;
 
 @Controller
-@PreAuthorize("hasAuthority('DEANERY')")
+@PreAuthorize("hasAuthority('DEPUTY_DEAN')")
 @AllArgsConstructor(onConstructor = @_(@Autowired))
-public class GroupsController {
-    private DeaneryRepository deaneryRepository;
+public class GroupsDeputyDeanController {
+    private DeputyDeanRepository deputyDeanRepository;
     private GroupRepository groupRepository;
     private SyllabusRepository syllabusRepository;
     private SyllabusContentRepository syllabusContentRepository;
 
-    @PatchMapping("/getSyllabusesByDeaneryId")
-    public ResponseEntity getSyllabusesByDeaneryId(@AuthenticationPrincipal User user) {
-        Deanery curDeanery = deaneryRepository.findByUsername(user.getUsername());
-        if (curDeanery == null || curDeanery.getId() == null) return new ResponseEntity(HttpStatus.CONFLICT);
-        Set<Syllabus> syllabuses = syllabusRepository.findSyllabusesByDeaneryId(curDeanery.getId()/*, Sort.by("group.curSemester")*/);
+    @PatchMapping("/getSyllabusesByDeputyDeanId")
+    public ResponseEntity getSyllabusesByDeputyDeanId(@AuthenticationPrincipal User user) {
+        DeputyDean deputyDean = deputyDeanRepository.findByUsername(user.getUsername());
+        if (deputyDean == null || deputyDean.getId() == null) return new ResponseEntity(HttpStatus.CONFLICT);
+        Set<Syllabus> syllabuses = syllabusRepository.findSyllabusesByDeputyDeanId(deputyDean.getId());
         if (syllabuses.isEmpty()) return new ResponseEntity(HttpStatus.NO_CONTENT);
         for (Syllabus syllabus: syllabuses) {
             if (syllabus.getGroups().size() != 0) { // set Deadline
@@ -41,30 +38,23 @@ public class GroupsController {
                 if (sc.size() == 0) continue;
                 syllabus.setDeadline(sc.get(0).getDeadline());
             }
-            /* ???
-            List<Group> groups = new ArrayList<>();
-            for (Group group : syllabus.getGroups()) {
-                if (groupRepository.findByDeaneryIdAndId(curDeanery.getId(), group.getId()) != null)
-                    groups.add(group);
-            }
-            syllabus.setGroups(groups);*/
 
         }
         return new ResponseEntity<>(syllabuses, HttpStatus.OK);
     }
 
-    @PatchMapping("/getSemesterNumberSetByGroupId")
-    public ResponseEntity getSemesterNumberSetByGroupId(@RequestParam Long syllabusId) {
+    @PatchMapping("/getSemesterNumberSetBySyllabusIdForDeputyDean")
+    public ResponseEntity getSemesterNumberSetBySyllabusIdForDeputyDean(@RequestParam Long syllabusId) {
 
         Set<Integer> semesterNumberSet = syllabusContentRepository.findSemesterNumberSetBySyllabusId(syllabusId);
-        /*if (semesterNumberSet.contains(0)) */semesterNumberSet.remove(0);
+        semesterNumberSet.remove(0);
 
         return new ResponseEntity<>(semesterNumberSet, HttpStatus.OK);
     }
 
-    @PatchMapping("/getEstimatedCurSemesterNumber")
-    public ResponseEntity getEstimatedCurSemesterNumber(@RequestParam Long syllabusId) {
-        Syllabus syllabus = syllabusRepository.findSyllabusByIdOrderByGroupsIdAsc(syllabusId);
+    @PatchMapping("/getEstimatedCurSemesterNumberForDeputyDean")
+    public ResponseEntity getEstimatedCurSemesterNumberForDeputyDean(@RequestParam Long syllabusId) {
+        Syllabus syllabus = syllabusRepository.findSyllabusById(syllabusId);
         if (syllabus == null) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
 
         int startYear = syllabus.getYear();
@@ -82,12 +72,12 @@ public class GroupsController {
             add = 2; // 1 или 2, в зависимости от времени года
 
         // с какого семестра начинается счёт
-        // бакалавр и специалист с нуля, магистр (Инженер) с 9, аспирант с 13?
+        // бакалавр и специалист с нуля, магистр (Инженер) с 8, аспирант с 12? нет, с 1 по 6
         int start = 0;
         if (syllabus.getQualification().getId() == 2) // Магистратура
-            start = 9;
-        else if (syllabus.getQualification().getId() == 4) // Аспирантура
-            start = 13;
+            start = 8;
+        //else if (syllabus.getQualification().getId() == 4) // Аспирантура
+          //  start = 12; // 1-6
 
         int estimatedCurSemesterNumber = start + diff * 2 + add;
 
@@ -112,8 +102,8 @@ public class GroupsController {
 
 
     @Transactional
-    @PatchMapping("/saveSyllabus")
-    public ResponseEntity saveSyllabus(@AuthenticationPrincipal User user, @RequestBody Syllabus updatingSyllabus) {
+    @PatchMapping("/saveSyllabusForDeputyDean")
+    public ResponseEntity saveSyllabusForDeputyDean(@AuthenticationPrincipal User user, @RequestBody Syllabus updatingSyllabus) {
         if (updatingSyllabus == null || updatingSyllabus.getId() == null) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
 
         List<Group> savingGroupList = new ArrayList<>();
@@ -136,7 +126,7 @@ public class GroupsController {
             }
         }
 
-        Syllabus syllabus = syllabusRepository.findSyllabusByIdOrderByGroupsIdAsc(updatingSyllabus.getId());
+        Syllabus syllabus = syllabusRepository.findSyllabusById(updatingSyllabus.getId());
         if (syllabus == null) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         if (syllabus.getGroups().size() != 0) {
             List<SyllabusContent> sc = syllabusContentRepository
@@ -144,12 +134,6 @@ public class GroupsController {
             if (sc.size() != 0)
                 syllabus.setDeadline(sc.get(0).getDeadline());
         }
-        /*List<Group> groups = new ArrayList<>();
-        for (Group group : syllabus.getGroups()) {
-            if (groupRepository.findByDeaneryIdAndId(deaneryRepository.findByUsername(user.getUsername()).getId(), group.getId()) != null)
-                groups.add(group);
-        }
-        syllabus.setGroups(groups);*/
 
         return new ResponseEntity<>(syllabus, HttpStatus.OK);
     }

@@ -67,13 +67,8 @@ public class LinkSessionIdController {
         if (syllabusContents.isEmpty())
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
 
-        List<Student> students = studentRepository.findByGroupId(groupId);
-        if (students.size() == 0) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT); // нет студентов в группе
-        for(int i=students.size()-1;i>=0;i--) {
-            if(students.get(i).getExpelled() != null && students.get(i).getExpelled()) // Expelled = TRUE, отчислены только тогда, когда true
-                students.remove(students.get(i));
-        }
-        if (students.isEmpty()) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT); // все студенты отчислены или переведены
+        List<Student> students = studentRepository.findNotExpelledStudentsByGroupId(groupId);
+        if (students.isEmpty()) return new ResponseEntity<>(null, HttpStatus.NO_CONTENT); // нет студентов в группе (или все отчислены, переведены)
 
         for (SyllabusContent sc: syllabusContents) {
             sc.setConnectTeacherStudentDTOList(setConnectTeacherStudentDTO(students, groupId, sc));
@@ -124,17 +119,6 @@ public class LinkSessionIdController {
         return null;
     }
 
-    private List<Student> getNotExpelledStudents(Long groupId) { // получить не отчисленных к данному моменту студентов этой группы
-        List<Student> students = studentRepository.findByGroupId(groupId);
-//        if (students.isEmpty()) return null; // нет студентов в группе
-        for(int i=students.size()-1;i>=0;i--) {
-            if(students.get(i).getExpelled() != null && students.get(i).getExpelled()) // Expelled = TRUE, отчислены только тогда, когда true
-                students.remove(students.get(i));
-        }
-//        if (students.isEmpty()) return null; // все студенты отчислены или переведены
-        return students;
-    }
-
     @Transactional
     @PatchMapping("/saveTeachersByDiscipline")
     public ResponseEntity saveTeachersByDiscipline(@RequestBody SyllabusContent syllabusContent, @RequestParam Long groupId) {
@@ -174,7 +158,7 @@ public class LinkSessionIdController {
             saveOrUpdateKrOrKp(5L, syllabusContent.getId(), groupId, syllabusContent.getConnectTeacherStudentDTOList());
 
         SyllabusContent sc = syllabusContentRepository.findSyllabusContentById(syllabusContent.getId());
-        List<Student> students = getNotExpelledStudents(groupId);
+        List<Student> students = studentRepository.findNotExpelledStudentsByGroupId(groupId); // не отчисленные к данному моменту студенты группы
         if (students.isEmpty()) return new ResponseEntity<>(null, HttpStatus.OK); // все студенты отчислены или переведены
         sc.setConnectTeacherStudentDTOList(setConnectTeacherStudentDTO(students, groupId, sc));
 

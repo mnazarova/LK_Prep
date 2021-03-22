@@ -1,4 +1,4 @@
-<div ng-show="ur == 'DEANERY'">
+<div ng-show="ur == 'DEPUTY_DEAN'">
 
     <div class="my-3 card col-md-10 mx-auto border-info">
 
@@ -32,11 +32,13 @@
                     </thead>
                     <tbody data-ng-repeat="syllabus in syllabuses track by $index" ng-init="$parentIndex=$index"  data-ng-switch on="true">
                     <!-- Учебные планы -->
-                    <tr class="bg-white bg-aqua-gradient">
+                    <tr class="bg-light" ng-class="{'bg-aqua-gradient': syllabus.globalActive}">
                         <td class="text-center border-white">
-                            {{syllabus.qualification.name}}.
+                            Кафедра: <span class="font-weight-bold">{{syllabus.department.shortName}}</span>
                             <br>
-                            {{syllabus.form_of_training.name}} форма обучения.
+                            {{syllabus.direction.code}}
+                            <br>
+                            {{syllabus.direction.name}}
                             <br>
                             Год набора: <span class="font-weight-bold">{{syllabus.year}}</span>
                         </td>
@@ -76,6 +78,7 @@
                                    name="deadline_{{$index}}"
                                    required>
 <!--                            <div class="invalid-tooltip py-0">-->
+                            <!-- groupsForm['deadline_' + $index].$dirty &&  -->
                             <div ng-show="groupsForm['deadline_' + $index].$error.min" class="bg-danger text-white p-0">
                                 мин. значение: {{minDate | date:'dd-MM-yyyy'}}
                             </div>
@@ -88,7 +91,7 @@
                                     ng-class="{'btn-warning': changes[$index],
                                               'btn-info': !changes[$index]}"
                                     type="button"
-                                    data-ng-click="saveSyllabus($index)"
+                                    data-ng-click="saveSyllabusForDeputyDean($index)"
                                     title="Сохранить изменения">
                                 <i class="fa fa-save"></i>
                                 <!--Сохранить изменения-->
@@ -125,7 +128,7 @@
                         <td class="text-center border-info">
                             <a class="btn btn-md btn-light text-info border-info"
                                type="button"
-                               ui-sref="students({groupId: group.id})"
+                               ui-sref="studentsDeputyDean({groupId: group.id})"
                                title="Перейти к списку студентов группы">
                                 <i class="fa fa-share-square"></i>
 <!--                                Список студентов-->
