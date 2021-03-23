@@ -498,16 +498,6 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $sce
             templateUrl: 'Templates/studentsDeanery.html',
             controller: 'StudentsDeaneryController'
         })
-        /*.state('addSubgroup', {
-            url: '/addSubgroup',
-            templateUrl: 'Templates/addSubgroup.html',
-            controller: 'AddSubgroupController'
-        })
-        .state('link', {
-            url: '/link',
-            templateUrl: 'Templates/link.html',
-            controller: 'LinkController'
-        })*/
         /* DEPUTY_DEAN */
         .state('viewAttestationsDeputyDean', { // все аттестации
             url: '/viewAttestationsDeputyDean',
