@@ -1,5 +1,7 @@
 app.controller("ViewAttestationsDeputyDeanController", function($scope, $http) {
 
+    $scope.checkRole("DEPUTY_DEAN");
+
     getActiveAttestationByFacultyIdForDeputyDean();
     function getActiveAttestationByFacultyIdForDeputyDean() {
         $http({

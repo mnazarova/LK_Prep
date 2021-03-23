@@ -1,5 +1,7 @@
 app.controller("ContentAttestationController", function($scope, $state, $stateParams, $http) {
 
+    $scope.checkRole("TEACHER");
+
     $scope.attestationId = $stateParams.attestationId;
     $scope.isHead = $stateParams.isHead === 'true';
     $scope.selected = [

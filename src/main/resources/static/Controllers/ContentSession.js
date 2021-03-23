@@ -1,7 +1,8 @@
 app.controller("ContentSessionController", function($scope, $state, $stateParams, $http) {
 
-    $scope.isHead = $stateParams.isHead === 'true';
+    $scope.checkRole("TEACHER");
 
+    $scope.isHead = $stateParams.isHead === 'true';
 
     $scope.contentSession = [];
     $scope.selected = [];

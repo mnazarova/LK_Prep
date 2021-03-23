@@ -166,7 +166,7 @@
         </div>
     </nav>
 
-    <button class="ng-hide btn btn-outline-info col-md-12" ng-click="changeRole()" ng-show="multipleRoles">
+    <button class="ng-hide btn btn-outline-info col-md-12" ng-click="changeRole(counter+1, true)" ng-show="multipleRoles">
         К интерфейсу "{{nameNextRole}}"
     </button>
 
@@ -242,7 +242,6 @@
 
     <script src="Controllers/app.js"></script>
     <!-- не использовалось <script th:src="@{Controllers/app.js}"></script>-->
-    <!--<script src="Controllers/Home.js"></script>-->
     <script src="Controllers/Help.js"></script>
 
     <script src="Controllers/Assignment.js"></script>

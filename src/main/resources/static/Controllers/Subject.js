@@ -1,5 +1,7 @@
 app.controller("SubjectController", function($stateParams, $scope, $state, $http) {
 
+    $scope.checkRole("TEACHER");
+
     getGroupsByAttestationIdAndTeacherIdAndGroupId();
     function getGroupsByAttestationIdAndTeacherIdAndGroupId() {
         /*$http.patch('/getGroupsByAttestationAndByTeacher',{params: {'id': 146/!*$stateParams.id*!/}})

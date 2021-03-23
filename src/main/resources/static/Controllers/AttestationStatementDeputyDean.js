@@ -1,5 +1,7 @@
 app.controller("AttestationStatementDeputyDeanController", function($scope, $state, $stateParams, $http) {
 
+    $scope.checkRole("DEPUTY_DEAN");
+
     $scope.attestationId = $stateParams.attestationId;
     $scope.selected = [
         { key: true, value: '+' },

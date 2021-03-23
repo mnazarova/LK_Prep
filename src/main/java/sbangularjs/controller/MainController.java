@@ -34,7 +34,7 @@ public class MainController {
                         @RequestParam(name = "message", required = false) String message, Model model,
                         HttpServletRequest request, HttpServletResponse response) {
         model.addAttribute("message", null);
-        System.out.println(request.getSession().getId());
+        //System.out.println(request.getSession().getId());
         Principal getUser = request.getUserPrincipal();
         /*System.out.println(123);
 //        HttpServletResponse res = (HttpServletResponse) response;

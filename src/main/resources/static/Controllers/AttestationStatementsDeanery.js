@@ -1,5 +1,7 @@
 app.controller("AttestationStatementsDeaneryController", function($stateParams, $scope, $state, $http) {
 
+    $scope.checkRole("DEANERY");
+
     getGroupsByAttestationAndByDeaneryAndByGroupId();
     function getGroupsByAttestationAndByDeaneryAndByGroupId() {
         $http({

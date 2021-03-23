@@ -1,5 +1,7 @@
 app.controller("SessionStatementsDeaneryController", function($scope, $http) {
 
+    $scope.checkRole("DEANERY");
+
     getSessionStatementsByDeanery();
     function getSessionStatementsByDeanery() {
         $http({
