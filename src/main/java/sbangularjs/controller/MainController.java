@@ -70,16 +70,6 @@ public class MainController {
         return "login";
     }
 
-    @RequestMapping("/search")
-    public String search() {
-        return "search";
-    }
-
-    /*@RequestMapping("/help")
-    public String help() {
-        return "help";
-    }*/
-
     @RequestMapping(value = "/getDataUser", method = RequestMethod.GET,
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
     @ResponseBody
