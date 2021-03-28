@@ -80,7 +80,7 @@
 <!--                            <div class="invalid-tooltip py-0">-->
                             <!-- groupsForm['deadline_' + $index].$dirty &&  -->
                             <div ng-show="groupsForm['deadline_' + $index].$error.min" class="bg-danger text-white p-0">
-                                мин. значение: {{minDate | date:'dd-MM-yyyy'}}
+                                мин. зн.: {{minDate | date:'dd-MM-yyyy'}}
                             </div>
                             <div ng-show="groupsForm['deadline_' + $index].$error.max" class="bg-danger text-white p-0">
                                 макс. значение: {{minDate | date:'dd-MM-2055'}}
@@ -110,7 +110,7 @@
                                    disabled>
                         </td>
                         <td class="text-center border-info">
-                            <!--<i class="text-warning fa fa-2x fa-exclamation px-2"
+                            <!--<i class="text-danger fa fa-2x fa-exclamation px-2"
                                ng-if="group.active && estimatedCurSemesterNumber[$parentIndex] != group.curSemester"
                                data-toggle="tooltip" data-placement="top"
                                title="Внимание! Установленный семестр не совпадает с (предполагаемым) текущим семестром">

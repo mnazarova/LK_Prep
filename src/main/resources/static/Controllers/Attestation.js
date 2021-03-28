@@ -1,5 +1,7 @@
 app.controller("AttestationController", function($scope, $http, $state) {
 
+    $scope.checkRole("TEACHER");
+
     // if(login)
 
     getAttestation();

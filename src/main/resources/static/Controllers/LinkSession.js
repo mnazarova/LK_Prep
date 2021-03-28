@@ -1,5 +1,7 @@
 app.controller("LinkSessionController", function($scope, $http) {
 
+    $scope.checkRole("SECRETARY");
+
     sessionGetGroupListByActiveIsTrue();
     function sessionGetGroupListByActiveIsTrue() {
         $http({

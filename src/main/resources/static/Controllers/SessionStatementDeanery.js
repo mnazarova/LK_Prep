@@ -1,5 +1,7 @@
 app.controller("SessionStatementDeaneryController", function($scope, $state, $stateParams, $http) {
 
+    $scope.checkRole("DEANERY");
+
     $scope.selected = {
         id: '',
         name: ''

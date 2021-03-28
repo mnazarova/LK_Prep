@@ -25,8 +25,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers(/*"/registration", "main.css", "/", "Login.js"*/).permitAll()
+                    .antMatchers("/oAuth2").permitAll()
                     .anyRequest().authenticated()
+                .and()
+                    .formLogin()
+                    .loginPage("/login")
+                    .defaultSuccessUrl("/")
+                    .permitAll()
+                .and()
+                    .logout()
+                    .permitAll();
+        /*.anyRequest().authenticated()
                 .and()
                     .formLogin()
                     .loginPage("/login")
@@ -37,21 +46,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .rememberMe()
                 .and()
                     .logout().logoutUrl("/logout")
-                    .permitAll();
+                    .permitAll();*/
     }
-
-    /*@Bean
-    @Override
-    public UserDetailsService userDetailsService() {
-        UserDetails user =
-                User.withDefaultPasswordEncoder()
-                        .username("u")
-                        .password("p")
-                        .roles("USER")
-                        .build();
-
-        return new InMemoryUserDetailsManager(user);
-    }*/
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {

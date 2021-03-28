@@ -1,4 +1,7 @@
 app.controller("AssignmentController", function($scope, $http) {
+
+    $scope.checkRole("DEANERY");
+
     $scope.teachers = [];
 
     $scope.changes = [];

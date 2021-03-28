@@ -1,5 +1,7 @@
 app.controller("StudentsDeaneryController", function($scope, $http, $stateParams, $state) {
 
+    $scope.checkRole("DEANERY");
+
     getStudents();
     function getStudents() {
         $http({

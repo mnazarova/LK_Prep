@@ -1,5 +1,7 @@
 app.controller("AttestationStatementDeaneryController", function($scope, $state, $stateParams, $http) {
 
+    $scope.checkRole("DEANERY");
+
     // $('input:disabled').css('background-color', 'red');
     // console.log($stateParams)
     $scope.attestationId = $stateParams.attestationId;

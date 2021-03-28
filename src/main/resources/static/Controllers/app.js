@@ -353,6 +353,7 @@ app.controller('AppController',function ($scope, $state, $http, $window, toaster
         }).then(
             function (res) {
                 $scope.counter = 0;
+                $scope.allRoles = [];
                 $scope.allRoles = res.data;
 
                 if ($scope.allRoles.length)
@@ -384,13 +385,30 @@ app.controller('AppController',function ($scope, $state, $http, $window, toaster
                         $scope.nameNextRole = "Зам. декана";
     }
 
-    $scope.changeRole = function () {
-        $scope.counter++;
+    $scope.changeRole = function (count, transition) {
+        // console.log(count);
+        $scope.counter = count;
         if (!$scope.allRoles[$scope.counter])
             $scope.counter = 0;
         $scope.ur = $scope.allRoles[$scope.counter];
         setNameNextRole();
-        $state.go("help");
+        if(transition)
+            $state.go("help");
+    };
+
+    $scope.checkRole = function (roleName) {
+        // console.log($scope.allRoles)
+        if ($scope.ur === roleName)
+            return;
+        // console.log(roleName)
+        $scope.index = -1;
+        $scope.allRoles.forEach(function(el, index) {
+            if (el === roleName)
+                $scope.index = index;
+        });
+        if($scope.index === -1)
+            return;
+        $scope.changeRole($scope.index, false);
     }
 
     /*$rootScope.previousState;
@@ -480,16 +498,6 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $sce
             templateUrl: 'Templates/studentsDeanery.html',
             controller: 'StudentsDeaneryController'
         })
-        /*.state('addSubgroup', {
-            url: '/addSubgroup',
-            templateUrl: 'Templates/addSubgroup.html',
-            controller: 'AddSubgroupController'
-        })
-        .state('link', {
-            url: '/link',
-            templateUrl: 'Templates/link.html',
-            controller: 'LinkController'
-        })*/
         /* DEPUTY_DEAN */
         .state('viewAttestationsDeputyDean', { // все аттестации
             url: '/viewAttestationsDeputyDean',

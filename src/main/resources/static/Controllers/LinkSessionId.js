@@ -1,4 +1,7 @@
 app.controller("LinkSessionIdController", function($scope, $http, $state, $stateParams) {
+
+    $scope.checkRole("SECRETARY");
+
     $scope.showStudents = [];
     $scope.changes = [];
     $scope.syllabusContentList = {};

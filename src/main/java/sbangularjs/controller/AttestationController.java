@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 @Controller
-@PreAuthorize("hasAnyAuthority('TEACHER, SECRETARY')")
+@PreAuthorize("hasAnyAuthority('TEACHER')")
 @AllArgsConstructor(onConstructor = @_(@Autowired))
 public class AttestationController {
     private AttestationRepository attestationRepository;

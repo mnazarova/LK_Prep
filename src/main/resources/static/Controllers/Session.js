@@ -1,5 +1,7 @@
 app.controller("SessionController", function($stateParams, $scope, $state, $http) {
 
+    $scope.checkRole("TEACHER");
+
     getSessionDTOGroupsByTeacherIdAndGroupId();
     function getSessionDTOGroupsByTeacherIdAndGroupId() {
         $http({
@@ -20,7 +22,7 @@ app.controller("SessionController", function($stateParams, $scope, $state, $http
                         $scope.groupList.push(groupListElement);
                     }
                 }
-                console.log($scope.groups)
+                //console.log($scope.groups)
                 // console.log($scope.groupList)
             },
             function(res) {
@@ -41,7 +43,7 @@ app.controller("SessionController", function($stateParams, $scope, $state, $http
         }).then(
             function(res) {
                 $scope.groups = res.data;
-                console.log(res.data)
+                //console.log(res.data)
             }
         );
     };

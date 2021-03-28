@@ -1,5 +1,7 @@
 app.controller("LinkAttestationController", function($scope, $http) {
 
+    $scope.checkRole("SECRETARY");
+
     getActingAttestation();
     function getActingAttestation() {
         $http({
