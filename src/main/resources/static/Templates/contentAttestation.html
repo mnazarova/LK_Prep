@@ -91,7 +91,7 @@
                             </i>
                             <i class="fa fa-info-circle text-warning col-md-1" ng-show="!ca.dateWorks"></i>
                             <select class="custom-select form-control col-md-8"
-                                    ng-click="checkChanges()"
+                                    ng-change="checkChanges()"
                                     name="ca.works"
                                     ng-model="ca.works"
                                     ng-options="item.key as item.value for item in selected">
@@ -105,7 +105,7 @@
                             </i>
                             <i class="fa fa-info-circle text-warning col-md-1" ng-show="!ca.dateAttest"></i>
                             <select class="custom-select form-control col-md-8"
-                                    ng-click="checkChanges()"
+                                    ng-change="checkChanges()"
                                     name="ca.attest"
                                     ng-model="ca.attest"
                                     ng-options="item.key as item.value for item in selected">
