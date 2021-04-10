@@ -7,7 +7,10 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import sbangularjs.model.Role;
 import sbangularjs.model.User;
 import sbangularjs.repository.UserRepository;
@@ -23,17 +26,12 @@ public class MainController {
     private UserRepository userRepository;
 
     @RequestMapping("/")
-    public String welcome() {
-        return "index";
+    public String home(@AuthenticationPrincipal User user) {
+        return user == null ? "login" : "index";
     }
 
     @RequestMapping("/home")
     public String home() {
-        return "home";
-    }
-
-    @RequestMapping("/oAuth2")
-    public String oAuth2() {
         return "login";
     }
 

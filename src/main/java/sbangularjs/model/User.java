@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -22,11 +23,7 @@ public class User implements UserDetails {
     private String password;
     private boolean active;
 
-    /*@Column(name = "client_id")
-    private int clientId;
-
-    @Column(name = "employee_id")
-    private int employeeId;*/
+    private Date lastVisit;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
