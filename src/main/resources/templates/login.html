@@ -22,13 +22,13 @@
 
     <div style="min-height: calc(100vh - 210px) !important;">
 
-        <div class="px-5 my-5 mx-auto card bg-light border-dark col-sm-8 col-md-6 col-lg-4">
+        <div class="px-3 my-5 mx-auto card bg-light border-dark col-sm-8 col-md-6 col-lg-4">
             <div class="mt-5 text-center h3">
                 <b>Авторизация</b>
             </div>
             <hr>
 
-            <div th:if="${param.error}" class="bg-danger text-white text-center pb-1 mb-3">
+            <!--<div th:if="${param.error}" class="bg-danger text-white text-center pb-1 mb-3">
                 Вы ввели неверный логин и/или пароль. Попробуйте снова!
             </div>
 
@@ -58,10 +58,9 @@
                 <div class="form-group m-0 mt-5">
                     <input class="btn btn-outline-info btn-block" type="submit" ng-click="transition()" value="Войти"/>
                 </div>
-            </form>
+            </form>-->
 
-<!--            <a class="btn btn-link mb-5" href="/oAuth2">-->
-            <a class="btn btn-info mb-5" href="/login">
+            <a class="btn btn-sm btn-info mb-5" href="/login">
                 <i class="fa fa-sign-out"></i>
                 Войти через универсальный аккаунт
             </a>
@@ -71,7 +70,7 @@
     <footer class="py-3 bg-dark">
         <div class="pt-3 text-white text-center text-small">
             <!--            <p class="mb-1">Личный кабинет преподавателя</p>-->
-            <p class="mb-1">БГТУ «ВОЕНМЕХ» им. Д.Ф. Устинова</p>
+            <p class="mb-1">© 2021 БГТУ «ВОЕНМЕХ» им. Д.Ф. Устинова</p>
         </div>
     </footer>
 </body>

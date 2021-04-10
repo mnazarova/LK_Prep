@@ -1,8 +1,6 @@
 package sbangularjs.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.PrincipalExtractor;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -20,19 +18,10 @@ import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilt
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import sbangularjs.model.Role;
-import sbangularjs.model.User;
 import sbangularjs.repository.UserRepository;
-import sbangularjs.service.AuthProvider;
 import sbangularjs.service.UserService;
 
 import javax.servlet.Filter;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-//import sbangularjs.config.jwt.JwtFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -43,14 +32,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private AuthProvider authProvider;
+//    @Autowired
+//    private AuthProvider authProvider;
     @Autowired
     private OAuth2ClientContext oAuth2ClientContext;
     @Autowired
     private UserRepository userRepository;
-    /*@Autowired
-    private JwtFilter jwtFilter;*/
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -72,22 +59,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
                 .logout()
-                .logoutSuccessUrl("/home"); // можно изменить на login,
-                // тогда не будет переходить на начальную страницу, сразу на sso
-                //.deleteCookies("JSESSIONID");
+                .logoutSuccessUrl("/home"); // можно изменить на login, тогда не будет переходить на начальную страницу, сразу на sso
 
             http.addFilterBefore(ssoFilter(), UsernamePasswordAuthenticationFilter.class);
-
-//        http.addFilterBefore(jwtFilter, RememberMeAuthenticationFilter.class);
-
-//      http.addFilterBefore(new SecurityContextRestorerFilter(userInfoRestTemplateFactory, userInfoTokenServices), AnonymousAuthenticationFilter.class);
-
-        /*http
-            .antMatcher("/login").authorizeRequests()
-            .anyRequest().authenticated()
-            .and()
-            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);*/
-
     }
 
     @Bean
@@ -122,9 +96,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return registration;
     }
 
-    @Bean
+    /*@Bean
     public PrincipalExtractor principalExtractor(UserRepository userRepository) {
-//        OAuth2AccessToken existingToken = restTemplate.getOAuth2ClientContext().getAccessToken();
         return map -> {
             String username = (String) map.get("email");
             User user = userRepository.findByUsername(username);
@@ -139,13 +112,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             user.setLastVisit(new Date());
             return userRepository.save(user);
         };
-    }
+    }*/
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authProvider);
-//        auth.userDetailsService(userService)
-//            .passwordEncoder(NoOpPasswordEncoder.getInstance());
+//        auth.authenticationProvider(authProvider);
+        auth.userDetailsService(userService)
+            .passwordEncoder(NoOpPasswordEncoder.getInstance());
 
 //        auth.jdbcAuthentication()
 //            .dataSource(dataSource)

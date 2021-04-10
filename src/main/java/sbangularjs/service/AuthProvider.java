@@ -1,3 +1,4 @@
+/*
 package sbangularjs.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,9 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import sbangularjs.model.User;
 
 import java.util.Collection;
 
@@ -30,7 +29,9 @@ public class AuthProvider implements AuthenticationProvider {
         UserDetails user = userService.loadUserByUsername(username);
 //        User user = (User) userService.loadUserByUsername(username);
 
-        if (user != null/*&& (user.getUsername().equals(username) || user.getName().equals(username))*/) {
+        if (user != null*/
+/*&& (user.getUsername().equals(username) || user.getName().equals(username))*//*
+) {
 //            if (!passwordEncoder.matches(password, user.getPassword()))
 //                throw new BadCredentialsException("Wrong password");
 
@@ -44,4 +45,4 @@ public class AuthProvider implements AuthenticationProvider {
     public boolean supports(Class<?> arg) {
         return true;
     }
-}
+}*/

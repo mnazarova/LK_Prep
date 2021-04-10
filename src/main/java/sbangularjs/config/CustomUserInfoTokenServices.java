@@ -25,7 +25,6 @@ import org.springframework.util.Assert;
 import sbangularjs.model.Role;
 import sbangularjs.model.User;
 import sbangularjs.repository.UserRepository;
-import sbangularjs.service.UserService;
 
 import java.util.Collections;
 import java.util.Date;
@@ -43,7 +42,6 @@ public class CustomUserInfoTokenServices implements ResourceServerTokenServices
     private PrincipalExtractor principalExtractor = new FixedPrincipalExtractor();
 
     private UserRepository userRepo;
-    private UserService userService;
     private PasswordEncoder passwordEncoder;
 
     public CustomUserInfoTokenServices(){}
@@ -96,11 +94,8 @@ public class CustomUserInfoTokenServices implements ResourceServerTokenServices
     }
 
     @Override
-    public OAuth2Authentication loadAuthentication(String accessToken)
-            throws AuthenticationException, InvalidTokenException
-    {
+    public OAuth2Authentication loadAuthentication(String accessToken) throws AuthenticationException, InvalidTokenException {
         Map<String, Object> map = getMap(this.userInfoEndpointUrl, accessToken);
-
         if (map.containsKey("error")) {
             if (this.logger.isDebugEnabled()) {
                 this.logger.debug("userinfo returned error: " + map.get("error"));
@@ -128,8 +123,7 @@ public class CustomUserInfoTokenServices implements ResourceServerTokenServices
         userRepo.save(user);
 
         Object principal = getPrincipal(map);
-        List<GrantedAuthority> authorities = this.authoritiesExtractor
-                .extractAuthorities(map);
+        List<GrantedAuthority> authorities = this.authoritiesExtractor.extractAuthorities(map);
 
         OAuth2Request request = new OAuth2Request(null, this.clientId, null, true, null,
                 null, null, null, null);
@@ -175,19 +169,17 @@ public class CustomUserInfoTokenServices implements ResourceServerTokenServices
                 token.setTokenType(this.tokenType);
                 restTemplate.getOAuth2ClientContext().setAccessToken(token);
             }
+
             // for apiVoenmeh
             Base64 decoder = new Base64(true);
             byte[] decodesBytes = decoder.decode(accessToken);
             String json = new String(decodesBytes);
             ObjectMapper oMapper = new ObjectMapper();
-            Map<String, Object> map = null;
 
-            // convert JSON string to Map
-            // Map<String, String> map = mapper.readValue(json, new TypeReference<Map<String, String>>() {});
             String bodyJSON = json.split("}")[1]+'}';
-            map = oMapper.readValue(bodyJSON, Map.class);
-
+            Map<String, Object> map = oMapper.readValue(bodyJSON, Map.class);
             return map;
+
 //            return restTemplate.getForEntity(path, Map.class).getBody();
         }
         catch (Exception ex) {

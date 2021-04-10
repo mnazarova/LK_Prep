@@ -35,10 +35,10 @@ public class MainController {
         return "login";
     }
 
-    @RequestMapping("/login")
+    /*@RequestMapping("/login")
     public String login() {
         return "login";
-    }
+    }*/
 
     @RequestMapping("/login2")
     public String login(@AuthenticationPrincipal User user,
@@ -74,6 +74,4 @@ public class MainController {
     public Set<Role> getDataUser(@AuthenticationPrincipal User user) {
         return userRepository.findByUsername(user.getUsername(), Sort.by(Sort.Direction.ASC, "roles")).getRoles();
     }
-
-
 }
