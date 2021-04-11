@@ -60,6 +60,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
                 .logout()
                 .logoutSuccessUrl("/home"); // можно изменить на login, тогда не будет переходить на начальную страницу, сразу на sso
+//                .logoutSuccessUrl("/login")
+//                .deleteCookies("auth_code", "JSESSIONID", "JWT", "remember-me")
+//                .clearAuthentication(true)
+//                .invalidateHttpSession(true);
 
             http.addFilterBefore(ssoFilter(), UsernamePasswordAuthenticationFilter.class);
     }

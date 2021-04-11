@@ -63,10 +63,14 @@ public class MainController {
 //        return "localhost:8082";
     }
 
-    @RequestMapping("/logout")
-    public String logout() {
+    /*@RequestMapping("/logout")
+    public String removeCookies(HttpServletRequest request, HttpServletResponse response) {
+        Cookie rememberMeCookie = new Cookie("remember-me", "");
+        rememberMeCookie.setMaxAge(0);
+        response.addCookie(rememberMeCookie);
+        securityService.logoutCurrentUser();
         return "login";
-    }
+    }*/
 
     @RequestMapping(value = "/getDataUser", method = RequestMethod.GET,
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
