@@ -27,8 +27,6 @@ public class Teacher {
     private String email;
     @JsonIgnore // сокрытие данных
     private String username;
-//    @JsonIgnore // сокрытие данных
-//    private String password;
 
     @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

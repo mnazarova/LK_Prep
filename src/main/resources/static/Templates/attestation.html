@@ -10,6 +10,7 @@
             <thead>
                 <tr>
                     <th class="text-center border-white">Название</th>
+                    <th class="text-center border-white">Факультет</th>
                     <th class="text-center border-white">Крайний срок сдачи
                         <!--<br>(не включая)-->
                         <!--<i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top"
@@ -28,6 +29,7 @@
             <tbody class="bg-aqua-gradient">
                 <tr ng-repeat="attestation in attestations | orderBy:'id'" class="border-top">
                     <td class="text-center border-info">{{attestation.name}}</td>
+                    <td class="text-center border-info">{{attestation.faculty.shortName}} ({{attestation.faculty.fullName}})</td>
                     <td class="text-center border-info">
                         {{attestation.deadline | date: 'dd.MM.yyyy'}}
                     </td>

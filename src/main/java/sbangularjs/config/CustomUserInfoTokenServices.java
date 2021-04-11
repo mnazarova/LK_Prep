@@ -107,7 +107,7 @@ public class CustomUserInfoTokenServices implements ResourceServerTokenServices
 
     private OAuth2Authentication extractAuthentication(Map<String, Object> map) {
 
-        String username = (String) map.get("email");
+        String username = (String) map.get("upn");
         if (!map.containsKey("sub")) // если api Voenmeh, а не гугл
             username = username.split("@")[0];
         User user = userRepo.findByUsername(username);
