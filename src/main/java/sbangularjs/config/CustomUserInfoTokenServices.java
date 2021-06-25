@@ -132,6 +132,8 @@ public class CustomUserInfoTokenServices implements ResourceServerTokenServices
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
                 user, null, user.getAuthorities());
         token.setDetails(map);
+
+        this.logger.info("Entered: " + user.getUsername());
         return new OAuth2Authentication(request, token);
     }
 
