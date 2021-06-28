@@ -28,7 +28,7 @@ app.controller("SessionController", function($stateParams, $scope, $state, $http
             function(res) {
                 // console.log(res.data)
                 if (res.data === 0)
-                    $scope.toasterError('Проблема с учётной записью. Обратитесь к администратору!');
+                    $scope.toasterError('Проблема с Вашей учётной записью. Пожалуйста, обратитесь к администратору!');
             }
         );
     }

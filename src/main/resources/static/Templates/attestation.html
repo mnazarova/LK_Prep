@@ -9,9 +9,10 @@
         <table class="ng-hide table table-hover table-responsive-sm m-0 p-0" ng-show="attestations.length">
             <thead>
                 <tr>
+                    <th class="text-center border-white"></th>
                     <th class="text-center border-white">Название</th>
                     <th class="text-center border-white">Факультет</th>
-                    <th class="text-center border-white">Крайний срок сдачи
+                    <th class="text-center border-white">Крайний срок внесения изменений
                         <!--<br>(не включая)-->
                         <!--<i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top"
                            title="Внимание! Если дедлайн поставлен на 02.09.2020, то изменения можно внести до 0.00 мск 02.09.2020"></i>-->
@@ -28,6 +29,11 @@
             </thead>
             <tbody class="bg-aqua-gradient">
                 <tr ng-repeat="attestation in attestations | orderBy:'id'" class="border-top">
+                    <td class="text-center border-info">
+                        <i class="text-warning fa fa-2x fa-exclamation px-2" ng-if="!attestation.finished" data-toggle="tooltip" data-placement="top"
+                           title="Внимание! Остались незаполненные ведомости">
+                        </i>
+                    </td>
                     <td class="text-center border-info">{{attestation.name}}</td>
                     <td class="text-center border-info">{{attestation.faculty.shortName}} ({{attestation.faculty.fullName}})</td>
                     <td class="text-center border-info">

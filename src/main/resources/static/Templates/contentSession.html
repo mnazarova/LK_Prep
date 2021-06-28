@@ -23,6 +23,13 @@
 
         <div ng-if="contentSession.length">
             <div class="text-right mb-4">
+                <button class="btn btn-md btn-light text-dark border-secondary"
+                        type="button"
+                        title="Вернуться к списку ведомостей"
+                        ng-click="toListOfStatements()">
+                    <i class="fa fa-arrow-left"></i>
+                    К списку ведомостей
+                </button>
                 <button class="btn btn-md btn-info text-white"
                         ng-class="{'btn-warning': changes, 'btn-info': !changes}"
                         type="button"
@@ -35,28 +42,56 @@
             <table class="table table-hover table-sm my-3" ng-class="{'table-responsive-xl': isHead, 'table-responsive-lg': !isHead}">
                 <thead>
                     <tr>
-                        <th class="text-center">Фамилия</th>
-                        <th class="text-center">Имя</th>
-                        <th class="text-center">Отчество</th>
+                        <th class="text-center">№</th>
+                        <th class="">Фамилия</th>
+                        <th class="">Имя</th>
+                        <th class="">Отчество</th>
                         <th class="text-center">Номер зачётной книжки</th>
                         <th class="text-center" ng-if="splitAttestationForm && splitAttestationForm.id === 1" style="min-width: 8em">Допуск</th>
                         <th class="text-center" style="min-width: 8em">Оценивание</th>
                         <th class="text-center">Последние изменения</th>
                         <th class="text-center ng-hide" ng-show="isHead">Назначенный преподаватель</th>
                     </tr>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th class="text-center"></th>
+                        <th class="text-center" ng-if="splitAttestationForm && splitAttestationForm.id === 1">
+                            <select class="custom-select form-control col-md-12"
+                                    ng-change="changeGlobalAdmittance()"
+                                    name="global.admittance"
+                                    ng-model="global.admittance"
+                                    ng-options="item.id as item.name for item in selectedForAdmittance">
+                            </select>
+                        </th>
+                        <th class="text-center">
+                            <select class="custom-select form-control col-md-12"
+                                    ng-disabled="splitAttestationForm && splitAttestationForm.id === 1 && !global.admittance"
+                                    ng-change="changeGlobalEvaluation()"
+                                    name="global.evaluation"
+                                    ng-model="global.evaluation"
+                                    ng-options="item.id as item.name for item in selected[0]">
+                            </select>
+                        </th>
+                        <th class="text-center"></th>
+                        <th class="text-center ng-hide" ng-show="isHead"></th>
+                    </tr>
                 </thead>
                 <tbody class="bg-aqua-gradient">
                     <tr ng-repeat="cs in contentSession track by $index">
-                        <td class="text-center">{{cs.student.surname}}</td>
-                        <td class="text-center">{{cs.student.name}}</td>
-                        <td class="text-center">{{cs.student.patronymic}}</td>
+                        <td class="text-center">{{$index+1}}</td>
+                        <td class="">{{cs.student.surname}}</td>
+                        <td class="">{{cs.student.name}}</td>
+                        <td class="">{{cs.student.patronymic}}</td>
                         <td class="text-center">{{cs.student.numberRecordBook}}</td>
                         <td class="text-center" ng-if="splitAttestationForm && splitAttestationForm.id === 1">
                             <select class="custom-select form-control col-md-12"
-                                    ng-change="checkChangesAdmittance(cs.admittance.id, $index)"
+                                    ng-change="selectedAdmittance(cs.admittance.id, $index)"
                                     name="cs.admittance.id"
                                     ng-model="cs.admittance.id"
-                                    ng-options="item.id as item.name for item in selectedAdmittance">
+                                    ng-options="item.id as item.name for item in selectedForAdmittance">
                             </select>
                         </td>
                         <td class="text-center">
@@ -69,7 +104,7 @@
                             ng-disabled="splitAttestationForm && splitAttestationForm.id === 1 && cs.admittance.id != 6"-->
                             <select class="custom-select form-control col-md-12"
                                     ng-disabled="splitAttestationForm && splitAttestationForm.id === 1 && !cs.admittance.id"
-                                    ng-change="checkChanges()"
+                                    ng-change="selectedEvaluation()"
                                     name="cs.evaluation.id"
                                     ng-model="cs.evaluation.id"
                                     ng-options="item.id as item.name for item in selected[$index]">
@@ -90,6 +125,13 @@
             </table>
             <hr>
             <div class="text-right my-4">
+                <button class="btn btn-md btn-light text-dark border-secondary"
+                        type="button"
+                        title="Вернуться к списку ведомостей"
+                        ng-click="toListOfStatements()">
+                    <i class="fa fa-arrow-left"></i>
+                    К списку ведомостей
+                </button>
                 <button class="btn btn-md text-white"
                         ng-class="{'btn-warning': changes, 'btn-info': !changes}"
                         type="button"

@@ -21,12 +21,12 @@
                         <div ng-bind-html="attestation.name | highlight: $select.search"></div>
                         <small>
                             Факультет: {{attestation.faculty.shortName}} ({{attestation.faculty.fullName}})
-                            <br>Дедлайн: {{attestation.deadline | date: 'dd.MM.yyyy'}}
+                            <br>Дата окончания аттестации: {{attestation.deadline | date: 'dd.MM.yyyy'}}
                         </small>
                     </ui-select-choices>
                 </ui-select>
                 <div class="text-center my-2 font-weight-bold">
-                    <div ng-show="attestation.selected">Дедлайн: {{attestation.selected.deadline | date: 'dd.MM.yyyy'}}</div>
+                    <div ng-show="attestation.selected">Дата окончания аттестации: {{attestation.selected.deadline | date: 'dd.MM.yyyy'}}</div>
                     <div class="text-danger" ng-show="!attestation.selected">Необходимо выбрать аттестацию!</div>
                 </div>
             </div>

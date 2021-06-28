@@ -20,7 +20,9 @@ app.controller("AttestationController", function($scope, $http, $state) {
             },
             function(res) { // error
                 // console.log("Error: " + res.status + " : " + res.data);
-                $state.go("help");
+                if (res.data === 0)
+                    $scope.toasterError('Проблема с Вашей учётной записью. Пожалуйста, обратитесь к администратору!');
+                // $state.go("help");
             }
         );
     }

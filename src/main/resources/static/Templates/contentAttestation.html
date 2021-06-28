@@ -46,6 +46,13 @@
 
         <div ng-if="contentAttestation.length">
             <div class="text-right mb-4">
+                <button class="btn btn-md btn-light text-dark border-secondary"
+                        type="button"
+                        title="Вернуться к списку ведомостей"
+                        ng-click="toListOfStatements()">
+                    <i class="fa fa-arrow-left"></i>
+                    К списку ведомостей
+                </button>
                 <button class="btn btn-md btn-info text-white"
                         ng-class="{'btn-warning': changes, 'btn-info': !changes}"
                         type="button"
@@ -58,9 +65,10 @@
             <table class="table table-hover table-sm my-3" ng-class="{'table-responsive-xl': isHead, 'table-responsive-lg': !isHead}">
                 <thead>
                     <tr>
-                        <th class="text-center">Фамилия</th>
-                        <th class="text-center">Имя</th>
-                        <th class="text-center">Отчество</th>
+                        <th class="text-center">№</th>
+                        <th class="">Фамилия</th>
+                        <th class="">Имя</th>
+                        <th class="">Отчество</th>
                         <th class="text-center">Номер зачётной книжки</th>
                         <th class="text-center" style="min-width: 10em">Работает
                             <i class="fa fa-info-circle text-info" data-toggle="tooltip" data-placement="top"
@@ -71,12 +79,44 @@
                         <th class="text-center" style="min-width: 10em">Аттестован</th>
                         <th class="text-center ng-hide" ng-show="isHead">Назначенный преподаватель</th>
                     </tr>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+<!--                        <th class="text-center">Установить значение всем студентам</th>-->
+                        <th class="text-center px-3">
+                            <i class="fa fa-info-circle text-muted col-md-1" data-toggle="tooltip" data-placement="top"
+                               title="Установка значения поля 'Работает' всем студентам.">
+                            </i>
+                            <select class="custom-select form-control col-md-8"
+                                    ng-change="changeGlobalWorks()"
+                                    name="global.works"
+                                    ng-model="global.works"
+                                    ng-options="item.key as item.value for item in selected">
+                            </select>
+                        </th>
+                        <th class="text-center px-3">
+                            <i class="fa fa-info-circle text-muted col-md-1" data-toggle="tooltip" data-placement="top"
+                               title="Установка значения поля 'Аттестован' всем студентам.">
+                            </i>
+                            <select class="custom-select form-control col-md-8"
+                                    ng-change="changeGlobalAttest()"
+                                    name="global.attest"
+                                    ng-model="global.attest"
+                                    ng-options="item.key as item.value for item in selected">
+                            </select>
+                        </th>
+                        <th class="text-center ng-hide" ng-show="isHead"></th>
+                    </tr>
                 </thead>
                 <tbody class="bg-aqua-gradient">
                     <tr ng-repeat="ca in contentAttestation | orderBy:'student.surname' track by $index">
-                        <td class="text-center">{{ca.student.surname}}</td>
-                        <td class="text-center">{{ca.student.name}}</td>
-                        <td class="text-center">{{ca.student.patronymic}}</td>
+                        <td class="text-center">{{$index+1}}</td>
+                        <td class="">{{ca.student.surname}}</td>
+                        <td class="">{{ca.student.name}}</td>
+                        <td class="">{{ca.student.patronymic}}</td>
                         <td class="text-center">{{ca.student.numberRecordBook}}</td>
                         <td class="text-center px-3">
 <!--                            <div class="row">-->
@@ -86,12 +126,12 @@
                                     -->
                             <!-- ng-class="{'col-md-8': ca.dateWorks, 'col-md-10 ml-md-3': !ca.dateWorks}" -->
                             <!-- ng-class="{'col-md-8': ca.dateAttest, 'col-md-10 ml-md-3': !ca.dateAttest}" -->
-                            <i class="fa fa-info-circle text-info col-md-1" id="tooltipWorks[$index]" ng-show="ca.dateWorks" data-toggle="tooltip" data-placement="top"
+                            <i class="fa fa-user-circle-o text-info col-md-1" id="tooltipWorks[$index]" ng-show="ca.dateWorks" data-toggle="tooltip" data-placement="top"
                                title="Последние изменения внесены {{ca.dateWorks | date: 'dd.MM.yyyy в HH:mm'}} ({{ca.setWorksByTeacher.surname + ' ' + ca.setWorksByTeacher.initials}})">
                             </i>
-                            <i class="fa fa-info-circle text-warning col-md-1" ng-show="!ca.dateWorks"></i>
+                            <i class="fa fa-user-circle-o text-warning col-md-1" ng-show="!ca.dateWorks"></i>
                             <select class="custom-select form-control col-md-8"
-                                    ng-change="checkChanges()"
+                                    ng-change="selectedWorks()"
                                     name="ca.works"
                                     ng-model="ca.works"
                                     ng-options="item.key as item.value for item in selected">
@@ -100,12 +140,12 @@
 <!--                            </div>-->
                         </td>
                         <td class="text-center px-3">
-                            <i class="fa fa-info-circle text-info col-md-1" id="tooltipAttest[$index]" ng-show="ca.dateAttest" data-toggle="tooltip" data-placement="top"
+                            <i class="fa fa-user-circle-o text-info col-md-1" id="tooltipAttest[$index]" ng-show="ca.dateAttest" data-toggle="tooltip" data-placement="top"
                                title="Последние изменения внесены {{ca.dateAttest | date: 'dd.MM.yyyy в HH:mm'}} ({{ca.setAttestByTeacher.surname + ' ' + ca.setAttestByTeacher.initials}})">
                             </i>
-                            <i class="fa fa-info-circle text-warning col-md-1" ng-show="!ca.dateAttest"></i>
+                            <i class="fa fa-user-circle-o text-warning col-md-1" ng-show="!ca.dateAttest"></i>
                             <select class="custom-select form-control col-md-8"
-                                    ng-change="checkChanges()"
+                                    ng-change="selectedAttest()"
                                     name="ca.attest"
                                     ng-model="ca.attest"
                                     ng-options="item.key as item.value for item in selected">
@@ -120,6 +160,13 @@
             </table>
             <hr>
             <div class="text-right my-4">
+                <button class="btn btn-md btn-light text-dark border-secondary"
+                        type="button"
+                        title="Вернуться к списку ведомостей"
+                        ng-click="toListOfStatements()">
+                    <i class="fa fa-arrow-left"></i>
+                    К списку ведомостей
+                </button>
                 <!--<button class="btn btn-warning text-white"
                         type="button"
                         title="Отменить изменения"

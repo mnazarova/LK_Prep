@@ -17,12 +17,12 @@ public interface AttestationContentRepository extends JpaRepository<AttestationC
     List<AttestationContent> findAllByCertificationAttestationIdAndTeacherIdAndActiveTrue(Long certificationAttestationId, Long teacherId);
 
     @Query("select count(ac) from AttestationContent ac " +
-            "where ac.certificationAttestation.id= :certificationAttestationId and ac.teacher.id = :teacherId " +
+            "where ac.certificationAttestation.id = :certificationAttestationId and ac.teacher.id = :teacherId " +
             "and (ac.works = null or ac.attest = null)") /*ac.works is not null and ac.attest is not null (findFinishedByCertificationAttestationId)*/
     Integer findUnfinishedByCertificationAttestationIdAndTeacherId(Long certificationAttestationId, Long teacherId);
 
     @Query("select count(ac) from AttestationContent ac where " +
-            "ac.certificationAttestation.id= :certificationAttestationId and (ac.works = null or ac.attest = null)")
+            "ac.certificationAttestation.id = :certificationAttestationId and (ac.works = null or ac.attest = null)")
     Integer findUnfinishedByCertificationAttestationId(Long certificationAttestationId);
 
     /* For Head Of Department AND DEANERY */

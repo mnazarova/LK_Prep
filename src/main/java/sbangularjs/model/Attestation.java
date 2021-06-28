@@ -33,6 +33,9 @@ public class Attestation {
     @OneToMany(mappedBy = "attestation", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CertificationAttestation> certificationsAttestation;
 
+    @Transient
+    private boolean finished; // устанавливать true, если все поля content data not null
+
     public Attestation() {}
 
     public Attestation(String name, Date deadline) {

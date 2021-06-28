@@ -35,7 +35,7 @@ app.controller("SubjectController", function($stateParams, $scope, $state, $http
             function(res) { // error
                 // console.log(res.data)
                 if (res.data === 0)
-                    $scope.toasterError('Обратитесь к администратору!');
+                    $scope.toasterError('Проблема с Вашей учётной записью. Пожалуйста, обратитесь к администратору!');
                 else {
                     $scope.toasterError('В выбранную аттестацию запрещено вносить изменения!');
                     $state.go('attestation');
@@ -58,7 +58,7 @@ app.controller("SubjectController", function($stateParams, $scope, $state, $http
         }).then(
             function(res) {
                 $scope.groups = res.data;
-                console.log(res.data)
+                // console.log(res.data)
             }
         );
     };
