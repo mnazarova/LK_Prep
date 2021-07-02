@@ -81,8 +81,8 @@ app.controller('ModalController',function ($scope, $uibModal, /*$uibModalInstanc
             b.unshift({text: 'Подробнее', cls: 'btn-default', action: details});
         }
         $scope.open({
-            noHeader: 'true',
-            body: '<i class="fa fa-times-circle fa-2x text-danger pull-left"></i><div class="modalText">' + message + '</div>',
+            noHeader: 'false',
+            body: '<i class="fa fa-times-circle fa-2x text-danger pull-left"></i><div class="modalText text-justify">' + message + '</div>',
             buttons:b
         });
     };
@@ -90,7 +90,7 @@ app.controller('ModalController',function ($scope, $uibModal, /*$uibModalInstanc
     $scope.confirm = function(message, yes) {
         $scope.open({
             noHeader: 'true',
-            body: '<i class="fa fa-question-circle fa-2x text-info pull-left"></i><div class="modalText">' + message + '</div>',
+            body: '<i class="fa fa-question-circle fa-2x text-info pull-left"></i><div class="modalText text-justify">' + message + '</div>',
             buttons: [
                 {text: 'Да', action: yes, cls: 'btn-primary'},
                 {text: 'Нет'}
@@ -102,7 +102,7 @@ app.controller('ModalController',function ($scope, $uibModal, /*$uibModalInstanc
         // if()
         $scope.open({
             noHeader: 'true',
-            body: '<i class="fa fa-3x fa-exclamation-triangle text-warning pull-left"></i><div class="modalText">' + message + '</div>',
+            body: '<i class="fa fa-4x fa-exclamation-triangle text-warning pull-left my-1"></i><div class="modalText text-justify">' + message + '</div>',
             buttons: [
                 {text: textBtnNo, action: no, cls: styleBtnNo },//'btn-primary'},
                 {text: textBtnYes, action: yes, cls: styleBtnYes }//'btn-primary'}
@@ -113,7 +113,7 @@ app.controller('ModalController',function ($scope, $uibModal, /*$uibModalInstanc
     $scope.areYouSure = function(yes) {
         $scope.open({
             noHeader: 'true',
-            body: '<i class="fa fa-question-circle fa-2x text-danger pull-left"></i><div class="modalText">Вы уверены?</div>',
+            body: '<i class="fa fa-question-circle fa-2x text-danger pull-left"></i><div class="modalText text-justify">Вы уверены?</div>',
             buttons: [
                 {text: 'Да', action: yes, cls: 'btn-danger'},
                 {text: 'Нет'}
@@ -545,8 +545,13 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $sce
             templateUrl: 'Templates/linkSessionId.html',
             controller: 'LinkSessionIdController'
         })
+        .state('listAttestation', {
+            url: '/listAttestation',
+            templateUrl: 'Templates/listAttestation.html',
+            controller: 'ListAttestationController'
+        })
         .state('linkAttestation', {
-            url: '/linkAttestation',
+            url: '/linkAttestation/:attestationId',
             templateUrl: 'Templates/linkAttestation.html',
             controller: 'LinkAttestationController'
         })

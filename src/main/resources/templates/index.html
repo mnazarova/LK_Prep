@@ -41,8 +41,9 @@
 
     <div ng-controller="ModalController">
         <script type="text/ng-template" id="modalTemplate.html">
-            <div class="modal-header" ng-show="!config.noHeader"><a class="close" href="#" ng-click="close()">×</a>
-                <h3>Внимание!</h3>
+            <div class="modal-header" ng-show="!noHeader">
+                <a class="close ng-hide" href="#" ng-click="close()">×</a>
+<!--                <h3>Внимание!</h3>-->
             </div>
             <div class="modal-body" ng-bind-html="config.body"></div>
             <div class="modal-footer" ng-show="!config.noFooter">
@@ -121,7 +122,7 @@
 
                         <!-- Для секретаря -->
                         <li class="nav-item ng-hide" ng-show="ur == 'SECRETARY'">
-                            <a class="nav-link" ui-sref-active="active" ui-sref="linkAttestation">
+                            <a class="nav-link" ui-sref-active="active" ui-sref="listAttestation">
                                 <i class="fa fa-list-alt"></i>
                                 Аттестация
                             </a>
@@ -204,7 +205,7 @@
 
 <!--                <li class="list-inline-item ng-hide" ng-show="ur == 'SECRETARY'"><a ui-sref-active="active" ui-sref="addSubgroup">Добавить подгруппу</a></li>-->
 <!--                <li class="list-inline-item ng-hide" ng-show="ur == 'SECRETARY'"><a ui-sref-active="active" ui-sref="link">Настроить списки &lt;!&ndash;Связать (под)группу и преподавателя&ndash;&gt;</a></li>-->
-                <li class="list-inline-item ng-hide" ng-show="ur == 'SECRETARY'"><a ui-sref-active="active" ui-sref="linkAttestation">Аттестация</a></li>
+                <li class="list-inline-item ng-hide" ng-show="ur == 'SECRETARY'"><a ui-sref-active="active" ui-sref="listAttestation">Аттестация</a></li>
                 <li class="list-inline-item ng-hide" ng-show="ur == 'SECRETARY'"><a ui-sref-active="active" ui-sref="linkSession">Сессия</a></li>
 
 <!--                <li class="list-inline-item ng-hide" ng-show="ur == 'TEACHER'"><a ui-sref-active="active" ui-sref="attestation">Заполнение ведомостей</a></li>-->
@@ -260,6 +261,7 @@
 
     <script src="Controllers/LinkSession.js"></script>
     <script src="Controllers/LinkSessionId.js"></script>
+    <script src="Controllers/ListAttestation.js"></script>
     <script src="Controllers/LinkAttestation.js"></script>
     <script src="Controllers/LinkAttestationId.js"></script>
 

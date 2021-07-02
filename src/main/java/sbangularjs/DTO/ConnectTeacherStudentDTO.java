@@ -15,7 +15,7 @@ public class ConnectTeacherStudentDTO {
     private Teacher attestationTeacher;
     // Допуск
     private Teacher admittanceTeacher;
-    // Экзамен/Зачёт/Диф.зачёт
+    // Экзамен/Зачёт/Дифф. зачёт
     private Teacher examTeacher;
     // КП/КР
     private Teacher krOrKpTeacher;

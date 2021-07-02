@@ -1,20 +1,20 @@
-app.controller("LinkAttestationController", function($scope, $http) {
+app.controller("LinkAttestationController", function($scope, $http, $stateParams) {
 
     $scope.checkRole("SECRETARY");
+    $scope.attestationId = $stateParams.attestationId;
 
-    getActingAttestation();
-    function getActingAttestation() {
+    getGroupsByAttestationId();
+    function getGroupsByAttestationId() {
         $http({
             method: 'PATCH',
-            url: '/getActingAttestation'
+            url: '/getGroupsByAttestationId',
+            params: {
+                attestationId: $stateParams.attestationId
+            }
         }).then(
-            function(res) { // success
-                $scope.attestations = res.data;
-
-                $scope.attestation = {};
-
-                $scope.attestation.selected = res.data[0];
-                $scope.changeAttestationSelected();
+            function(res) {
+                $scope.groupList = res.data;
+                $scope.groups = res.data;
             }
         );
     }
@@ -27,7 +27,7 @@ app.controller("LinkAttestationController", function($scope, $http) {
             url: '/attestationSelectedGroup',
             params: {
                 groupId: $scope.linkAttestationForm.group.$modelValue.id,
-                attestationId: $scope.attestation.selected.id
+                attestationId: $stateParams.attestationId
             }
         }).then(
             function(res) {
@@ -37,26 +37,9 @@ app.controller("LinkAttestationController", function($scope, $http) {
         );
     };
 
-    $scope.changeAttestationSelected = function () {
-        if(!$scope.attestation.selected.id)
-            return;
-        $http({
-            method: 'PATCH',
-            url: '/changeAttestationSelected',
-            params: {
-                attestationId: $scope.attestation.selected.id
-            }
-        }).then(
-            function(res) {
-                $scope.groupList = res.data;
-                $scope.groups = res.data;
-            }
-        );
-    };
-
 
     // attestationGetGroupListByActiveIsTrue();
-    /*function attestationGetGroupListByActiveIsTrue() { вместо этого метода changeAttestationSelected
+    /*function attestationGetGroupListByActiveIsTrue() { вместо этого метода getGroups
         $http({
             method: 'PATCH',
             url: '/attestationGetGroupListByActiveIsTrue'

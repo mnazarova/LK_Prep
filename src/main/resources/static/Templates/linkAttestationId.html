@@ -1,7 +1,8 @@
 <div ng-show="ur == 'SECRETARY'">
 
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a ui-sref="linkAttestation">Список групп</a></li>
+        <li class="breadcrumb-item"><a ui-sref="listAttestation">Список действующих аттестаций</a></li>
+        <li class="breadcrumb-item"><a ui-sref="linkAttestation({attestationId: attestationId})">Список групп</a></li>
         <li class="breadcrumb-item active" aria-current="page">Назначение преподавателей. Аттестационные ведомости</li>
     </ol>
 
@@ -31,7 +32,7 @@
                         <th class="text-center">Название дисциплины</th>
                         <th class="text-center">Аттестация</th>
 <!--                        <th class="text-center">Допуск</th>-->
-<!--                        <th class="text-center">Экзамен/Зачёт/Диф.зачёт</th>-->
+<!--                        <th class="text-center">Экзамен/Зачёт/Дифф. зачёт</th>-->
 <!--                        <th class="text-center">КП/КР</th>-->
                         <th class="text-center"></th>
                     </tr>
@@ -65,79 +66,13 @@
                                 </ui-select-choices>
                             </ui-select>
                         </td>
-                        <!--Допуск-->
-                        <!--<td class="text-center border-info">
-                            <div ng-hide="syllabusContent.attestationForm.id==1||syllabusContent.attestationForm.id==5||syllabusContent.attestationForm.id==6">-</div>
-                            <ui-select ng-model="syllabusContent.admittanceTeacher"
-                                       ng-show="syllabusContent.attestationForm.id==1||syllabusContent.attestationForm.id==5||syllabusContent.attestationForm.id==6"
-                                       ng-disabled="!teachers"
-                                       ng-change="selectedAdmittanceTeacher($index)"
-                                       name="admittanceTeacher"
-                                       class="pt-1"
-                                       theme="select2" title="Выберите преподавателя">
-                                <ui-select-match placeholder="Выберите преп...">
-                                    {{$select.selected.surname + ' ' + $select.selected.initials}}
-                                </ui-select-match>
-                                <ui-select-choices repeat="teacher in teachers | propsFilter: {surname: $select.search, name: $select.search} | orderBy:'surname'">
-                                    <div ng-bind-html="teacher.surname | highlight: $select.search"></div>
-                                    <small>
-                                        {{teacher.name}}
-                                        <span ng-bind-html="teacher.patronymic | highlight: $select.search"></span>
-                                    </small>
-                                </ui-select-choices>
-                            </ui-select>
-                        </td>-->
-                        <!-- Экзамен/Зачёт/Диф.зачёт -->
-                        <!--<td class="text-center border-info">
-                            <div ng-show="syllabusContent.attestationForm.id==8">-</div>
-                            <ui-select ng-model="syllabusContent.examTeacher"
-                                       ng-hide="syllabusContent.attestationForm.id==8"
-                                       ng-disabled="!teachers"
-                                       ng-change="selectedExamTeacher($index)"
-                                       name="examTeacher"
-                                       class="pt-1"
-                                       theme="select2" title="Выберите преподавателя">
-                                <ui-select-match placeholder="Выберите преп...">
-                                    {{$select.selected.surname + ' ' + $select.selected.initials}}
-                                </ui-select-match>
-                                <ui-select-choices repeat="teacher in teachers | propsFilter: {surname: $select.search, name: $select.search} | orderBy:'surname'">
-                                    <div ng-bind-html="teacher.surname | highlight: $select.search"></div>
-                                    <small>
-                                        {{teacher.name}}
-                                        <span ng-bind-html="teacher.patronymic | highlight: $select.search"></span>
-                                    </small>
-                                </ui-select-choices>
-                            </ui-select>
-                        </td>-->
-                        <!-- КП/КР -->
-                        <!--<td class="text-center border-info">
-                            <div ng-show="syllabusContent.attestationForm.id==1||syllabusContent.attestationForm.id==2||syllabusContent.attestationForm.id==3||syllabusContent.attestationForm.id==8">-</div>
-                            <ui-select ng-model="syllabusContent.krOrKpTeacher"
-                                       ng-hide="syllabusContent.attestationForm.id==1||syllabusContent.attestationForm.id==2||syllabusContent.attestationForm.id==3||syllabusContent.attestationForm.id==8"
-                                       ng-disabled="!teachers"
-                                       ng-change="selectedKrOrKpTeacher($index)"
-                                       name="krOrKpTeacher"
-                                       class="pt-1"
-                                       theme="select2" title="Выберите преподавателя">
-                                <ui-select-match placeholder="Выберите преп...">
-                                    {{$select.selected.surname + ' ' + $select.selected.initials}}
-                                </ui-select-match>
-                                <ui-select-choices repeat="teacher in teachers | propsFilter: {surname: $select.search, name: $select.search} | orderBy:'surname'">
-                                    <div ng-bind-html="teacher.surname | highlight: $select.search"></div>
-                                    <small>
-                                        {{teacher.name}}
-                                        <span ng-bind-html="teacher.patronymic | highlight: $select.search"></span>
-                                    </small>
-                                </ui-select-choices>
-                            </ui-select>
-                        </td>-->
                         <!-- Сохранить -->
                         <td class="text-center border-info">
                             <button class="btn btn-md text-white"
                                     ng-class="{'btn-warning': changes[$index],
                                       'btn-info': !changes[$index]}"
                                     type="button"
-                                    data-ng-click="saveAttestationTeachers($index)"
+                                    data-ng-click="checkChangesInAttestationStatement($index)"
                                     title="Сохранить изменения по данной дисциплине">
                                 <i class="fa fa-save"></i>
                             </button>
@@ -170,77 +105,6 @@
                                 </ui-select-choices>
                             </ui-select>
                         </td>
-                        <!--Допуск-->
-                        <!--<td class="text-center border-info">
-                            <div ng-hide="syllabusContent.attestationForm.id==1||syllabusContent.attestationForm.id==5||syllabusContent.attestationForm.id==6">-</div>
-                            <ui-select ng-model="connectTeacherStudentDTO.admittanceTeacher"
-                                       ng-show="syllabusContent.attestationForm.id==1||syllabusContent.attestationForm.id==5||syllabusContent.attestationForm.id==6"
-                                       ng-disabled="!teachers"
-                                       ng-change="selectedAdmittanceTeacherWithDTO($parentIndex)"
-                                       name="connectTeacherStudentDTO.admittanceTeacher"
-                                       class="pt-1"
-                                       theme="select2" title="Выберите преподавателя"
-                                       required>
-                                <ui-select-match placeholder="Выберите преп...">
-                                    {{$select.selected.surname + ' ' + $select.selected.initials}}
-                                </ui-select-match>
-                                <ui-select-choices repeat="teacher in teachers | propsFilter: {surname: $select.search, name: $select.search} | orderBy:'surname'">
-                                    <div ng-bind-html="teacher.surname | highlight: $select.search"></div>
-                                    <small>
-                                        {{teacher.name}}
-                                        <span ng-bind-html="teacher.patronymic | highlight: $select.search"></span>
-                                    </small>
-                                </ui-select-choices>
-                            </ui-select>
-                        </td>-->
-                        <!-- Экзамен/Зачёт/Диф.зачёт -->
-                        <!--<td class="text-center border-info">
-                            <div ng-show="syllabusContent.attestationForm.id==8">-</div>
-                            <ui-select ng-model="connectTeacherStudentDTO.examTeacher"
-                                       ng-hide="syllabusContent.attestationForm.id==8"
-                                       ng-disabled="!teachers"
-                                       ng-change="selectedExamTeacherWithDTO($parentIndex)"
-                                       name="connectTeacherStudentDTO.examTeacher"
-                                       class="pt-1"
-                                       theme="select2" title="Выберите преподавателя"
-                                       required>
-                                <ui-select-match placeholder="Выберите преп...">
-                                    {{$select.selected.surname + ' ' + $select.selected.initials}}
-                                </ui-select-match>
-                                <ui-select-choices repeat="teacher in teachers | propsFilter: {surname: $select.search, name: $select.search} | orderBy:'surname'">
-                                    <div ng-bind-html="teacher.surname | highlight: $select.search"></div>
-                                    <small>
-                                        {{teacher.name}}
-                                        <span ng-bind-html="teacher.patronymic | highlight: $select.search"></span>
-                                    </small>
-                                </ui-select-choices>
-                            </ui-select>
-                        </td>-->
-                        <!-- КП/КР -->
-                        <!--<td class="text-center border-info">
-                            <div ng-show="syllabusContent.attestationForm.id==1||syllabusContent.attestationForm.id==2
-                            ||syllabusContent.attestationForm.id==3||syllabusContent.attestationForm.id==8">-</div>
-                            <ui-select ng-model="connectTeacherStudentDTO.krOrKpTeacher"
-                                       ng-hide="syllabusContent.attestationForm.id==1||syllabusContent.attestationForm.id==2||
-                                       syllabusContent.attestationForm.id==3||syllabusContent.attestationForm.id==8"
-                                       ng-disabled="!teachers"
-                                       ng-change="selectedKrOrKpTeacherWithDTO($parentIndex)"
-                                       name="connectTeacherStudentDTO.krOrKpTeacher"
-                                       class="pt-1"
-                                       theme="select2" title="Выберите преподавателя"
-                                       required>
-                                <ui-select-match placeholder="Выберите преп...">
-                                    {{$select.selected.surname + ' ' + $select.selected.initials}}
-                                </ui-select-match>
-                                <ui-select-choices repeat="teacher in teachers | propsFilter: {surname: $select.search, name: $select.search} | orderBy:'surname'">
-                                    <div ng-bind-html="teacher.surname | highlight: $select.search"></div>
-                                    <small>
-                                        {{teacher.name}}
-                                        <span ng-bind-html="teacher.patronymic | highlight: $select.search"></span>
-                                    </small>
-                                </ui-select-choices>
-                            </ui-select>
-                        </td>-->
                         <td class="text-center border-info"></td>
                     </tr>
                     </tbody>

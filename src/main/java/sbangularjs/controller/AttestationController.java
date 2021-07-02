@@ -42,7 +42,7 @@ public class AttestationController {
            // if (certificationAttestationIds.size() == 0) attestation.setFinished(true);
             attestation.setFinished(true);
             for (Long caId: certificationAttestationIds) {
-                if (attestationContentRepository.findUnfinishedByCertificationAttestationIdAndTeacherId(caId, teacher.getId()) != 0) { // присутствуют null полей
+                if (attestationContentRepository.findUnfinishedByCertificationAttestationIdAndTeacherId(caId, teacher.getId()) != 0) { // присутствуют пустые поля
                     attestation.setFinished(false);
                     break;
                 }

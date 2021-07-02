@@ -13,7 +13,6 @@ import sbangularjs.model.*;
 import sbangularjs.repository.*;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -29,12 +28,15 @@ public class LinkAttestationController {
     private CertificationAttestationRepository certificationAttestationRepository;
     private AttestationContentRepository attestationContentRepository;
 
-    @PatchMapping("/getActingAttestation")
-    public ResponseEntity getActingAttestation() {
-        List<Attestation> attestations = attestationRepository.findAllWithDeadlineDateTimeAfter(new Date());
-        if (attestations.isEmpty())
+    @PatchMapping("/getGroupsByAttestationId")
+    public ResponseEntity getGroupsByAttestationId(@AuthenticationPrincipal User user, Long attestationId) {
+        Attestation attestation = attestationRepository.findAttestationById(attestationId);
+        if (attestation == null || attestation.getFaculty() == null)
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        return new ResponseEntity<>(attestations, HttpStatus.OK);
+        List<Group> groupList = groupRepository.findGroupsByActiveIsTrueAndFacultyIdAndCurSemesterNotNull(attestation.getFaculty().getId());
+        if (groupList.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // You many decide to return HttpStatus.NOT_FOUND
+        return new ResponseEntity<>(setBlankForGroups(user, groupList, attestationId), HttpStatus.OK);
     }
 
     @PatchMapping("/attestationSelectedGroup")
@@ -45,18 +47,6 @@ public class LinkAttestationController {
         List<Group> groupList = new ArrayList<>();
         groupList.add(group);
         return new ResponseEntity<>(setBlankForGroups(user, groupList, attestationId).get(0), HttpStatus.OK);
-    }
-
-
-    @PatchMapping("/changeAttestationSelected")
-    public ResponseEntity changeAttestationSelected(@AuthenticationPrincipal User user, Long attestationId) { // смена аттестации и вывод списка групп
-        Attestation attestation = attestationRepository.findAttestationById(attestationId);
-        if (attestation == null || attestation.getFaculty() == null)
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        List<Group> groupList = groupRepository.findGroupsByActiveIsTrueAndFacultyIdAndCurSemesterNotNull(attestation.getFaculty().getId());
-        if (groupList.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // You many decide to return HttpStatus.NOT_FOUND
-        return new ResponseEntity<>(setBlankForGroups(user, groupList, attestationId), HttpStatus.OK);
     }
 
     private List<Group> setBlankForGroups(User user, List<Group> groupList, Long attestationId) {

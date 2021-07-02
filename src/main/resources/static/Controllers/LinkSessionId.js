@@ -175,14 +175,40 @@ app.controller("LinkSessionIdController", function($scope, $http, $state, $state
     };
     // Студенты
 
-
-    $scope.saveTeachersByDiscipline = function (index) {
-
+    $scope.checkChangesInSessionStatement = function (index) {
         if (!$scope.changes[index]) {
             $scope.toasterWarning('По выбранной дисциплине изменения отсутствуют');
             return;
         }
+        $http({
+            method: 'PATCH',
+            url: '/checkChangesInSessionStatement',
+            params: {
+                groupId: $stateParams.id,
+            },
+            data: angular.toJson($scope.syllabusContentList[index]),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(
+            function(res) {
+                $scope.saveTeachersByDiscipline(index);
+            },
+            function(res) { // error
+                // console.log(res.data)
+                if (res.data.name) // может быть, впоследствии добавить фио студента, где было произведено изменение
+                    $scope.$root['ModalController'].confirmYesAndNo("Преподаватель, назначенный ранее, " +
+                        "уже внёс изменения в ведомость ('" + res.data.name + "'). Они будут потеряны при переназначении преподавателя. " +
+                        "Вы уверены, что хотите продолжить?", "Да", "Нет", 'btn-outline-danger', 'btn-outline-info',
+                        function () {
+                            $scope.saveTeachersByDiscipline(index);
+                        }
+                    );
+            }
+        );
+    };
 
+    $scope.saveTeachersByDiscipline = function (index) {
         $http({
             method: 'PATCH',
             url: '/saveTeachersByDiscipline',

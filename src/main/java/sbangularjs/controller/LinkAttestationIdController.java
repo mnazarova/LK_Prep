@@ -110,6 +110,31 @@ public class LinkAttestationIdController {
         return connectTeacherStudentDTOList;
     }
 
+    @PatchMapping("/checkChangesInAttestationStatement")
+    public ResponseEntity checkChangesInAttestationStatement(@RequestBody SyllabusContent syllabusContent, @RequestParam Long groupId, @RequestParam Long attestationId) {
+        if (syllabusContent == null || syllabusContent.getId() == null || syllabusContent.getConnectTeacherStudentDTOList() == null)
+            return new ResponseEntity<>(-1, HttpStatus.CONFLICT);
+
+        CertificationAttestation certificationAttestation = certificationAttestationRepository.findCertificationAttestationBySyllabusContentIdAndGroupIdAndAttestationId(
+                syllabusContent.getId(), groupId, attestationId);
+        if (certificationAttestation == null || certificationAttestation.getId() == null) // если ранее не была создана ведомость
+            return new ResponseEntity<>(HttpStatus.OK);
+
+        for (ConnectTeacherStudentDTO connectTeacherStudentDTO : syllabusContent.getConnectTeacherStudentDTOList()) {
+            AttestationContent attestationContent = attestationContentRepository.findAttestationContentByCertificationAttestationIdAndStudentId(
+                    certificationAttestation.getId(), connectTeacherStudentDTO.getStudentId());
+            if (connectTeacherStudentDTO.getAttestationTeacher() != null && connectTeacherStudentDTO.getAttestationTeacher().getId() != null) {
+                if (attestationContent != null && attestationContent.getTeacher() != null && attestationContent.getTeacher().getId() != null
+                        && !attestationContent.getTeacher().getId().equals(connectTeacherStudentDTO.getAttestationTeacher().getId())) { // переназначение преподавателя
+                    if (attestationContent.getAttest() != null  || attestationContent.getWorks() != null)
+                        return new ResponseEntity<>(0, HttpStatus.CONFLICT);
+                }
+            }
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @Transactional
     @PatchMapping("/saveAttestationTeachers")
     public ResponseEntity saveAttestationTeachers(@RequestBody SyllabusContent syllabusContent, @RequestParam Long groupId, @RequestParam Long attestationId) {
@@ -124,12 +149,34 @@ public class LinkAttestationIdController {
             certificationAttestation.setGroup(groupRepository.findGroupById(groupId));
             certificationAttestation.setAttestation(attestationRepository.findAttestationById(attestationId));
         }
+        //else // ведомость аттестации уже была создана ранее
+           //attestationContents = attestationContentRepository.findAllByCertificationAttestationIdAndActiveTrue(certificationAttestation.getId());
+
         List<AttestationContent> attestationContents = new ArrayList<>();
         for (ConnectTeacherStudentDTO connectTeacherStudentDTO : syllabusContent.getConnectTeacherStudentDTOList()) {
-            AttestationContent attestationContent = findOrSetAttestationContent(certificationAttestation, connectTeacherStudentDTO.getStudentId());
 
-            if (connectTeacherStudentDTO.getAttestationTeacher() != null)
+            AttestationContent attestationContent = attestationContentRepository.findAttestationContentByCertificationAttestationIdAndStudentId(
+                    certificationAttestation.getId(), connectTeacherStudentDTO.getStudentId());
+            if (attestationContent == null) { // если ранее не назначался преподаватель
+                attestationContent = new AttestationContent();
+                attestationContent.setCertificationAttestation(certificationAttestation);
+                attestationContent.setStudent(studentRepository.findStudentById(connectTeacherStudentDTO.getStudentId()));
+                attestationContent.setActive(true);
+            }
+
+            if (connectTeacherStudentDTO.getAttestationTeacher() != null && connectTeacherStudentDTO.getAttestationTeacher().getId() != null) { // если назначен преподаватель
+                if (attestationContent.getTeacher() != null && attestationContent.getTeacher().getId() != null &&
+                    !attestationContent.getTeacher().getId().equals(connectTeacherStudentDTO.getAttestationTeacher().getId())) { // переназначение преподавателя
+//                    if (attestationContent.getAttest() != null  || attestationContent.getWorks() != null) {
+                        /*Стирание данных аттестационного оценивания*/
+                        attestationContent.setAttest(null);
+                        attestationContent.setDateAttest(null);
+                        attestationContent.setWorks(null);
+                        attestationContent.setDateWorks(null);
+//                    }
+                }
                 attestationContent.setTeacher(connectTeacherStudentDTO.getAttestationTeacher());
+            }
 
             attestationContents.add(attestationContent);
         }
@@ -142,28 +189,6 @@ public class LinkAttestationIdController {
         sc.setConnectTeacherStudentDTOList(setConnectTeacherStudentDTO(students, groupId, sc, attestationId));
 
         return new ResponseEntity<>(sc, HttpStatus.OK);
-    }
-
-    private AttestationContent findOrSetAttestationContent(CertificationAttestation certificationAttestation, Long studentId) {
-        AttestationContent attestationContent = new AttestationContent();
-        if (certificationAttestation != null && certificationAttestation.getId() != null) { // Аттестационная ведомость была создана
-            attestationContent = attestationContentRepository.findAttestationContentByCertificationAttestationIdAndStudentId(
-                    certificationAttestation.getId(), studentId);
-            if (attestationContent == null)
-                attestationContent = new AttestationContent();
-        }
-        attestationContent.setCertificationAttestation(certificationAttestation);
-        attestationContent.setStudent(studentRepository.findStudentById(studentId));
-
-        /*Стирание данных аттестационного оценивания*/
-        attestationContent.setAttest(null);
-        attestationContent.setDateAttest(null);
-        attestationContent.setWorks(null);
-        attestationContent.setDateWorks(null);
-
-        attestationContent.setActive(true);
-
-        return attestationContent;
     }
 
 }

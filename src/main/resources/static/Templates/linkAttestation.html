@@ -1,38 +1,19 @@
 <div ng-show="ur == 'SECRETARY'">
 
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a ui-sref="listAttestation">Список действующих аттестаций</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Список групп</li>
+    </ol>
+
     <div class="p-0 mt-4 card col-md-10 mx-auto border-info">
 
         <div class="font-weight-bold h4 text-center mt-4">Назначение преподавателей</div>
         <div class="font-weight-bold h5 text-center mt-2">Аттестационные ведомости</div>
+        <hr>
+        <div class="font-weight-bold h5 text-center mt-2">Список групп</div>
 
         <form class="simple-form" name="linkAttestationForm">
-            <div class="col-md-4 mx-auto my-3">
-                <ui-select ng-model="attestation.selected"
-                           ng-change="changeAttestationSelected()"
-                           ng-disabled="!attestations.length"
-                           name="attestation"
-                           class="col-md-12 p-0"
-                           theme="select2" title="Выберите аттестацию"
-                           required>
-                    <ui-select-match placeholder="Выберите аттестацию...">
-                        {{$select.selected.name}} (Факультет {{$select.selected.faculty.shortName}})
-                    </ui-select-match>
-                    <ui-select-choices repeat="attestation in attestations | propsFilter: {name: $select.search}">
-                        <div ng-bind-html="attestation.name | highlight: $select.search"></div>
-                        <small>
-                            Факультет: {{attestation.faculty.shortName}} ({{attestation.faculty.fullName}})
-                            <br>Дата окончания аттестации: {{attestation.deadline | date: 'dd.MM.yyyy'}}
-                        </small>
-                    </ui-select-choices>
-                </ui-select>
-                <div class="text-center my-2 font-weight-bold">
-                    <div ng-show="attestation.selected">Дата окончания аттестации: {{attestation.selected.deadline | date: 'dd.MM.yyyy'}}</div>
-                    <div class="text-danger" ng-show="!attestation.selected">Необходимо выбрать аттестацию!</div>
-                </div>
-            </div>
-
             <div class="col-md-4 mx-auto my-3" ng-hide="!groupList.length">
-                <hr>
                 <ui-select ng-model="group.selected"
                            ng-change="attestationSelectedGroup()"
                            name="group"
@@ -49,8 +30,8 @@
             </div>
         </form>
 
-        <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!groups.length && attestation.selected">
-            Группы на данном факультете отсутствуют
+        <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!groups.length">
+            Группы факультета, на котором проводится аттестация, отсутствуют
         </div>
 
         <div class="ng-hide my-3" ng-show="groups.length">
@@ -77,8 +58,7 @@
                     <td class="text-center border-info">
                         <button class="btn btn-md btn-info text-white"
                                 type="button"
-                                ng-disabled="!attestation.selected"
-                                ui-sref="linkAttestationId({id: group.id, attestationId: attestation.selected.id})"
+                                ui-sref="linkAttestationId({id: group.id, attestationId: attestationId})"
                                 title="Назначить преподавателей">
                             <i class="fa fa-share-square-o"></i>
                         </button>

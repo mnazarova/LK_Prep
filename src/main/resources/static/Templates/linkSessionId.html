@@ -26,7 +26,7 @@
                         <th class="text-center">Название дисциплины</th>
     <!--                    <th class="text-center">Аттестация</th>-->
                         <th class="text-center">Допуск</th>
-                        <th class="text-center">Экзамен/Зачёт/Диф.зачёт</th>
+                        <th class="text-center">Экзамен/Зачёт/Дифф.зачёт</th>
                         <th class="text-center">КП/КР</th>
                         <th class="text-center"></th>
                     </tr>
@@ -82,7 +82,7 @@
                                 </ui-select-choices>
                             </ui-select>
                         </td>
-                        <!-- Экзамен/Зачёт/Диф.зачёт -->
+                        <!-- Экзамен/Зачёт/Дифф. зачёт -->
                         <td class="text-center border-info">
                             <div ng-show="syllabusContent.attestationForm.id==8">-</div>
                             <ui-select ng-model="syllabusContent.examTeacher"
@@ -132,7 +132,7 @@
                                     ng-class="{'btn-warning': changes[$index],
                                       'btn-info': !changes[$index]}"
                                     type="button"
-                                    data-ng-click="saveTeachersByDiscipline($index)"
+                                    data-ng-click="checkChangesInSessionStatement($index)"
                                     title="Сохранить изменения по данной дисциплине">
                                 <i class="fa fa-save"></i>
                             </button>
@@ -188,7 +188,7 @@
                                 </ui-select-choices>
                             </ui-select>
                         </td>
-                        <!-- Экзамен/Зачёт/Диф.зачёт -->
+                        <!-- Экзамен/Зачёт/Дифф. зачёт -->
                         <td class="text-center border-info">
                             <div ng-show="syllabusContent.attestationForm.id==8">-</div>
                             <ui-select ng-model="connectTeacherStudentDTO.examTeacher"

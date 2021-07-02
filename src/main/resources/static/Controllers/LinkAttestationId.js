@@ -1,6 +1,7 @@
 app.controller("LinkAttestationIdController", function($scope, $http, $state, $stateParams) {
 
     $scope.checkRole("SECRETARY");
+    $scope.attestationId = $stateParams.attestationId;
 
     $scope.showStudents = [];
     $scope.changes = [];
@@ -142,13 +143,41 @@ app.controller("LinkAttestationIdController", function($scope, $http, $state, $s
         $scope.checkChanges(index);
     };
 
-
-    $scope.saveAttestationTeachers = function (index) {
-
+    $scope.checkChangesInAttestationStatement = function (index) {
         if (!$scope.changes[index]) {
             $scope.toasterWarning('По выбранной дисциплине изменения отсутствуют');
             return;
         }
+        $http({
+            method: 'PATCH',
+            url: '/checkChangesInAttestationStatement',
+            params: {
+                groupId: $stateParams.id,
+                attestationId: $stateParams.attestationId
+            },
+            data: angular.toJson($scope.syllabusContentList[index]),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(
+            function(res) {
+                $scope.saveAttestationTeachers(index);
+            },
+            function(res) { // error
+                 // console.log(res.data)
+                if (res.data === 0)
+                    $scope.$root['ModalController'].confirmYesAndNo("Преподаватель, назначенный ранее, " +
+                        "уже внёс изменения в ведомость. Они будут потеряны при переназначении преподавателя. " +
+                        "Вы уверены, что хотите продолжить?", "Да", "Нет", 'btn-outline-danger', 'btn-outline-info',
+                        function () {
+                            $scope.saveAttestationTeachers(index);
+                        }
+                    );
+            }
+        );
+    };
+
+    $scope.saveAttestationTeachers = function (index) {
         $http({
             method: 'PATCH',
             url: '/saveAttestationTeachers',
