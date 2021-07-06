@@ -1,43 +1,56 @@
-app.controller("SessionStatementsDeaneryController", function($scope, $http) {
+app.controller("SessionStatementsDeaneryController", function($scope, $state, $http, $stateParams) {
 
     $scope.checkRole("DEANERY");
 
-    getSessionStatementsByDeanery();
-    function getSessionStatementsByDeanery() {
+    $scope.groupId = $stateParams.groupId;
+    $scope.sessionStatementForm = {};
+
+    getSemesterNumberSetByGroupId();
+    function getSemesterNumberSetByGroupId() {
         $http({
             method: 'PATCH',
-            url: '/getSessionStatementsByDeanery',
-            params: { groupIds: '' }
+            url: '/getSemesterNumberSetByGroupId',
+            params: { groupId: $stateParams.groupId }
         }).then(
             function(res) { // success
-                $scope.sessionStatements = res.data;
-                $scope.arrayGroupId = [];
-                $scope.groupListSession = [];
-                for (let i = 0, size = $scope.sessionStatements.length; i < size; i++) {
-                    let groupListSessionElement = {};
-                    groupListSessionElement.groupId = $scope.sessionStatements[i].groupId;
-                    groupListSessionElement.groupNumber = $scope.sessionStatements[i].groupNumber;
-                    if ($scope.arrayGroupId.indexOf(groupListSessionElement.groupId) === -1) {
-                        $scope.arrayGroupId.push(groupListSessionElement.groupId);
-                        $scope.groupListSession.push(groupListSessionElement);
-                    }
-                }
-                // console.log($scope.sessionStatements)
-                // console.log($scope.groupListSession)
+                $scope.semesterNumberList = res.data;
+                getCurSemesterByGroupId();
             },
             function(res) { // error
                 if (res.data === 0)
                     $scope.toasterError('Проблема с Вашей учётной записью. Пожалуйста, обратитесь к администратору!');
+                else
+                    if (res.data === 1) {
+                        $scope.toasterError('Выбранная группа недоступна для просмотра!');
+                        $state.go('sessionGroupsDeanery');
+                    }
             }
         )
     }
 
-    $scope.selectedOnGroupListSession = function () {
+    function getCurSemesterByGroupId() {
         $http({
             method: 'PATCH',
-            url: '/getSessionStatementsByDeanery',
+            url: '/getCurSemesterByGroupId',
+            params: { groupId: $stateParams.groupId }
+        }).then(
+            function(res) {
+                $scope.curSemesterNumber = res.data;
+                $scope.sessionStatementForm.semesterNumber = res.data;
+                if (res.data < $scope.semesterNumberList[0] && res.data > $scope.semesterNumberList[$scope.semesterNumberList.length-1])
+                    $scope.sessionStatementForm.semesterNumber = $scope.semesterNumberList[0];
+                $scope.selectedSemesterNumber();
+            }
+        )
+    }
+
+    $scope.selectedSemesterNumber = function () {
+        $http({
+            method: 'PATCH',
+            url: '/getSessionStatementsByGroupIdAndSemesterNumberForDeanery',
             params: {
-                groupIds: $scope.sessionStatementForm.group.$modelValue.groupId
+                groupId: $stateParams.groupId,
+                semesterNumber: $scope.sessionStatementForm.semesterNumber
             }
         }).then(
             function(res) {

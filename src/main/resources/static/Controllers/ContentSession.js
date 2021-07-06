@@ -82,7 +82,7 @@ app.controller("ContentSessionController", function($scope, $state, $stateParams
                 if (res.data === 0)
                     $scope.toasterError('Проблема с Вашей учётной записью. Пожалуйста, обратитесь к администратору!');
                 else {
-                    $scope.toasterError('Выбранная ведомость не доступна!');
+                    $scope.toasterError('Выбранная ведомость недоступна для просмотра!');
                     $state.go('session');
                 }
             }

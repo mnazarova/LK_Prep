@@ -1,0 +1,139 @@
+<div ng-show="ur == 'DEPUTY_DEAN'">
+
+    <div class="py-4 my-3 card col-md-10 mx-auto border-info">
+        <form class="simple-form" name="sessionGroupsForm">
+
+            <div class="font-weight-bold h4 text-center my-4">Список групп</div>
+            <div class="col-sm-4 col-lg-3 mx-auto mb-5">
+                <ui-select ng-model="group.selected"
+                           ng-change="selectedOnGroupList()"
+                           ng-disabled="!groupList.length"
+                           name="group"
+                           class="col-md-12 p-0"
+                           theme="select2" title="Поиск группы"
+                           required>
+                    <ui-select-match placeholder="Поиск группы...">
+                        {{$select.selected.number}}
+                    </ui-select-match>
+                    <ui-select-choices repeat="gr in groupList | propsFilter: {number: $select.search} | orderBy:'number'">
+                        <div ng-bind-html="gr.number | highlight: $select.search"></div>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+
+            <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!groups.length">
+                Вы не курируете ни одну группу
+            </div>
+
+            <div class="ng-hide my-3" ng-show="groups.length">
+                <table class="table table-hover table-striped table-sm">
+                    <thead>
+                    <tr>
+                        <th class="text-center">Номер группы</th>
+                        <th class="text-center">Текущий семестр</th>
+                        <th class="text-center">Актуальность
+                            <i class="fa fa-info-circle text-info" data-toggle="tooltip" data-placement="top"
+                               title="Группы, которые ещё не выпустились">
+                            </i>
+                        </th>
+                        <th class="text-center"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="group in groups | orderBy:'number' track by $index">
+                        <td class="text-center border-info">{{group.number}}</td>
+                        <td class="text-center border-info h5">
+                            <div class="badge badge-secondary">{{group.curSemester}}</div>
+                        </td>
+                        <td class="text-center border-info">
+                            <input type="checkbox"
+                                   class="form-control form-control-sm"
+                                   name="group.active"
+                                   ng-model="group.active"
+                                   disabled>
+                        </td>
+                        <td class="text-center border-info">
+                            <button class="btn btn-md btn-info text-white"
+                                    type="button"
+                                    ui-sref="deputyDeanSessionStatements({groupId: group.id})"
+                                    title="Перейти к сессионным ведомостям">
+                                <i class="fa fa-share-square-o"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </form>
+    </div>
+
+    <!--<div class="my-3 card col-md-10 mx-auto border-info">
+        <form class="simple-form" name="sessionStatementForm">
+
+            <div class="my-5">
+                <div class="font-weight-bold h4 text-center">
+                    Сессионные ведомости
+                    <i class="fa fa-warning text-warning" data-toggle="tooltip" data-placement="top"
+                       title="Список содержит лишь те группы, у которых проставлен дедлайн текущего семестра">
+                    </i>
+                </div>
+                <div class="col-sm-4 col-lg-3 mx-auto mt-4">
+                    <ui-select ng-model="group.selected"
+                               ng-change="selectedOnGroupListSession()"
+                               ng-disabled="!groupListSession.length"
+                               name="group"
+                               class="col-md-12 p-0"
+                               theme="select2" title="Поиск группы"
+                               required>
+                        <ui-select-match placeholder="Поиск группы...">
+                            {{$select.selected.groupNumber}}
+                        </ui-select-match>
+                        <ui-select-choices repeat="gr in groupListSession | propsFilter: {groupNumber: $select.search} | orderBy:'groupNumber'">
+                            <div ng-bind-html="gr.groupNumber | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
+
+            <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!sessionStatements.length">
+                Сессионные ведомости не найдены
+            </div>
+
+            <table class="table table-hover table-striped table-sm table-responsive-sm" ng-if="sessionStatements.length">
+                <thead>
+                <tr>
+                    <th class="text-center">Номер группы</th>
+                    <th class="text-center">Дисциплина</th>
+                    <th class="text-center">Форма аттестации</th>
+                    <th class="text-center">Крайний срок внесения изменений
+                        <i class="fa fa-info-circle text-info" data-toggle="tooltip" data-placement="top"
+                           title="До этой даты (не включая) у преподавателей имеется возможность вносить изменения в ведомости">
+                        </i>
+                    </th>
+                    <th class="text-center"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="sessionStatement in sessionStatements | orderBy:'disciplineName' track by $index">
+                    <td class="text-center border-info">{{sessionStatement.groupNumber}}</td>
+                    <td class="text-center border-info">{{sessionStatement.disciplineName}}</td>
+                    <td class="text-center border-info">{{sessionStatement.splitAttestationFormName}}</td>
+                    <td class="text-center border-info">{{sessionStatement.deadlineDiscipline | date: 'dd.MM.yyyy'}}</td>
+                    <td class="text-center border-info">
+                        <button class="btn btn-md btn-info text-white"
+                                type="button"
+                                ui-sref="deputyDeanSessionStatement({sessionSheetId: sessionStatement.sessionSheetId})"
+                                title="Просмотр ведомости">
+                            <i class="fa fa-eye"></i>
+                            Просмотр ведомости
+                        </button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </form>
+    </div>-->
+
+</div>

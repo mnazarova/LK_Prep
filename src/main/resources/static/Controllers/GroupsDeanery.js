@@ -18,24 +18,42 @@ app.controller("GroupsDeaneryController", function($scope, $http, $filter) {
     function getSyllabusesByDeaneryId() {
         $http({
             method: 'PATCH',
-            url: '/getSyllabusesByDeaneryId'
+            url: '/getSyllabusesByDeaneryId',
+            params: { syllabusId: '' }
         }).then(
             function(res) { // success
-                $scope.syllabuses = res.data;
-                let lengthSyllabuses = $scope.syllabuses.length;
-                for(let i = 0; i < lengthSyllabuses; i++) {
-                    setGlobalValue(i, $scope.syllabuses);
-                    $scope.oldSyllabuses[i] = angular.copy($scope.syllabuses[i]);
-                    checkChanges(i);
-
-                    getSemesterNumberSetBySyllabusId($scope.syllabuses[i].id, i);
-                    getEstimatedCurSemesterNumber($scope.syllabuses[i].id, i);
-                }
-                // console.log($scope.semesterNumberSet)
-                // console.log($scope.estimatedCurSemesterNumber)
+                $scope.syllabusList = res.data;
+                initSyllabus(res.data);
             }
         );
     }
+
+    function initSyllabus(data) {
+        $scope.syllabuses = data;
+        let lengthSyllabuses = $scope.syllabuses.length;
+        for(let i = 0; i < lengthSyllabuses; i++) {
+            setGlobalValue(i, $scope.syllabuses);
+            $scope.oldSyllabuses[i] = angular.copy($scope.syllabuses[i]);
+            checkChanges(i);
+
+            getSemesterNumberSetBySyllabusId($scope.syllabuses[i].id, i);
+            getEstimatedCurSemesterNumber($scope.syllabuses[i].id, i);
+        }
+        // console.log($scope.semesterNumberSet)
+        // console.log($scope.estimatedCurSemesterNumber)
+    }
+
+    $scope.selectedOnSyllabusList = function () {
+        $http({
+            method: 'PATCH',
+            url: '/getSyllabusesByDeaneryId',
+            params: { syllabusId: $scope.groupsForm.selectSyllabus.$modelValue.id }
+        }).then(
+            function(res) {
+                initSyllabus(res.data);
+            }
+        );
+    };
 
     function setGlobalValue(index, sList) {
         if (sList[index].groups) sList[index].globalActive = sList[index].groups[0].active;
@@ -60,7 +78,7 @@ app.controller("GroupsDeaneryController", function($scope, $http, $filter) {
     function getSemesterNumberSetBySyllabusId(syllabusId, index) {
         $http({
             method: 'PATCH',
-            url: '/getSemesterNumberSetByGroupId',
+            url: '/getSemesterNumberSetBySyllabusIdForDeanery',
             params: { syllabusId: syllabusId }
         }).then(
             function(res) {
@@ -109,7 +127,9 @@ app.controller("GroupsDeaneryController", function($scope, $http, $filter) {
             $scope.toasterWarning('Изменения отсутствуют');
             return;
         }
-        if ($scope.groupsForm['deadline_' + index].$error.min || $scope.groupsForm['deadline_' + index].$dirty && $scope.groupsForm['deadline_' + index].$invalid) {
+        // console.log($scope.groupsForm['deadline_' + index])
+        if ($scope.groupsForm['deadline_' + index].$dirty && ($scope.groupsForm['deadline_' + index].$error.min ||
+            $scope.groupsForm['deadline_' + index].$error.max || $scope.groupsForm['deadline_' + index].$invalid)) {
             $scope.toasterWarning('Введена некорректная дата');
             // $scope.toasterWarning('Введена некорректная дата! Минимально допустимое значение: ' + $scope.minDate);
             return;

@@ -45,7 +45,7 @@ app.controller("ContentAttestationController", function($scope, $state, $statePa
                 if (res.data === 0)
                     $scope.toasterError('Проблема с Вашей учётной записью. Пожалуйста, обратитесь к администратору!');
                 else {
-                    $scope.toasterError('Выбранная ведомость не доступна в текущей аттестации!');
+                    $scope.toasterError('Выбранная ведомость недоступна в текущей аттестации!');
                     $state.go('subject', {id: $stateParams.attestationId});
                 }
             }

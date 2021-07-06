@@ -22,7 +22,7 @@ app.controller("StudentsDeputyDeanController", function($scope, $http, $statePar
                     $scope.toasterError('Проблема с Вашей учётной записью. Пожалуйста, обратитесь к администратору!');
                 else
                     if (res.data === 1) {
-                        $scope.toasterError('Список студентов выбранной группы не доступен для просмотра!');
+                        $scope.toasterError('Список студентов выбранной группы недоступен для просмотра!');
                         $state.go('groups');
                     }
             }

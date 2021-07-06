@@ -30,7 +30,7 @@ app.controller("AttestationStatementsDeaneryController", function($stateParams, 
                     $scope.toasterError('Проблема с Вашей учётной записью. Пожалуйста, обратитесь к администратору!');
                 else
                     if (res.data === 1) {
-                        $scope.toasterError('Выбранная аттестация не доступна для просмотра!');
+                        $scope.toasterError('Выбранная аттестация недоступна для просмотра!');
                         $state.go('viewAttestationsDeanery');
                     }
             }

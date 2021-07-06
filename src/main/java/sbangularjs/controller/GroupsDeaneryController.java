@@ -29,11 +29,16 @@ public class GroupsDeaneryController {
     private SyllabusContentRepository syllabusContentRepository;
 
     @PatchMapping("/getSyllabusesByDeaneryId")
-    public ResponseEntity getSyllabusesByDeaneryId(@AuthenticationPrincipal User user) {
+    public ResponseEntity getSyllabusesByDeaneryId(@AuthenticationPrincipal User user, @RequestParam Long syllabusId) { // syllabusId == null - все уч. планы, иначе один, выбранный пользователем
         Deanery curDeanery = deaneryRepository.findByUsername(user.getUsername());
         if (curDeanery == null || curDeanery.getId() == null) return new ResponseEntity(HttpStatus.CONFLICT);
-        Set<Syllabus> syllabuses = syllabusRepository.findSyllabusesByDeaneryId(curDeanery.getId()/*, Sort.by("group.curSemester")*/);
-        if (syllabuses.isEmpty()) return new ResponseEntity(HttpStatus.NO_CONTENT);
+
+        Set<Syllabus> syllabuses = new HashSet<>();
+        if (syllabusId == null)
+            syllabuses = syllabusRepository.findSyllabusesByDeaneryId(curDeanery.getId()/*, Sort.by("group.curSemester")*/);
+        else
+            syllabuses.add(syllabusRepository.findSyllabusById(syllabusId));
+
         for (Syllabus syllabus: syllabuses) {
             if (syllabus.getGroups().size() != 0) { // set Deadline
                 List<SyllabusContent> sc = syllabusContentRepository
@@ -53,8 +58,8 @@ public class GroupsDeaneryController {
         return new ResponseEntity<>(syllabuses, HttpStatus.OK);
     }
 
-    @PatchMapping("/getSemesterNumberSetByGroupId")
-    public ResponseEntity getSemesterNumberSetByGroupId(@RequestParam Long syllabusId) {
+    @PatchMapping("/getSemesterNumberSetBySyllabusIdForDeanery")
+    public ResponseEntity getSemesterNumberSetBySyllabusIdForDeanery(@RequestParam Long syllabusId) {
 
         Set<Integer> semesterNumberSet = syllabusContentRepository.findSemesterNumberSetBySyllabusId(syllabusId);
         /*if (semesterNumberSet.contains(0)) */semesterNumberSet.remove(0);
@@ -82,12 +87,12 @@ public class GroupsDeaneryController {
             add = 2; // 1 или 2, в зависимости от времени года
 
         // с какого семестра начинается счёт
-        // бакалавр и специалист с нуля, магистр (Инженер) с 8, аспирант с 12? нет, с 1 по 6
+        // бакалавр и специалист с нуля, магистр (Инженер) с 8, аспирант с 12? нет, с 1 по 6 семестры у аспирантов!!!
         int start = 0;
         if (syllabus.getQualification().getId() == 2) // Магистратура
             start = 8;
         //else if (syllabus.getQualification().getId() == 4) // Аспирантура
-          //  start = 12; // 1-6
+          //  start = 12; // 1-6 семестры у аспирантов!!!
 
         int estimatedCurSemesterNumber = start + diff * 2 + add;
 

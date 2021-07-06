@@ -9,7 +9,7 @@ import java.util.List;
 public interface StudentRepository extends JpaRepository<Student, Long> {
     Student findByNumberRecordBook(String username);
     Student findStudentById(Long id);
-    List<Student> findByGroupId(Long groupId);
+    List<Student> findByGroupIdOrderById(Long groupId);
 
     @Query("select s from Student s where s.group.id = :groupId and s.expelled = false")
     List<Student> findNotExpelledStudentsByGroupId(Long groupId); // не отчисленные студенты

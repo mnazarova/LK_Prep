@@ -2,6 +2,8 @@ app.controller("DeputyDeanSessionStatementController", function($scope, $state, 
 
     $scope.checkRole("DEPUTY_DEAN");
 
+    $scope.groupId = $stateParams.groupId;
+
     $scope.selected = {
         id: '',
         name: ''
@@ -32,6 +34,7 @@ app.controller("DeputyDeanSessionStatementController", function($scope, $state, 
             method: 'PATCH',
             url: '/getContentSessionSheetForDeputyDean',
             params: {
+                groupId: $stateParams.groupId,
                 sessionSheetId: $stateParams.sessionSheetId,
             }
         }).then(
@@ -44,19 +47,20 @@ app.controller("DeputyDeanSessionStatementController", function($scope, $state, 
                 $scope.disciplineName = $scope.contentSession[0].sessionSheet.syllabusContent.discipline.name;
                 $scope.splitAttestationForm = $scope.contentSession[0].sessionSheet.splitAttestationForm;
                 $scope.deadlineDiscipline = $scope.contentSession[0].sessionSheet.syllabusContent.deadline;
-                // console.log($scope.contentSession);
             },
             function(res) { // error
                 if (res.data === 0)
                     $scope.toasterError('Проблема с Вашей учётной записью. Пожалуйста, обратитесь к администратору!');
                 else
                     if (res.data === 1) {
-                        $scope.toasterError('Выбранная ведомость не доступна для просмотра!');
-                        $state.go('sessionStatementsDeanery');
+                        $scope.toasterError('Выбранная группа недоступна для просмотра!');
+                        $state.go('deputyDeanSessionGroups');
                     }
-                    /*else
-                        if (res.data === 2)
-                            $scope.toasterError('Выбранная ведомость не относится к текущей аттестации!');*/
+                    else
+                        if (res.data === 2) {
+                            $scope.toasterError('Выбранная ведомость недоступна для просмотра!');
+                            $state.go('deputyDeanSessionStatements', {groupId: $stateParams.groupId});
+                        }
             }
         );
     }

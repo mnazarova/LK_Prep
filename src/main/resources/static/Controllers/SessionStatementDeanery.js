@@ -2,6 +2,8 @@ app.controller("SessionStatementDeaneryController", function($scope, $state, $st
 
     $scope.checkRole("DEANERY");
 
+    $scope.groupId = $stateParams.groupId;
+
     $scope.selected = {
         id: '',
         name: ''
@@ -32,6 +34,7 @@ app.controller("SessionStatementDeaneryController", function($scope, $state, $st
             method: 'PATCH',
             url: '/getContentSessionSheetForDeanery',
             params: {
+                groupId: $stateParams.groupId,
                 sessionSheetId: $stateParams.sessionSheetId,
             }
         }).then(
@@ -51,12 +54,15 @@ app.controller("SessionStatementDeaneryController", function($scope, $state, $st
                     $scope.toasterError('Проблема с Вашей учётной записью. Пожалуйста, обратитесь к администратору!');
                 else
                     if (res.data === 1) {
-                        $scope.toasterError('Выбранная ведомость не доступна для просмотра!');
-                        $state.go('sessionStatementsDeanery');
+                        $scope.toasterError('Выбранная группа недоступна для просмотра!');
+                        $state.go('sessionGroupsDeanery');
+                        // $state.go('sessionStatementsDeanery', {groupId: $stateParams.groupId});
                     }
-                    /*else
-                        if (res.data === 2)
-                            $scope.toasterError('Выбранная ведомость не относится к текущей аттестации!');*/
+                    else
+                        if (res.data === 2) {
+                            $scope.toasterError('Выбранная ведомость недоступна для просмотра!');
+                            $state.go('sessionStatementsDeanery', {groupId: $stateParams.groupId});
+                        }
             }
         );
     }

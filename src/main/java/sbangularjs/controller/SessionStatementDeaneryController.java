@@ -56,18 +56,20 @@ public class SessionStatementDeaneryController {
     }
 
     @PatchMapping("/getContentSessionSheetForDeanery")
-    public ResponseEntity getContentSessionSheetForDeanery(@AuthenticationPrincipal User user, @RequestParam Long sessionSheetId) {
+    public ResponseEntity getContentSessionSheetForDeanery(@AuthenticationPrincipal User user, @RequestParam Long groupId, @RequestParam Long sessionSheetId) {
         Deanery curDeanery = deaneryRepository.findByUsername(user.getUsername());
-        if (curDeanery == null) return new ResponseEntity<>(0, HttpStatus.CONFLICT);
-
-        SessionSheet sessionSheet = sessionSheetRepository.findSessionSheetById(sessionSheetId);
-        if (sessionSheet == null) return new ResponseEntity<>(1, HttpStatus.CONFLICT);
-
-//        if (!certificationAttestation.getAttestation().getId().equals(attestationId)) return new ResponseEntity<>(2, HttpStatus.CONFLICT);
+        if (curDeanery == null || curDeanery.getId() == null) return new ResponseEntity<>(0, HttpStatus.CONFLICT);
 
         // если представитель деканата перешёл на страницу группы, не принадлежащей ему, нельзя будет посмотреть данные ведомости!
-        Group group = groupRepository.findByDeaneryIdAndId(curDeanery.getId(), sessionSheet.getGroup().getId());
+        Group group = groupRepository.findByDeaneryIdAndId(curDeanery.getId(), groupId); // группа - деканат
         if (group == null) return new ResponseEntity<>(1, HttpStatus.CONFLICT);
+
+        SessionSheet sessionSheet = sessionSheetRepository.findSessionSheetById(sessionSheetId);
+        if (sessionSheet == null || sessionSheet.getGroup() == null || sessionSheet.getGroup().getId() == null ||
+            !sessionSheet.getGroup().getId().equals(groupId)) // группа в адресной строке - группа в ведомости
+            return new ResponseEntity<>(2, HttpStatus.CONFLICT);
+
+//        if (!certificationAttestation.getAttestation().getId().equals(attestationId)) return new ResponseEntity<>(3, HttpStatus.CONFLICT);
 
         List<SessionSheetContent> sessionSheetContents = sessionSheetContentRepository.findAllBySessionSheetIdAndActiveIsTrue(sessionSheetId, Sort.by(Sort.Direction.ASC, "student.surname"));
         if (sessionSheetContents.isEmpty())

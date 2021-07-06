@@ -26,11 +26,16 @@ public class GroupsDeputyDeanController {
     private SyllabusContentRepository syllabusContentRepository;
 
     @PatchMapping("/getSyllabusesByDeputyDeanId")
-    public ResponseEntity getSyllabusesByDeputyDeanId(@AuthenticationPrincipal User user) {
+    public ResponseEntity getSyllabusesByDeputyDeanId(@AuthenticationPrincipal User user, @RequestParam Long syllabusId) { // syllabusId == null - все уч. планы, иначе один, выбранный пользователем
         DeputyDean deputyDean = deputyDeanRepository.findByUsername(user.getUsername());
         if (deputyDean == null || deputyDean.getId() == null) return new ResponseEntity(HttpStatus.CONFLICT);
-        Set<Syllabus> syllabuses = syllabusRepository.findSyllabusesByDeputyDeanId(deputyDean.getId());
-        if (syllabuses.isEmpty()) return new ResponseEntity(HttpStatus.NO_CONTENT);
+
+        Set<Syllabus> syllabuses = new HashSet<>();
+        if (syllabusId == null)
+            syllabuses = syllabusRepository.findSyllabusesByDeputyDeanId(deputyDean.getId());
+        else
+            syllabuses.add(syllabusRepository.findSyllabusById(syllabusId)); // мб добавить проверку соответствия группы и зам. декана
+
         for (Syllabus syllabus: syllabuses) {
             if (syllabus.getGroups().size() != 0) { // set Deadline
                 List<SyllabusContent> sc = syllabusContentRepository

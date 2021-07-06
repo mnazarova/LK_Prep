@@ -34,7 +34,7 @@ public class AttestationStatementsDeputyDeanController {
     public ResponseEntity getGroupsByAttestationAndByDeputyDeanAndByGroupId(@AuthenticationPrincipal User user,
                                 @RequestParam Long id, @RequestParam List<Long> groupIds) { // groupId == null - все группы, иначе одна выбранная пользователем группа
         DeputyDean deputyDean = deputyDeanRepository.findByUsername(user.getUsername());
-        Attestation attestation = attestationRepository.findAttestationById(id);
+//        Attestation attestation = attestationRepository.findAttestationById(id);
         if (deputyDean == null) return new ResponseEntity<>(0, HttpStatus.CONFLICT);
 
         if (groupIds.size() == 0)

@@ -32,7 +32,6 @@ public interface SessionSheetRepository extends JpaRepository<SessionSheet, Long
             "and ssc.teacher.id = :teacherId and ssc.active = true where ss.syllabusContent.deadline > :deadline")
     List<Long> findSessionSheetIdsByTeacherIdAndDeadline(Long teacherId, Date deadline);
 
-
     @Query(value = "select new sbangularjs.DTO.SessionDTO(ss.id, ss.group.id, ss.group.number, " +
             "ss.syllabusContent.discipline.id, ss.syllabusContent.discipline.name, ss.syllabusContent.deadline, " +
             "ss.splitAttestationForm.id, ss.splitAttestationForm.name) " +
@@ -50,7 +49,7 @@ public interface SessionSheetRepository extends JpaRepository<SessionSheet, Long
     List<Long> findSessionSheetIdsDepartmentIdAndDeadlineAngGroupId(Long departmentId, Date deadline, Long groupId);
 
     /* DEANERY */
-    @Query("select ss.id from SessionSheet ss where ss.syllabusContent.deadline > :deadline and ss.group.id in :groupIds")
-    List<Long> findSessionSheetIdsByDeadlineAndGroupIds(Date deadline, List<Long> groupIds);
+    @Query("select ss.id from SessionSheet ss where ss.group.id = :groupId and ss.syllabusContent.semesterNumber = :semesterNumber")
+    List<Long> findSessionSheetIdsByGroupIdAndSemesterNumber(Long groupId, Integer semesterNumber);
 
 }

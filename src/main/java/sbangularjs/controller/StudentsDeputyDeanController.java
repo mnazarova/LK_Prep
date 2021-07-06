@@ -40,7 +40,7 @@ public class StudentsDeputyDeanController {
         Group group = groupRepository.findByDeputyDeanIdAndId(deputyDean.getId(), groupId);
         if (group == null) return new ResponseEntity<>(1, HttpStatus.CONFLICT);
 
-        List<Student> students = studentRepository.findByGroupId(groupId);
+        List<Student> students = studentRepository.findByGroupIdOrderById(groupId);
         if (students.isEmpty()) return new ResponseEntity(HttpStatus.NO_CONTENT);
         return new ResponseEntity<>(students, HttpStatus.OK);
     }
@@ -58,7 +58,7 @@ public class StudentsDeputyDeanController {
             }
         }
         studentRepository.saveAll(updatingStudents);
-        return new ResponseEntity<>(studentRepository.findByGroupId(groupId), HttpStatus.OK);
+        return new ResponseEntity<>(studentRepository.findByGroupIdOrderById(groupId), HttpStatus.OK);
     }
 
     private void changeActiveOfContent(Long groupId, Student student, Boolean active) {

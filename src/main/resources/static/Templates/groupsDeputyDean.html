@@ -1,15 +1,36 @@
 <div ng-show="ur == 'DEPUTY_DEAN'">
 
-    <div class="my-3 card col-md-10 mx-auto border-info">
+    <div class="py-4 my-3 card col-md-10 mx-auto border-info">
+        <form class="simple-form" name="groupsForm">
 
-        <div class="font-weight-bold h4 text-center mt-5">Список групп</div>
-        <div class="ng-hide font-weight-bold text-center m-3 p-2 alert-warning" ng-show="!syllabuses.length">
-            Группы отсутствуют
-        </div>
+            <div class="font-weight-bold h4 text-center my-4">Список учебных планов</div>
+            <div class="col-sm-4 col-lg-3 mx-auto mb-5">
+                <ui-select ng-model="selectSyllabus"
+                           ng-change="selectedOnSyllabusList()"
+                           ng-disabled="!syllabusList.length"
+                           name="selectSyllabus"
+                           class="col-md-12 p-0"
+                           theme="select2" title="Поиск уч. плана по году"
+                           required>
+                    <ui-select-match placeholder="Поиск уч. плана по году...">
+                        {{$select.selected.direction.code + ' Кафедра: ' + $select.selected.department.shortName + ' Год: ' + $select.selected.year}}
+                    </ui-select-match>
+                    <ui-select-choices repeat="sb in syllabusList | propsFilter: {year: $select.search} | orderBy:'year'">
+                        {{sb.direction.code + ' ' + sb.direction.name}}
+                        <small>
+                            <br>
+                            Год: <span ng-bind-html="sb.year | highlight: $select.search"></span>
+                            Кафедра: <span ng-bind-html="sb.department.shortName | highlight: $select.search"></span>
+                        </small>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
 
-        <div class="ng-hide my-3" ng-show="syllabuses.length">
-            <form class="simple-form" name="groupsForm">
+            <div class="ng-hide font-weight-bold text-center m-3 p-2 alert-warning" ng-show="!syllabuses.length">
+                Группы отсутствуют
+            </div>
 
+            <div class="ng-hide my-3" ng-show="syllabuses.length">
                 <table class="table table-hover table-responsive-xl table-sm">
                     <thead>
                     <tr class="bg-white">
@@ -45,6 +66,7 @@
                         <td class="text-center border-white"></td>
                         <td class="text-center border-white pt-4">
                             <input type="checkbox"
+                                   class="form-control form-control-sm"
                                    ng-change="changeGlobalActive($index)"
                                    name="globalActive"
                                    ng-model="syllabus.globalActive">
@@ -79,10 +101,10 @@
                                    required>
 <!--                            <div class="invalid-tooltip py-0">-->
                             <!-- groupsForm['deadline_' + $index].$dirty &&  -->
-                            <div ng-show="groupsForm['deadline_' + $index].$error.min" class="bg-danger text-white p-0">
+                            <div ng-show="groupsForm['deadline_' + $index].$error.min && groupsForm['deadline_' + $index].$dirty" class="bg-danger text-white p-0">
                                 мин. зн.: {{minDate | date:'dd-MM-yyyy'}}
                             </div>
-                            <div ng-show="groupsForm['deadline_' + $index].$error.max" class="bg-danger text-white p-0">
+                            <div ng-show="groupsForm['deadline_' + $index].$error.max && groupsForm['deadline_' + $index].$dirty" class="bg-danger text-white p-0">
                                 макс. значение: {{minDate | date:'dd-MM-2055'}}
                             </div>
                         </td>
@@ -105,6 +127,7 @@
                         <td class="text-center border-info font-weight-bold">{{group.number}}</td>
                         <td class="text-center border-info">
                             <input type="checkbox"
+                                   class="form-control form-control-sm"
                                    name="group.active"
                                    ng-model="group.active"
                                    disabled>
@@ -139,9 +162,9 @@
                     </tbody>
 
                 </table>
+            </div>
 
-            </form>
-        </div>
+        </form>
     </div>
 
 </div>

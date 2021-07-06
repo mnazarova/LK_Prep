@@ -478,13 +478,18 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $sce
             templateUrl: 'Templates/attestationStatementDeanery.html',
             controller: 'AttestationStatementDeaneryController'
         })
+        .state('sessionGroupsDeanery', {
+            url: '/sessionGroupsDeanery',
+            templateUrl: 'Templates/sessionGroupsDeanery.html',
+            controller: 'SessionGroupsDeaneryController'
+        })
         .state('sessionStatementsDeanery', {
-            url: '/sessionStatementsDeanery',
+            url: '/sessionStatementsDeanery/:groupId',
             templateUrl: 'Templates/sessionStatementsDeanery.html',
             controller: 'SessionStatementsDeaneryController'
         })
         .state('sessionStatementDeanery', { // просмотр сессионной ведомости представителем деканата
-            url: '/sessionStatementDeanery/:sessionSheetId',
+            url: '/sessionStatementDeanery/:groupId/:sessionSheetId',
             templateUrl: 'Templates/sessionStatementDeanery.html',
             controller: 'SessionStatementDeaneryController'
         })
@@ -514,13 +519,18 @@ app.config(function ($stateProvider, $urlRouterProvider, $locationProvider, $sce
            templateUrl: 'Templates/attestationStatementDeputyDean.html',
             controller: 'AttestationStatementDeputyDeanController'
         })
+        .state('deputyDeanSessionGroups', {
+            url: '/deputyDeanSessionGroups',
+            templateUrl: 'Templates/deputyDeanSessionGroups.html',
+            controller: 'DeputyDeanSessionGroupsController'
+        })
         .state('deputyDeanSessionStatements', {
-            url: '/deputyDeanSessionStatements',
+            url: '/deputyDeanSessionStatements/:groupId',
             templateUrl: 'Templates/deputyDeanSessionStatements.html',
             controller: 'DeputyDeanSessionStatementsController'
         })
         .state('deputyDeanSessionStatement', { // просмотр сессионной ведомости представителем деканата
-            url: '/deputyDeanSessionStatement/:sessionSheetId',
+            url: '/deputyDeanSessionStatement/:groupId/:sessionSheetId',
             templateUrl: 'Templates/deputyDeanSessionStatement.html',
             controller: 'DeputyDeanSessionStatementController'
         })

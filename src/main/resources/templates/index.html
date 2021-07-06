@@ -88,7 +88,7 @@
                             </a>
                         </li>
                         <li class="nav-item ng-hide" ng-show="ur == 'DEANERY'">
-                            <a class="nav-link" ui-sref-active="active" ui-sref="sessionStatementsDeanery">
+                            <a class="nav-link" ui-sref-active="active" ui-sref="sessionGroupsDeanery">
                                 <i class="fa fa-calendar-check-o"></i>
                                 Сессия
                             </a>
@@ -108,7 +108,7 @@
                             </a>
                         </li>
                         <li class="nav-item ng-hide" ng-show="ur == 'DEPUTY_DEAN'">
-                            <a class="nav-link" ui-sref-active="active" ui-sref="deputyDeanSessionStatements">
+                            <a class="nav-link" ui-sref-active="active" ui-sref="deputyDeanSessionGroups">
                                 <i class="fa fa-calendar-check-o"></i>
                                 Сессия
                             </a>
@@ -196,11 +196,11 @@
                 <!--<li class="list-inline-item ng-hide" ng-show="ur == 'DEANERY'"><a ui-sref-active="active" ui-sref="arrangeCertification">Добавить аттестацию</a></li>-->
                 <li class="list-inline-item ng-hide" ng-show="ur == 'DEANERY'"><a ui-sref-active="active" ui-sref="assignment">Назначение</a></li>
                 <li class="list-inline-item ng-hide" ng-show="ur == 'DEANERY'"><a ui-sref-active="active" ui-sref="viewAttestationsDeanery">Аттестация</a></li>
-                <li class="list-inline-item ng-hide" ng-show="ur == 'DEANERY'"><a ui-sref-active="active" ui-sref="sessionStatementsDeanery">Сессия</a></li>
+                <li class="list-inline-item ng-hide" ng-show="ur == 'DEANERY'"><a ui-sref-active="active" ui-sref="sessionGroupsDeanery">Сессия</a></li>
                 <li class="list-inline-item ng-hide" ng-show="ur == 'DEANERY'"><a ui-sref-active="active" ui-sref="groupsDeanery">Группы</a></li>
 
                 <li class="list-inline-item ng-hide" ng-show="ur == 'DEPUTY_DEAN'"><a ui-sref-active="active" ui-sref="viewAttestationsDeputyDean">Аттестация</a></li>
-                <li class="list-inline-item ng-hide" ng-show="ur == 'DEPUTY_DEAN'"><a ui-sref-active="active" ui-sref="deputyDeanSessionStatements">Сессия</a></li>
+                <li class="list-inline-item ng-hide" ng-show="ur == 'DEPUTY_DEAN'"><a ui-sref-active="active" ui-sref="deputyDeanSessionGroups">Сессия</a></li>
                 <li class="list-inline-item ng-hide" ng-show="ur == 'DEPUTY_DEAN'"><a ui-sref-active="active" ui-sref="groupsDeputyDean">Группы</a></li>
 
 <!--                <li class="list-inline-item ng-hide" ng-show="ur == 'SECRETARY'"><a ui-sref-active="active" ui-sref="addSubgroup">Добавить подгруппу</a></li>-->
@@ -246,6 +246,7 @@
     <script src="Controllers/ViewAttestationsDeanery.js"></script>
     <script src="Controllers/AttestationStatementsDeanery.js"></script>
     <script src="Controllers/AttestationStatementDeanery.js"></script>
+    <script src="Controllers/SessionGroupsDeanery.js"></script>
     <script src="Controllers/SessionStatementsDeanery.js"></script>
     <script src="Controllers/SessionStatementDeanery.js"></script>
     <script src="Controllers/GroupsDeanery.js"></script>
@@ -254,6 +255,7 @@
     <script src="Controllers/ViewAttestationsDeputyDean.js"></script>
     <script src="Controllers/AttestationStatementsDeputyDean.js"></script>
     <script src="Controllers/AttestationStatementDeputyDean.js"></script>
+    <script src="Controllers/DeputyDeanSessionGroups.js"></script>
     <script src="Controllers/DeputyDeanSessionStatements.js"></script>
     <script src="Controllers/DeputyDeanSessionStatement.js"></script>
     <script src="Controllers/GroupsDeputyDean.js"></script>

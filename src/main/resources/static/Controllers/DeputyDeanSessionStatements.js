@@ -1,43 +1,56 @@
-app.controller("DeputyDeanSessionStatementsController", function($scope, $http) {
+app.controller("DeputyDeanSessionStatementsController", function($scope, $state, $http, $stateParams) {
 
     $scope.checkRole("DEPUTY_DEAN");
 
-    getSessionStatementsByDeputyDean();
-    function getSessionStatementsByDeputyDean() {
+    $scope.groupId = $stateParams.groupId;
+    $scope.sessionStatementForm = {};
+
+    getSemesterNumberSetByGroupIdForDeputyDean();
+    function getSemesterNumberSetByGroupIdForDeputyDean() {
         $http({
             method: 'PATCH',
-            url: '/getSessionStatementsByDeputyDean',
-            params: { groupIds: '' }
+            url: '/getSemesterNumberSetByGroupIdForDeputyDean',
+            params: { groupId: $stateParams.groupId }
         }).then(
             function(res) { // success
-                $scope.sessionStatements = res.data;
-                $scope.arrayGroupId = [];
-                $scope.groupListSession = [];
-                for (let i = 0, size = $scope.sessionStatements.length; i < size; i++) {
-                    let groupListSessionElement = {};
-                    groupListSessionElement.groupId = $scope.sessionStatements[i].groupId;
-                    groupListSessionElement.groupNumber = $scope.sessionStatements[i].groupNumber;
-                    if ($scope.arrayGroupId.indexOf(groupListSessionElement.groupId) === -1) {
-                        $scope.arrayGroupId.push(groupListSessionElement.groupId);
-                        $scope.groupListSession.push(groupListSessionElement);
-                    }
-                }
-                // console.log($scope.sessionStatements)
-                // console.log($scope.groupListSession)
+                $scope.semesterNumberList = res.data;
+                getCurSemesterByGroupIdForDeputyDean();
             },
             function(res) { // error
                 if (res.data === 0)
                     $scope.toasterError('Проблема с Вашей учётной записью. Пожалуйста, обратитесь к администратору!');
+                else
+                if (res.data === 1) {
+                    $scope.toasterError('Выбранная группа недоступна для просмотра!');
+                    $state.go('deputyDeanSessionGroups');
+                }
             }
         )
     }
 
-    $scope.selectedOnGroupListSession = function () {
+    function getCurSemesterByGroupIdForDeputyDean() {
         $http({
             method: 'PATCH',
-            url: '/getSessionStatementsByDeputyDean',
+            url: '/getCurSemesterByGroupIdForDeputyDean',
+            params: { groupId: $stateParams.groupId }
+        }).then(
+            function(res) {
+                $scope.curSemesterNumber = res.data;
+                $scope.sessionStatementForm.semesterNumber = res.data;
+                if (res.data < $scope.semesterNumberList[0] && res.data > $scope.semesterNumberList[$scope.semesterNumberList.length-1])
+                    $scope.sessionStatementForm.semesterNumber = $scope.semesterNumberList[0];
+                $scope.selectedSemesterNumber();
+            }
+        )
+    }
+
+    $scope.selectedSemesterNumber = function () {
+        $http({
+            method: 'PATCH',
+            url: '/getSessionStatementsByGroupIdAndSemesterNumberForDeputyDean',
             params: {
-                groupIds: $scope.sessionStatementForm.group.$modelValue.groupId
+                groupId: $stateParams.groupId,
+                semesterNumber: $scope.sessionStatementForm.semesterNumber
             }
         }).then(
             function(res) {
