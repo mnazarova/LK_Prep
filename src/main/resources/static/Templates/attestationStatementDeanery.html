@@ -29,7 +29,11 @@
                         <th class="text-center">Имя</th>
                         <th class="text-center">Отчество</th>
                         <th class="text-center">Номер зачётной книжки</th>
-                        <th class="text-center" style="min-width: 7em">Работает</th>
+                        <th class="text-center" style="min-width: 7em" ng-if="attestation.distant">Работает
+                            <i class="fa fa-info-circle text-info" data-toggle="tooltip" data-placement="top"
+                               title="Приступил к занятиям в дистанционной форме.">
+                            </i>
+                        </th>
                         <th class="text-center" style="min-width: 7em">Аттестован</th>
                         <th class="text-center">Назначенный преподаватель</th>
                     </tr>
@@ -40,7 +44,7 @@
                         <td class="text-center">{{ca.student.name}}</td>
                         <td class="text-center">{{ca.student.patronymic}}</td>
                         <td class="text-center">{{ca.student.numberRecordBook}}</td>
-                        <td class="text-center px-3">
+                        <td class="text-center px-3" ng-if="attestation.distant">
                             <i class="fa fa-info-circle text-info col-md-1" ng-show="ca.dateWorks" data-toggle="tooltip" data-placement="top"
                                title="Последние изменения внесены {{ca.dateWorks | date: 'dd.MM.yyyy в HH:mm'}} ({{ca.setWorksByTeacher.surname +
                                ' ' + ca.setWorksByTeacher.name + ' ' + ca.setWorksByTeacher.patronymic}})">

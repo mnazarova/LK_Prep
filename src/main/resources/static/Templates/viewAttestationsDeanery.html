@@ -14,6 +14,7 @@
                            title="До этой даты (не включая) у преподавателей имеется возможность вносить изменения в ведомости">
                         </i>
                     </th>
+                    <th class="text-center border-white">Дистанционная аттестация</th>
                     <th class="text-center border-white">
                         <a class="btn btn-md btn-light text-info border-info"
                            type="button"
@@ -34,6 +35,13 @@
                     </td>
                     <td class="text-center border-info">{{attestation.name}}</td>
                     <td class="text-center border-info">{{attestation.deadline | date: 'dd.MM.yyyy'}}</td>
+                    <td class="text-center border-info">
+                        <input type="checkbox"
+                               class="form-control form-control-sm"
+                               name="distant"
+                               ng-model="attestation.distant"
+                               disabled>
+                    </td>
                     <td class="text-center border-info">
                         <a class="btn btn-md btn-info text-white"
                            type="button"

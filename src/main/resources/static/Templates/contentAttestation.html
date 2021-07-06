@@ -70,10 +70,11 @@
                         <th class="">Имя</th>
                         <th class="">Отчество</th>
                         <th class="text-center">Номер зачётной книжки</th>
-                        <th class="text-center" style="min-width: 10em">Работает
+                        <th class="text-center" style="min-width: 10em" ng-if="attestation.distant">Работает
                             <i class="fa fa-info-circle text-info" data-toggle="tooltip" data-placement="top"
-                               title="Приступил к работе в дистанционном формате.">
+                               title="Приступил к занятиям в дистанционной форме.">
                             </i>
+                            <!-- title="Приступил к работе в дистанционном формате." -->
                             <!-- Приступил к дистанционному обучению. Если дисциплина ведётся в дистанционном формате -->
                         </th>
                         <th class="text-center" style="min-width: 10em">Аттестован</th>
@@ -86,7 +87,7 @@
                         <th></th>
                         <th></th>
 <!--                        <th class="text-center">Установить значение всем студентам</th>-->
-                        <th class="text-center px-3">
+                        <th class="text-center px-3" ng-if="attestation.distant">
                             <i class="fa fa-info-circle text-muted col-md-1" data-toggle="tooltip" data-placement="top"
                                title="Установка значения поля 'Работает' всем студентам.">
                             </i>
@@ -118,7 +119,7 @@
                         <td class="">{{ca.student.name}}</td>
                         <td class="">{{ca.student.patronymic}}</td>
                         <td class="text-center">{{ca.student.numberRecordBook}}</td>
-                        <td class="text-center px-3">
+                        <td class="text-center px-3" ng-if="attestation.distant">
 <!--                            <div class="row">-->
                             <!--data-toggle="tooltip" data-placement="top"
                                     title="{{ ca.dateWorks ? 'Последние изменения внесены': '' }} {{ca.dateWorks | date: 'dd.MM.yyyy в hh:mm'}}

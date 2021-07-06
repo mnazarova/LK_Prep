@@ -20,6 +20,7 @@ public class Attestation {
 
     private String name;
     private Boolean active;
+    private Boolean distant;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date deadline;

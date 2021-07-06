@@ -2,14 +2,18 @@ app.controller("ArrangeCertificationController", function($scope, $http, $state)
 
     $scope.checkRole("DEANERY");
 
+    $scope.arrangeCertification = {
+        name: '',
+        deadline: '',
+        distant: true
+    };
     $scope.minDate = new Date().setDate(new Date().getDate()+1);
-    $scope.deadline = new Date(new Date($scope.minDate).toISOString().split("T")[0]);
-    // $scope.deadline.setDate($scope.deadline.getDate()+1);
-    $scope.deadline.setHours(0);
-    // console.log($scope.deadline)
+    $scope.arrangeCertification.deadline = new Date(new Date($scope.minDate).toISOString().split("T")[0]);
+    $scope.arrangeCertification.deadline.setDate($scope.arrangeCertification.deadline.getDate()+1);
+    $scope.arrangeCertification.deadline.setHours(0);
 
     $scope.createCertification = function() {
-        if(!$scope.name) {
+        if(!$scope.arrangeCertification.name) {
             $scope.toasterWarning('Введите название аттестации');
             return;
         }
@@ -17,14 +21,10 @@ app.controller("ArrangeCertificationController", function($scope, $http, $state)
             $scope.toasterWarning('Введите корректную дату');//('Форма заполнена некорректно');
             return;
         }
-        $scope.arrangeCertificationDTO = {
-            name: $scope.name,
-            deadline: $scope.deadline
-        };
         $http({
             method: 'PATCH',
             url: '/createCertification',
-            data: angular.toJson($scope.arrangeCertificationDTO),
+            data: angular.toJson($scope.arrangeCertification),
             headers: {
                 'Content-Type': 'application/json'
             }
