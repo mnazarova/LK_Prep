@@ -77,8 +77,8 @@ public class SessionStatementDeaneryController {
 
         /* Установка Допуска, если Экзамен */
         if (sessionSheet.getSplitAttestationForm().getId() == 1) {
-            SessionSheet ss = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormId(
-                    sessionSheet.getSyllabusContent().getId(), sessionSheet.getGroup().getId(), 6L);
+            SessionSheet ss = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormIdAndIsAdditional(
+                    sessionSheet.getSyllabusContent().getId(), sessionSheet.getGroup().getId(), 6L, sessionSheet.getIsAdditional());
             if (ss != null && ss.getId() != null) {
                 for (SessionSheetContent sessionSheetContent : sessionSheetContents) {
                     SessionSheetContent ssc = sessionSheetContentRepository.findSessionSheetContentBySessionSheetIdAndStudentId(

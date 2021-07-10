@@ -5,12 +5,13 @@
         <li class="breadcrumb-item active" aria-current="page">Редактирование сессионной ведомости</li>
     </ol>
 
-    <div class="my-3 pt-5 card col-md-10 mx-auto border-info">
+    <div class="my-3 pt-3 card col-md-10 mx-auto border-info">
 
         <div class="font-weight-bold h3 text-center" ng-show="disciplineName || splitAttestationForm || deadlineDiscipline">
+            <pre ng-show="isAdditional">Дополнительная ведомость</pre>
             <pre ng-show="disciplineName">Дисциплина:<div class="badge bg-aqua-gradient">{{disciplineName}}</div></pre>
             <pre ng-show="splitAttestationForm">Форма аттестации:<div class="badge bg-aqua-gradient">{{splitAttestationForm.name}}</div></pre>
-            <pre ng-show="deadlineDiscipline">Крайний срок внесения изменений в ведомость: <div class="badge bg-aqua-gradient">{{deadlineDiscipline | date: 'dd.MM.yyyy'}}</div></pre>
+            <pre ng-show="deadlineDiscipline && !isAdditional">Крайний срок внесения изменений в ведомость: <div class="badge bg-aqua-gradient">{{deadlineDiscipline | date: 'dd.MM.yyyy'}}</div></pre>
             <hr>
         </div>
 

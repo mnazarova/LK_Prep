@@ -34,7 +34,7 @@ public class ContentSessionController {
         Teacher teacher = teacherRepository.findByUsername(user.getUsername());
         if (teacher == null || teacher.getId() == null)
             return new ResponseEntity<>(0, HttpStatus.CONFLICT);
-        if (sessionSheet == null) // проверка дедлайна дисциплины. sessionSheet.getAttestation() == null || !certificationAttestation.getAttestation().getId().equals(attestationId)
+        if (sessionSheet == null) // из-за доп. ведомостей не нужно проверять дедлайн дисциплины
             return new ResponseEntity<>(1, HttpStatus.CONFLICT);
 
         /*если не зав. каф.*/
@@ -48,10 +48,28 @@ public class ContentSessionController {
             sessionSheetContents = sessionSheetContentRepository.findAllBySessionSheetIdAndTeacherIdAndActiveIsTrue(
                     sessionSheetId, teacher.getId(), Sort.by(Sort.Direction.ASC, "student.surname"));
 
+        /*if (sessionSheet.getIsAdditional()) { // если дополнительная ведомость
+            SessionSheet sessionSheetNonAdditional = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormIdAndIsAdditional(
+                    sessionSheet.getSyllabusContent().getId(), sessionSheet.getGroup().getId(), sessionSheet.getSplitAttestationForm().getId(), false);
+            for (SessionSheetContent sessionSheetContent : sessionSheetContents) { // удаление студентов в доп. ведомости
+                SessionSheetContent sessionSheetContentNonAdditional = sessionSheetContentRepository.findSessionSheetContentBySessionSheetIdAndStudentId(
+                        sessionSheetNonAdditional.getId(), sessionSheetContent.getStudent().getId());
+                if (sessionSheetContentNonAdditional == null || sessionSheetContentNonAdditional.getEvaluation() == null) {
+                    sessionSheetContentRepository.delete(sessionSheetContent);
+                    break;
+                }
+                Long evaluationId = sessionSheetContentNonAdditional.getEvaluation().getId();
+                if (evaluationId.equals(1L) || evaluationId >= 3 && evaluationId <= 6 || evaluationId >= 11 && evaluationId <= 13)
+                    // Не зачтено || Не защитил || Не сдано, Не допущен, Не явился, Неудовлетворительно
+                    sessionSheetContentRepository.delete(sessionSheetContent);
+
+            }
+        }*/
+
         /* Установка Допуска, если Экзамен */
         if (sessionSheet.getSplitAttestationForm().getId() == 1) {
-            SessionSheet ss = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormId(
-                    sessionSheet.getSyllabusContent().getId(), sessionSheet.getGroup().getId(), 6L);
+            SessionSheet ss = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormIdAndIsAdditional(
+                    sessionSheet.getSyllabusContent().getId(), sessionSheet.getGroup().getId(), 6L, sessionSheet.getIsAdditional());
             if (ss != null && ss.getId() != null) {
                 for (SessionSheetContent sessionSheetContent : sessionSheetContents) {
                     SessionSheetContent ssc = sessionSheetContentRepository.findSessionSheetContentBySessionSheetIdAndStudentId(
@@ -110,38 +128,107 @@ public class ContentSessionController {
                 if (curOld.getEvaluation() == null || !sessionSheetContent.getEvaluation().getId().equals(curOld.getEvaluation().getId())) {
                     sessionSheetContent.setDate(new Date());
                     sessionSheetContent.setSetEvaluationByTeacher(teacherRepository.findByUsername(user.getUsername()));
+
+                    if (!sessionSheet.getIsAdditional()) { // если обычная (не дополнительная) ведомость
+                        SessionSheet sessionSheetIsAdditional = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormIdAndIsAdditional(
+                                sessionSheet.getSyllabusContent().getId(), sessionSheet.getGroup().getId(), sessionSheet.getSplitAttestationForm().getId(), true);
+                        SessionSheetContent sessionSheetContentIsAdditional = sessionSheetContentRepository.findSessionSheetContentBySessionSheetIdAndStudentId(
+                                sessionSheetIsAdditional.getId(), sessionSheetContent.getStudent().getId());
+                        if (/*sessionSheetContentIsAdditional != null && */sessionSheetContent.getEvaluation() != null && sessionSheetContent.getEvaluation().getId() != null) {
+                            Long evaluationId = sessionSheetContent.getEvaluation().getId();
+                            Boolean oldActive = sessionSheetContentIsAdditional.getActive();
+                            if (evaluationId.equals(1L) || evaluationId >= 3 && evaluationId <= 6 || evaluationId >= 11 && evaluationId <= 13)
+                                sessionSheetContentIsAdditional.setActive(false);
+                            else // Не зачтено || Не защитил || Не сдано, Не допущен, Не явился, Неудовлетворительно
+                                sessionSheetContentIsAdditional.setActive(true);
+                            if (oldActive != sessionSheetContentIsAdditional.getActive())
+                                sessionSheetContentRepository.save(sessionSheetContentIsAdditional);
+                        }
+                    }
+
                 }
             }
+            else
+                if (!sessionSheet.getIsAdditional()) { // если обычная (не дополнительная) ведомость
+                    SessionSheet sessionSheetIsAdditional = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormIdAndIsAdditional(
+                            sessionSheet.getSyllabusContent().getId(), sessionSheet.getGroup().getId(), sessionSheet.getSplitAttestationForm().getId(), true);
+                    SessionSheetContent sessionSheetContentIsAdditional = sessionSheetContentRepository.findSessionSheetContentBySessionSheetIdAndStudentId(
+                            sessionSheetIsAdditional.getId(), sessionSheetContent.getStudent().getId());
+                    Boolean oldActive = sessionSheetContentIsAdditional.getActive();
+                    sessionSheetContentIsAdditional.setActive(true); // т.к. sessionSheetContent.getEvaluation() == null
+                    if (oldActive != sessionSheetContentIsAdditional.getActive())
+                        sessionSheetContentRepository.save(sessionSheetContentIsAdditional);
+                }
 
             if (sessionSheet.getSplitAttestationForm().getId() == 1) { // Ведомость "Экзамен"
-                SessionSheet ss = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormId(
-                        sessionSheet.getSyllabusContent().getId(), sessionSheet.getGroup().getId(), 6L); // Допуск
+                SessionSheet ss = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormIdAndIsAdditional(
+                        sessionSheet.getSyllabusContent().getId(), sessionSheet.getGroup().getId(), 6L, sessionSheet.getIsAdditional()); // Допуск
                 if (ss != null && ss.getId() != null && sessionSheetContent.getStudent() != null && sessionSheetContent.getStudent().getId() != null) {
                     SessionSheetContent ssc = sessionSheetContentRepository.findSessionSheetContentBySessionSheetIdAndStudentId(
                             ss.getId(), sessionSheetContent.getStudent().getId());
-                    if (ssc != null && sessionSheetContent.getAdmittance() != null && sessionSheetContent.getAdmittance().getId() != null) {
-                        if (ssc.getEvaluation() == null || !sessionSheetContent.getAdmittance().getId().equals(ssc.getEvaluation().getId())) {
-                            ssc.setEvaluation(sessionSheetContent.getAdmittance()); // Установка "допуска" в ведомости "Экзамен"
-                            ssc.setDate(new Date());
-                            ssc.setSetEvaluationByTeacher(teacherRepository.findByUsername(user.getUsername()));
-                            sessionSheetContentRepository.save(ssc);
+                    if (ssc != null) {
+                        if (sessionSheetContent.getAdmittance() != null && sessionSheetContent.getAdmittance().getId() != null) {
+                            if (ssc.getEvaluation() == null || !sessionSheetContent.getAdmittance().getId().equals(ssc.getEvaluation().getId())) {
+                                ssc.setEvaluation(sessionSheetContent.getAdmittance()); // Установка "допуска" в ведомости "Экзамен"
+                                ssc.setDate(new Date());
+                                ssc.setSetEvaluationByTeacher(teacherRepository.findByUsername(user.getUsername()));
+                                sessionSheetContentRepository.save(ssc);
+
+                                if (!ss.getIsAdditional()) { // если обычная (не дополнительная) ведомость "Допуск"
+                                    SessionSheet sessionSheetIsAdditional = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormIdAndIsAdditional(
+                                            ss.getSyllabusContent().getId(), ss.getGroup().getId(), ss.getSplitAttestationForm().getId(), true); // Дополнительная ведомость "Допуск"
+                                    SessionSheetContent sessionSheetContentIsAdditional = sessionSheetContentRepository.findSessionSheetContentBySessionSheetIdAndStudentId(
+                                            sessionSheetIsAdditional.getId(), ssc.getStudent().getId());
+                                    Long evaluationId = ssc.getEvaluation().getId(); // Проверено, что ssc.getEvaluation() != null
+                                    Boolean oldActive = sessionSheetContentIsAdditional.getActive();
+                                    if (evaluationId.equals(6L)) sessionSheetContentIsAdditional.setActive(false); // Сдано
+                                    if (evaluationId.equals(7L)) sessionSheetContentIsAdditional.setActive(true); // Не сдано
+                                    if (oldActive != sessionSheetContentIsAdditional.getActive())
+                                        sessionSheetContentRepository.save(sessionSheetContentIsAdditional);
+                                }
+
+                            }
                         }
+                        else
+                            if (!ss.getIsAdditional()) { // если обычная (не дополнительная) ведомость
+                                SessionSheet sessionSheetIsAdditional = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormIdAndIsAdditional(
+                                        ss.getSyllabusContent().getId(), ss.getGroup().getId(), ss.getSplitAttestationForm().getId(), true);
+                                SessionSheetContent sessionSheetContentIsAdditional = sessionSheetContentRepository.findSessionSheetContentBySessionSheetIdAndStudentId(
+                                        sessionSheetIsAdditional.getId(), ssc.getStudent().getId());
+                                Boolean oldActive = sessionSheetContentIsAdditional.getActive();
+                                sessionSheetContentIsAdditional.setActive(true); // т.к. sessionSheetContent.getAdmittance() == null
+                                if (oldActive != sessionSheetContentIsAdditional.getActive())
+                                    sessionSheetContentRepository.save(sessionSheetContentIsAdditional);
+                            }
                     }
+
                 }
             }
 
             if (sessionSheet.getSplitAttestationForm().getId() == 6) { // Ведомость "Допуск"
-                SessionSheet ss = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormId(
-                        sessionSheet.getSyllabusContent().getId(), sessionSheet.getGroup().getId(), 1L); // Экзамен
+                SessionSheet ss = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormIdAndIsAdditional(
+                        sessionSheet.getSyllabusContent().getId(), sessionSheet.getGroup().getId(), 1L, sessionSheet.getIsAdditional()); // Экзамен
                 if (ss != null && ss.getId() != null && sessionSheetContent.getStudent() != null && sessionSheetContent.getStudent().getId() != null) {
                     SessionSheetContent ssc = sessionSheetContentRepository.findSessionSheetContentBySessionSheetIdAndStudentId(
                             ss.getId(), sessionSheetContent.getStudent().getId());
                     if (ssc != null && sessionSheetContent.getEvaluation() != null && sessionSheetContent.getEvaluation().getId() != null) { // изменилось значение "допуска"
                         if (curOld.getEvaluation() == null || !sessionSheetContent.getEvaluation().getId().equals(curOld.getEvaluation().getId())) {
-                            ssc.setEvaluation(null); // Обнуление оценки по экзамену, если из ведомости допуска изменили значение поля
+                            ssc.setEvaluation(null); // Обнуление оценки по экзамену, если в ведомости допуска изменили значение поля
                             ssc.setSetEvaluationByTeacher(null);
                             ssc.setDate(null);
                             sessionSheetContentRepository.save(ssc);
+
+                            if (!ss.getIsAdditional()) { // если обычная (не дополнительная) ведомость "Экзамен"
+                                SessionSheet sessionSheetIsAdditional = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormIdAndIsAdditional(
+                                        ss.getSyllabusContent().getId(), ss.getGroup().getId(), ss.getSplitAttestationForm().getId(), true); // Дополнительная ведомость "Экзамен"
+                                SessionSheetContent sessionSheetContentIsAdditional = sessionSheetContentRepository.findSessionSheetContentBySessionSheetIdAndStudentId(
+                                        sessionSheetIsAdditional.getId(), ssc.getStudent().getId());
+                                Boolean oldActive = sessionSheetContentIsAdditional.getActive();
+                                sessionSheetContentIsAdditional.setActive(true); // т.к. ssc.getEvaluation() == null
+                                if (oldActive != sessionSheetContentIsAdditional.getActive())
+                                    sessionSheetContentRepository.save(sessionSheetContentIsAdditional);
+                            }
+
                         }
                     }
                 }

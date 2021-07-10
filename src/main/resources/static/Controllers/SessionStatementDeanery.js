@@ -47,7 +47,7 @@ app.controller("SessionStatementDeaneryController", function($scope, $state, $st
                 $scope.disciplineName = $scope.contentSession[0].sessionSheet.syllabusContent.discipline.name;
                 $scope.splitAttestationForm = $scope.contentSession[0].sessionSheet.splitAttestationForm;
                 $scope.deadlineDiscipline = $scope.contentSession[0].sessionSheet.syllabusContent.deadline;
-                // console.log($scope.contentSession);
+                $scope.isAdditional = $scope.contentSession[0].sessionSheet.isAdditional;
             },
             function(res) { // error
                 if (res.data === 0)

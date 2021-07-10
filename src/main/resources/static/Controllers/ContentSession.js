@@ -56,6 +56,7 @@ app.controller("ContentSessionController", function($scope, $state, $stateParams
                 $scope.disciplineName = $scope.contentSession[0].sessionSheet.syllabusContent.discipline.name;
                 $scope.splitAttestationForm = $scope.contentSession[0].sessionSheet.splitAttestationForm;
                 $scope.deadlineDiscipline = $scope.contentSession[0].sessionSheet.syllabusContent.deadline;
+                $scope.isAdditional = $scope.contentSession[0].sessionSheet.isAdditional;
 
                 $scope.contentSession.forEach(function(item, index) {
                     // console.log(item);

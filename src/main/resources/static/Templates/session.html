@@ -29,13 +29,14 @@
                     <tr>
                         <th class="text-center"></th>
                         <th class="text-center">Номер группы</th>
-                        <th class="text-center w-50">Дисциплина</th>
+                        <th class="text-center">Дисциплина</th>
                         <th class="text-center">Форма аттестации</th>
                         <th class="text-center">Крайний срок внесения изменений
                             <i class="fa fa-info-circle text-info" data-toggle="tooltip" data-placement="top"
                                title="До этой даты (не включая) имеется возможность вносить изменения в ведомости">
                             </i>
                         </th>
+                        <th class="text-center">Доп. ведомость</th>
                         <th class="text-center"></th>
                     </tr>
                     </thead>
@@ -49,7 +50,14 @@
                         <td class="text-center border-info">{{group.groupNumber}}</td>
                         <td class="text-center border-info">{{group.disciplineName}}</td>
                         <td class="text-center border-info">{{group.splitAttestationFormName}}</td>
-                        <td class="text-center border-info">{{group.deadlineDiscipline | date: 'dd.MM.yyyy'}}</td>
+                        <td class="text-center border-info" ng-if="!group.isAdditional">{{group.deadlineDiscipline | date: 'dd.MM.yyyy'}}</td>
+                        <td class="text-center border-info" ng-if="group.isAdditional">-</td>
+                        <td class="text-center border-info">
+                            <input type="checkbox"
+                                   class="form-control form-control-sm"
+                                   ng-model="group.isAdditional"
+                                   disabled>
+                        </td>
                         <td class="text-center border-info">
                             <button class="btn btn-md btn-info text-white"
                                     type="button"
@@ -99,13 +107,14 @@
                         <tr>
                             <th class="text-center"></th>
                             <th class="text-center">Номер группы</th>
-                            <th class="text-center w-50">Дисциплина</th>
+                            <th class="text-center">Дисциплина</th>
                             <th class="text-center">Форма аттестации</th>
                             <th class="text-center">Крайний срок внесения изменений
                                 <i class="fa fa-info-circle text-info" data-toggle="tooltip" data-placement="top"
                                    title="До этой даты (не включая) имеется возможность вносить изменения в ведомости">
                                 </i>
                             </th>
+                            <th class="text-center">Доп. ведомость</th>
                             <th class="text-center"></th>
                         </tr>
                         </thead>
@@ -119,7 +128,14 @@
                             <td class="text-center border-info">{{groupForHead.groupNumber}}</td>
                             <td class="text-center border-info">{{groupForHead.disciplineName}}</td>
                             <td class="text-center border-info">{{groupForHead.splitAttestationFormName}}</td>
-                            <td class="text-center border-info">{{groupForHead.deadlineDiscipline | date: 'dd.MM.yyyy'}}</td>
+                            <td class="text-center border-info" ng-if="!groupForHead.isAdditional">{{groupForHead.deadlineDiscipline | date: 'dd.MM.yyyy'}}</td>
+                            <td class="text-center border-info" ng-if="groupForHead.isAdditional">-</td>
+                            <td class="text-center border-info">
+                                <input type="checkbox"
+                                       class="form-control form-control-sm"
+                                       ng-model="groupForHead.isAdditional"
+                                       disabled>
+                            </td>
                             <td class="text-center border-info">
                                 <button class="btn btn-md btn-info text-white"
                                         type="button"

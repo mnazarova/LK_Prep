@@ -86,8 +86,8 @@ public class LinkSessionController {
     }
 
     private boolean findNullTeacher(Long syllabusContentId, Long groupId, Long splitAttestationFormId, Long studentId) {
-        SessionSheet sessionSheet = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormId(
-                syllabusContentId, groupId, splitAttestationFormId);
+        SessionSheet sessionSheet = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormIdAndIsAdditional(
+                syllabusContentId, groupId, splitAttestationFormId, false);
         if (sessionSheet == null || sessionSheet.getId() == null)
             return true;
         SessionSheetContent sessionSheetContent = sessionSheetContentRepository.findSessionSheetContentBySessionSheetIdAndStudentId(sessionSheet.getId(), studentId);

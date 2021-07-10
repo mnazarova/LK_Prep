@@ -108,8 +108,8 @@ public class LinkSessionIdController {
     }
 
     private Teacher searchAndSetTeacher(Long syllabusContentId, Long groupId, Long splitAttestationFormId, Long studentId) {
-        SessionSheet sessionSheet = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormId(
-                syllabusContentId, groupId, splitAttestationFormId);
+        SessionSheet sessionSheet = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormIdAndIsAdditional(
+                syllabusContentId, groupId, splitAttestationFormId, false);
         if (sessionSheet != null) {
             SessionSheetContent sessionSheetContent = sessionSheetContentRepository.findSessionSheetContentBySessionSheetIdAndStudentId(
                     sessionSheet.getId(), studentId);
@@ -120,7 +120,7 @@ public class LinkSessionIdController {
     }
 
     @PatchMapping("/checkChangesInSessionStatement")
-    public ResponseEntity checkChangesInSessionStatement(@RequestBody SyllabusContent syllabusContent, @RequestParam Long groupId) {
+    public ResponseEntity checkChangesInSessionStatement(@RequestBody SyllabusContent syllabusContent, @RequestParam Long groupId) { // проверяются только недополнительные ведомости
         if (syllabusContent == null || syllabusContent.getId() == null || syllabusContent.getConnectTeacherStudentDTOList() == null)
             return new ResponseEntity<>(-1, HttpStatus.CONFLICT);
 
@@ -171,26 +171,35 @@ public class LinkSessionIdController {
         if (syllabusContent.getAttestationForm().getName().contains("Экзамен")) { // регистрозависимый метод
 //                saveOrUpdateSessionSheet(6L, ConnectTeacherStudentDTO.class.getDeclaredMethod("getAdmittanceTeacher"), syllabusContent.getId(), groupId, syllabusContent.getConnectTeacherStudentDTOList());
 
-            SessionSheet sessionSheet = findOrSetSessionSheet(syllabusContent.getId(), groupId, 6L);  // Допуск
-            List<SessionSheetContent> sessionSheetContents = new ArrayList<>();
+            SessionSheet sessionSheet = findOrSetSessionSheet(syllabusContent.getId(), groupId, 6L, false);  // Допуск
+            SessionSheet sessionSheetIsAdditional = findOrSetSessionSheet(syllabusContent.getId(), groupId, 6L, true);  // Допуск Доп. ведомость
+            List<SessionSheetContent> sessionSheetContents = new ArrayList<>(), sessionSheetContentsIsAdditional = new ArrayList<>();
             for (ConnectTeacherStudentDTO connectTeacherStudentDTO : syllabusContent.getConnectTeacherStudentDTOList()) {
                 SessionSheetContent sessionSheetContent = findOrSetSessionSheetContent(sessionSheet, connectTeacherStudentDTO.getStudentId());
+                SessionSheetContent sessionSheetContentIsAdditional = findOrSetSessionSheetContent(sessionSheetIsAdditional, connectTeacherStudentDTO.getStudentId());
 
                 if (connectTeacherStudentDTO.getAdmittanceTeacher() != null && connectTeacherStudentDTO.getAdmittanceTeacher().getId() != null) { // если назначен преподаватель
                     if (sessionSheetContent.getTeacher() != null && sessionSheetContent.getTeacher().getId() != null &&
                         !sessionSheetContent.getTeacher().getId().equals(connectTeacherStudentDTO.getAdmittanceTeacher().getId())) { // переназначение преподавателя
-                        /*Стирание данных сессионного оценивания*/
+                        /* Стирание данных сессионного оценивания как для обычных ведомостей, так и для доп. */
                         sessionSheetContent.setEvaluation(null);
                         sessionSheetContent.setDate(null);
+
+                        sessionSheetContentIsAdditional.setEvaluation(null);
+                        sessionSheetContentIsAdditional.setDate(null);
                     }
                     sessionSheetContent.setTeacher(connectTeacherStudentDTO.getAdmittanceTeacher());
+                    sessionSheetContentIsAdditional.setTeacher(connectTeacherStudentDTO.getAdmittanceTeacher());
                 }
 
                 sessionSheetContents.add(sessionSheetContent);
+                sessionSheetContentsIsAdditional.add(sessionSheetContentIsAdditional);
             }
             sessionSheet.setSessionSheetContents(sessionSheetContents);
+            sessionSheetIsAdditional.setSessionSheetContents(sessionSheetContentsIsAdditional);
             sessionSheetRepository.save(sessionSheet);
-            
+            sessionSheetRepository.save(sessionSheetIsAdditional);
+
             saveOrUpdateExamOrPass(1L, syllabusContent.getId(), groupId, syllabusContent.getConnectTeacherStudentDTOList()); // Экзамен
         }
 
@@ -220,32 +229,43 @@ public class LinkSessionIdController {
     }
 
     private void saveOrUpdateExamOrPass(Long splitAttestationFormId, Long syllabusContentId, Long groupId, List<ConnectTeacherStudentDTO> connectTeacherStudentDTOList) {
-        SessionSheet sessionSheet = findOrSetSessionSheet(syllabusContentId, groupId, splitAttestationFormId);
-        List<SessionSheetContent> sessionSheetContents = new ArrayList<>();
+        SessionSheet sessionSheet = findOrSetSessionSheet(syllabusContentId, groupId, splitAttestationFormId, false);
+        SessionSheet sessionSheetIsAdditional = findOrSetSessionSheet(syllabusContentId, groupId, splitAttestationFormId, true); // Доп. ведомость
+        List<SessionSheetContent> sessionSheetContents = new ArrayList<>(), sessionSheetContentsIsAdditional = new ArrayList<>();
         for (ConnectTeacherStudentDTO connectTeacherStudentDTO : connectTeacherStudentDTOList) {
             SessionSheetContent sessionSheetContent = findOrSetSessionSheetContent(sessionSheet, connectTeacherStudentDTO.getStudentId());
+            SessionSheetContent sessionSheetContentIsAdditional = findOrSetSessionSheetContent(sessionSheetIsAdditional, connectTeacherStudentDTO.getStudentId());
 
             if (connectTeacherStudentDTO.getExamTeacher() != null && connectTeacherStudentDTO.getExamTeacher().getId() != null) { // если назначен преподаватель
                 if (sessionSheetContent.getTeacher() != null && sessionSheetContent.getTeacher().getId() != null &&
-                        !sessionSheetContent.getTeacher().getId().equals(connectTeacherStudentDTO.getExamTeacher().getId())) { // переназначение преподавателя
+                    !sessionSheetContent.getTeacher().getId().equals(connectTeacherStudentDTO.getExamTeacher().getId())) { // переназначение преподавателя
                     /*Стирание данных сессионного оценивания*/
                     sessionSheetContent.setEvaluation(null);
                     sessionSheetContent.setDate(null);
+
+                    sessionSheetContentIsAdditional.setEvaluation(null);
+                    sessionSheetContentIsAdditional.setDate(null);
                 }
                 sessionSheetContent.setTeacher(connectTeacherStudentDTO.getExamTeacher());
+                sessionSheetContentIsAdditional.setTeacher(connectTeacherStudentDTO.getExamTeacher());
             }
 
             sessionSheetContents.add(sessionSheetContent);
+            sessionSheetContentsIsAdditional.add(sessionSheetContentIsAdditional);
         }
         sessionSheet.setSessionSheetContents(sessionSheetContents);
         sessionSheetRepository.save(sessionSheet);
+        sessionSheetIsAdditional.setSessionSheetContents(sessionSheetContentsIsAdditional);
+        sessionSheetRepository.save(sessionSheetIsAdditional);
     }
 
     private void saveOrUpdateKrOrKp(Long splitAttestationFormId, Long syllabusContentId, Long groupId, List<ConnectTeacherStudentDTO> connectTeacherStudentDTOList) {
-        SessionSheet sessionSheet = findOrSetSessionSheet(syllabusContentId, groupId, splitAttestationFormId);
-        List<SessionSheetContent> sessionSheetContents = new ArrayList<>();
+        SessionSheet sessionSheet = findOrSetSessionSheet(syllabusContentId, groupId, splitAttestationFormId, false);
+        SessionSheet sessionSheetIsAdditional = findOrSetSessionSheet(syllabusContentId, groupId, splitAttestationFormId, true); // Доп. ведомость
+        List<SessionSheetContent> sessionSheetContents = new ArrayList<>(), sessionSheetContentsIsAdditional = new ArrayList<>();
         for (ConnectTeacherStudentDTO connectTeacherStudentDTO : connectTeacherStudentDTOList) {
             SessionSheetContent sessionSheetContent = findOrSetSessionSheetContent(sessionSheet, connectTeacherStudentDTO.getStudentId());
+            SessionSheetContent sessionSheetContentIsAdditional = findOrSetSessionSheetContent(sessionSheetIsAdditional, connectTeacherStudentDTO.getStudentId());
 
             if (connectTeacherStudentDTO.getKrOrKpTeacher() != null && connectTeacherStudentDTO.getKrOrKpTeacher().getId() != null) { // если назначен преподаватель
                 if (sessionSheetContent.getTeacher() != null && sessionSheetContent.getTeacher().getId() != null &&
@@ -253,14 +273,21 @@ public class LinkSessionIdController {
                     /*Стирание данных сессионного оценивания*/
                     sessionSheetContent.setEvaluation(null);
                     sessionSheetContent.setDate(null);
+
+                    sessionSheetContentIsAdditional.setEvaluation(null);
+                    sessionSheetContentIsAdditional.setDate(null);
                 }
                 sessionSheetContent.setTeacher(connectTeacherStudentDTO.getKrOrKpTeacher());
+                sessionSheetContentIsAdditional.setTeacher(connectTeacherStudentDTO.getKrOrKpTeacher());
             }
 
             sessionSheetContents.add(sessionSheetContent);
+            sessionSheetContentsIsAdditional.add(sessionSheetContentIsAdditional);
         }
         sessionSheet.setSessionSheetContents(sessionSheetContents);
         sessionSheetRepository.save(sessionSheet);
+        sessionSheetIsAdditional.setSessionSheetContents(sessionSheetContentsIsAdditional);
+        sessionSheetRepository.save(sessionSheetIsAdditional);
     }
 
     private SessionSheetContent findOrSetSessionSheetContent(SessionSheet sessionSheet, Long connectTeacherStudentDTOStudentId) {
@@ -275,13 +302,14 @@ public class LinkSessionIdController {
         return sessionSheetContent;
     }
 
-    private SessionSheet findOrSetSessionSheet(Long syllabusContentId, Long groupId, Long splitAttestationFormId) {
-        SessionSheet sessionSheet = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormId(
-                syllabusContentId, groupId, splitAttestationFormId);
+    private SessionSheet findOrSetSessionSheet(Long syllabusContentId, Long groupId, Long splitAttestationFormId, Boolean isAdditional) {
+        SessionSheet sessionSheet = sessionSheetRepository.findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormIdAndIsAdditional(
+                syllabusContentId, groupId, splitAttestationFormId, isAdditional);
         if (sessionSheet == null) { // новая ведомость
             sessionSheet = new SessionSheet();
             sessionSheet.setSyllabusContent(syllabusContentRepository.findSyllabusContentById(syllabusContentId));
             sessionSheet.setGroup(groupRepository.findGroupById(groupId));
+            sessionSheet.setIsAdditional(isAdditional);
             sessionSheet.setSplitAttestationForm(splitAttestationFormRepository.findSplitAttestationFormById(splitAttestationFormId));
         }
         return sessionSheet;

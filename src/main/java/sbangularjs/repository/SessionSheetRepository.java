@@ -12,7 +12,7 @@ public interface SessionSheetRepository extends JpaRepository<SessionSheet, Long
 
     List<SessionSheet> findAll();
     SessionSheet findSessionSheetById(Long sessionSheetId);
-    SessionSheet findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormId(Long syllabusContentId, Long groupId, Long splitAttestationFormId);
+    SessionSheet findSessionSheetBySyllabusContentIdAndGroupIdAndSplitAttestationFormIdAndIsAdditional(Long syllabusContentId, Long groupId, Long splitAttestationFormId, Boolean isAdditional);
     List<SessionSheet> findSessionSheetBySyllabusContentIdAndGroupId(Long syllabusContentId, Long groupId);
 
     /*@Query("select ca from CertificationAttestation ca " +
@@ -22,34 +22,43 @@ public interface SessionSheetRepository extends JpaRepository<SessionSheet, Long
     /* TEACHER AND DEANERY */
     @Query(value = "select new sbangularjs.DTO.SessionDTO(ss.id, ss.group.id, ss.group.number, " +
             "ss.syllabusContent.discipline.id, ss.syllabusContent.discipline.name, ss.syllabusContent.deadline, " +
-            "ss.splitAttestationForm.id, ss.splitAttestationForm.name) " +
+            "ss.splitAttestationForm.id, ss.splitAttestationForm.name, ss.isAdditional) " +
             "from SessionSheet ss where ss.id in :sessionSheetIds")
     List<SessionDTO> findAllSessionDTOBySessionSheetIds(List<Long> sessionSheetIds);
 
     /* TEACHER */
-    @Query("select ss.id from SessionSheetContent ssc " +
-            "join SessionSheet ss on ss.id = ssc.sessionSheet.id " +
-            "and ssc.teacher.id = :teacherId and ssc.active = true where ss.syllabusContent.deadline > :deadline")
-    List<Long> findSessionSheetIdsByTeacherIdAndDeadline(Long teacherId, Date deadline);
+    @Query("select DISTINCT ss.id from SessionSheetContent ssc join SessionSheet ss on ss.id = ssc.sessionSheet.id " +
+            "and ss.isAdditional = false and ssc.teacher.id = :teacherId and ssc.active = true " +
+            "where ss.group.curSemester = ss.syllabusContent.semesterNumber and ss.syllabusContent.deadline > :now ") // = проверено: только 00.00.00
+    List<Long> findSessionSheetIdsByTeacherIdAndIsAdditionalFalse(Long teacherId, Date now);
+
+    @Query("select DISTINCT ss.id from SessionSheetContent ssc join SessionSheet ss on ss.id = ssc.sessionSheet.id " +
+            "and ss.isAdditional = true and ssc.teacher.id = :teacherId and ssc.active = true " +
+            "where ss.syllabusContent.deadline >= :firstSessionDay and ss.syllabusContent.deadline < :firstNonSessionDay " +
+            "and ss.syllabusContent.deadline < :now ")
+    List<Long> findSessionSheetIdsByTeacherIdAndIsAdditionalTrue(Long teacherId, Date now, Date firstSessionDay, Date firstNonSessionDay);
 
     @Query(value = "select new sbangularjs.DTO.SessionDTO(ss.id, ss.group.id, ss.group.number, " +
             "ss.syllabusContent.discipline.id, ss.syllabusContent.discipline.name, ss.syllabusContent.deadline, " +
-            "ss.splitAttestationForm.id, ss.splitAttestationForm.name) " +
+            "ss.splitAttestationForm.id, ss.splitAttestationForm.name, ss.isAdditional) " +
             "from SessionSheet ss where ss.id in :sessionSheetIds and ss.group.id = :groupId")
     List<SessionDTO> findAllSessionDTOBySessionSheetIdsAndGroupId(List<Long> sessionSheetIds, Long groupId);
 
     /* For Head Of Department */
-    @Query("select ss.id from SessionSheetContent ssc " +
-            "join SessionSheet ss on ss.id = ssc.sessionSheet.id and ssc.active = true " +
-            "where ss.syllabusContent.discipline.department.id = :departmentId and ss.syllabusContent.deadline > :deadline")
-    List<Long> findSessionSheetIdsByDepartmentIdAndDeadline(Long departmentId, Date deadline);
+    @Query("select DISTINCT ss.id from SessionSheetContent ssc join SessionSheet ss on ss.id = ssc.sessionSheet.id " +
+           "and ss.isAdditional = false and ssc.active = true where ss.syllabusContent.discipline.department.id = :departmentId " +
+           "and ss.group.curSemester = ss.syllabusContent.semesterNumber and ss.syllabusContent.deadline > :now ")
+    List<Long> findSessionSheetIdsByDepartmentIdAndDeadline(Long departmentId, Date now);
 
-    @Query("select ss.id from SessionSheet ss where ss.syllabusContent.discipline.department.id = :departmentId " +
-            "and ss.syllabusContent.deadline > :deadline and ss.group.id = :groupId")
-    List<Long> findSessionSheetIdsDepartmentIdAndDeadlineAngGroupId(Long departmentId, Date deadline, Long groupId);
+    @Query("select DISTINCT ss.id from SessionSheetContent ssc join SessionSheet ss on ss.id = ssc.sessionSheet.id " +
+            "and ss.isAdditional = true and ssc.active = true where ss.syllabusContent.discipline.department.id = :departmentId " +
+            "and ss.syllabusContent.deadline >= :firstSessionDay and ss.syllabusContent.deadline < :firstNonSessionDay " +
+            "and ss.syllabusContent.deadline < :now ")
+    List<Long> findSessionSheetIdsByDepartmentIdAndIsAdditionalTrue(Long departmentId, Date now, Date firstSessionDay, Date firstNonSessionDay);
 
     /* DEANERY */
-    @Query("select ss.id from SessionSheet ss where ss.group.id = :groupId and ss.syllabusContent.semesterNumber = :semesterNumber")
-    List<Long> findSessionSheetIdsByGroupIdAndSemesterNumber(Long groupId, Integer semesterNumber);
+    @Query("select DISTINCT ss.id from SessionSheetContent ssc join SessionSheet ss on ss.id = ssc.sessionSheet.id and ssc.active = true " +
+           "where ss.isAdditional = :isAdditional and ss.group.id = :groupId and ss.syllabusContent.semesterNumber = :semesterNumber")
+    List<Long> findSessionSheetIdsByGroupIdAndSemesterNumberAndIsAdditional(Long groupId, Integer semesterNumber, Boolean isAdditional);
 
 }

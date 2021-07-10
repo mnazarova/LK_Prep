@@ -3,7 +3,9 @@ app.controller("DeputyDeanSessionStatementsController", function($scope, $state,
     $scope.checkRole("DEPUTY_DEAN");
 
     $scope.groupId = $stateParams.groupId;
-    $scope.sessionStatementForm = {};
+    $scope.sessionStatementForm = {
+        isAdditional: false
+    };
 
     getSemesterNumberSetByGroupIdForDeputyDean();
     function getSemesterNumberSetByGroupIdForDeputyDean() {
@@ -39,18 +41,19 @@ app.controller("DeputyDeanSessionStatementsController", function($scope, $state,
                 $scope.sessionStatementForm.semesterNumber = res.data;
                 if (res.data < $scope.semesterNumberList[0] && res.data > $scope.semesterNumberList[$scope.semesterNumberList.length-1])
                     $scope.sessionStatementForm.semesterNumber = $scope.semesterNumberList[0];
-                $scope.selectedSemesterNumber();
+                $scope.changedSemesterNumberOrIsAdditional();
             }
         )
     }
 
-    $scope.selectedSemesterNumber = function () {
+    $scope.changedSemesterNumberOrIsAdditional = function () {
         $http({
             method: 'PATCH',
             url: '/getSessionStatementsByGroupIdAndSemesterNumberForDeputyDean',
             params: {
                 groupId: $stateParams.groupId,
-                semesterNumber: $scope.sessionStatementForm.semesterNumber
+                semesterNumber: $scope.sessionStatementForm.semesterNumber,
+                isAdditional: $scope.sessionStatementForm.isAdditional
             }
         }).then(
             function(res) {

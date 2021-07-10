@@ -21,13 +21,14 @@ public class SessionDTO { // Subject For Session
     private Long splitAttestationFormId;
     private String splitAttestationFormName;
 
+    private Boolean isAdditional;
     private boolean finished; // устанавливать true, если все поля content data not null
 
     public SessionDTO() {}
 
     public SessionDTO(Long sessionSheetId, Long groupId, String groupNumber,
                       Long disciplineId, String disciplineName, Date deadlineDiscipline,
-                      Long splitAttestationFormId, String splitAttestationFormName) {
+                      Long splitAttestationFormId, String splitAttestationFormName, Boolean isAdditional) {
         this.sessionSheetId = sessionSheetId;
 
         this.groupId = groupId;
@@ -39,6 +40,8 @@ public class SessionDTO { // Subject For Session
 
         this.splitAttestationFormId = splitAttestationFormId;
         this.splitAttestationFormName = splitAttestationFormName;
+
+        this.isAdditional = isAdditional;
     }
 
 }

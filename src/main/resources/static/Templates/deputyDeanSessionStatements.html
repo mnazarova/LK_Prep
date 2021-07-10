@@ -8,11 +8,11 @@
     <div class="py-4 my-3 card col-md-10 mx-auto border-info">
 
         <div class="font-weight-bold h4 text-center my-4">Список сессионных ведомостей</div>
-        <div class="col-sm-4 col-lg-3 mx-auto mb-5 text-center">
+        <div class="col-sm-4 col-lg-3 mx-auto my-3 text-center">
             <label class="h6 font-weight-bold" for="semesterNumber">Семестр &nbsp</label>
             <select class="custom-select form-control col-6"
                     ng-disabled="!semesterNumberList"
-                    ng-change="selectedSemesterNumber()"
+                    ng-change="changedSemesterNumberOrIsAdditional()"
                     ng-class="{'border-info': sessionStatementForm.semesterNumber == curSemesterNumber,
                                    'border-warning': sessionStatementForm.semesterNumber != curSemesterNumber}"
                     id="semesterNumber"
@@ -20,6 +20,18 @@
                     ng-model="sessionStatementForm.semesterNumber"
                     ng-options="item as item + ((item == curSemesterNumber) ? ' (текущий)' : '') for item in semesterNumberList">
             </select>
+        </div>
+        <div class="col-sm-4 col-lg-3 mx-auto mb-5 text-center">
+            <div class="form-check">
+                <input type="checkbox"
+                       ng-change="changedSemesterNumberOrIsAdditional()"
+                       ng-model="sessionStatementForm.isAdditional"
+                       name="isAdditional"
+                       class="form-check-input"
+                       value="false"
+                       id="labelIsAdditional">
+                <label class="font-weight-bold form-check-label" for="labelIsAdditional">Дополнительные ведомости</label>
+            </div>
         </div>
 
         <div class="ng-hide font-weight-bold text-center m-2 p-2 alert-warning" ng-show="!sessionStatements.length">
@@ -32,11 +44,12 @@
                 <th class="text-center">Номер группы</th>
                 <th class="text-center">Дисциплина</th>
                 <th class="text-center">Форма аттестации</th>
-                <th class="text-center">Крайний срок внесения изменений
+                <th class="text-center" ng-hide="sessionStatementForm.isAdditional">Крайний срок внесения изменений
                     <i class="fa fa-info-circle text-info" data-toggle="tooltip" data-placement="top"
                        title="До этой даты (не включая) у преподавателей имеется возможность вносить изменения в ведомости">
                     </i>
                 </th>
+                <th class="text-center">Доп. ведомость</th>
                 <th class="text-center"></th>
             </tr>
             </thead>
@@ -45,7 +58,14 @@
                 <td class="text-center border-info">{{sessionStatement.groupNumber}}</td>
                 <td class="text-center border-info">{{sessionStatement.disciplineName}}</td>
                 <td class="text-center border-info">{{sessionStatement.splitAttestationFormName}}</td>
-                <td class="text-center border-info">{{sessionStatement.deadlineDiscipline | date: 'dd.MM.yyyy'}}</td>
+                <td class="text-center border-info" ng-hide="sessionStatementForm.isAdditional">{{sessionStatement.deadlineDiscipline | date: 'dd.MM.yyyy'}}</td>
+                <td class="text-center border-info">
+                    <input type="checkbox"
+                           class="form-control form-control-sm"
+                           name="isAdditional"
+                           ng-model="sessionStatement.isAdditional"
+                           disabled>
+                </td>
                 <td class="text-center border-info">
                     <button class="btn btn-md btn-info text-white"
                             type="button"

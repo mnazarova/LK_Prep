@@ -79,8 +79,8 @@ public class SessionStatementsDeaneryController {
     }
 
     @PatchMapping("/getSessionStatementsByGroupIdAndSemesterNumberForDeanery")
-    public ResponseEntity getSessionStatementsByGroupIdAndSemesterNumberForDeanery(@RequestParam Long groupId, @RequestParam Integer semesterNumber) {
-        List<Long> sessionSheetIds = sessionSheetRepository.findSessionSheetIdsByGroupIdAndSemesterNumber(groupId, semesterNumber);
+    public ResponseEntity getSessionStatementsByGroupIdAndSemesterNumberForDeanery(@RequestParam Long groupId, @RequestParam Integer semesterNumber, @RequestParam Boolean isAdditional) {
+        List<Long> sessionSheetIds = sessionSheetRepository.findSessionSheetIdsByGroupIdAndSemesterNumberAndIsAdditional(groupId, semesterNumber, isAdditional);
         if(sessionSheetIds.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         List<SessionDTO> sessionDTOList = sessionSheetRepository.findAllSessionDTOBySessionSheetIds(sessionSheetIds);
         return new ResponseEntity<>(sessionDTOList, HttpStatus.OK);
